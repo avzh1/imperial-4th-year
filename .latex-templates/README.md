@@ -8,12 +8,12 @@
 \newcommand{\reportdescription}{example description}
 
 % load some definitions and default packages
-\input{../.latex-templates/includes}
+\input{../../../.latex-templates/includes}
 
 \begin{document}
 
 % Include the title page
-\input{../.latex-templates/titlepage}
+\input{../../../.latex-templates/titlepage}
 
 % Start of new text
 Hello World
