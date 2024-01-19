@@ -28,8 +28,6 @@
 \usepackage{amsmath}
 \usepackage[nottoc]{tocbibind}
 
-\usepackage{listings}
-
 %%% Default fonts
 \renewcommand*{\rmdefault}{bch}
 \renewcommand*{\ttdefault}{cmtt}
@@ -47,3 +45,21 @@
 \renewcommand{\headrulewidth}{0.1pt}
 \renewcommand{\footrulewidth}{0.1pt}
 \captionsetup{margin=10pt,font=small,labelfont=bf}
+
+% LISTINGS ammendments
+\usepackage{listings}
+
+\lstset
+{ %Formatting for code in appendix
+    language=Matlab,
+    basicstyle=\footnotesize,
+    numbers=left,
+    stepnumber=1,
+    showstringspaces=false,
+    tabsize=1,
+    breaklines=true,
+    breakatwhitespace=false,
+    frame=single,
+    columns=fullflexible,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
