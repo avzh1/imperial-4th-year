@@ -29,6 +29,9 @@
     
     \large \emph{Author: Anton Zhitomirsky}
 
-    \vspace*{\fill} % Fill the space before the new text
+    \global\let\newpagegood\newpage
+    \global\let\newpage\relax
     
 \end{titlepage}
+
+\global\let\newpage\newpagegood
