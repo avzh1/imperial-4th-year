@@ -1,7 +1,7 @@
 # Example of main file:
 
 ```latex
-\documentclass[11pt]{report}
+\documentclass[11pt]{article}
 
 % some definitions for the title page
 \newcommand{\reporttitle}{example}
@@ -9,6 +9,7 @@
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
 
 \begin{document}
 

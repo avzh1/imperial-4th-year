@@ -1,0 +1,182 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{Introduction Lecture and GPU sources}
+\newcommand{\reportdescription}{Summary of the GPU resources available to Imperial Students taking Deep Learning module}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{CSG Guides}
+
+\href{https://www.imperial.ac.uk/computing/people/csg/guides/}{CSG source}
+
+\section{Basic SSH into the labmachine}
+
+\subsection{Setting up the public key to not type in password}
+
+Copy the public key on your machine over to the authorized hosts on the other machine to avoid typing in your password every time you ssh.\ \href{https://superuser.com/questions/8077/how-do-i-set-up-ssh-so-i-dont-have-to-type-my-password}{[source]}
+
+\begin{lstlisting}[language=sh]
+    ssh-copy-id -i ~/.ssh/id_ed25519.pub <usrname>@<host>
+\end{lstlisting}
+
+\subsection{Setting up the tunnel from shell1 -- another machine}
+
+Create an alias on your home machine for the shell you'll use \href{https://ostechnix.com/how-to-create-ssh-alias-in-linux/}{[source1]} \href{https://stackoverflow.com/questions/17169292/using-only-part-of-a-pattern-in-ssh-config-hostname}{[source2]}
+
+\begin{lstlisting}[language=bash]
+    Match host shell*
+        Hostname %h.doc.ic.ac.uk
+        User az620
+\end{lstlisting}
+
+\noindent To begin tunnelling through with ssh \href{https://www.imperial.ac.uk/computing/csg/guides/remote-access/ssh/}{[source]} and find your favourite \href{https://www.imperial.ac.uk/computing/people/csg/facilities/lab/workstations/}{[workstation]} and set up tunnel with \href{https://superuser.com/questions/107679/forward-ssh-traffic-through-a-middle-machine}{[source3]}
+
+\begin{lstlisting}[language=bash]
+    Match host texel*
+        Hostname %h.doc.ic.ac.uk
+        User az620
+        ProxyJump shell1
+\end{lstlisting}
+
+\subsection{Checking if resource being used}
+
+\begin{lstlisting}[language=bash]
+    nvidia-smi && top htop
+\end{lstlisting}
+
+\section{SLURM \href{https://www.imperial.ac.uk/computing/people/csg/guides/hpcomputing/gpucluster/}{[reference]}}
+
+The department has a pool of GPUs for deep learning tasks. To reduce complexity of scheduling, \href{https://slurm.schedmd.com/}{slurm} is a system that schedules tasks into these resources.
+
+\subsection{SSH into the gpu cluster}
+
+In the \verb|~/.ssh/config| file, add the line below and ssh into it to schedule jobs. This should only be used for scheduling jobs into the slurm scheduler.
+
+\begin{lstlisting}[language=bash]
+    # should be either 2 or 3
+    Match host gpucluster*
+        Hostname %h.doc.ic.ac.uk
+        User az620
+        ProxyJump shell1
+\end{lstlisting}
+
+Then submit a pre-existing script using the sbatch command. The output will be stored, by default, in the root of your \verb|~/| directory, with the filename \verb|slurm20-{xyz}.out|. 
+
+See Section \ref{sect:python-venv} for guide on python virtual environment.
+
+\subsection{Using CUDA}
+
+Many jobs will make use of the \href{https://developer.nvidia.com/cuda-toolkit}{Nvidia CUDA toolkit}, multiple versions of which are at \texttt{/vol/cuda}. If there ever appears a need to use this toolkit then in the submission bash script add:
+
+\begin{lstlisting}[language=sh]
+    . /vol/cuda/12.0.0/setup.sh # if you're using version 12.0.0
+\end{lstlisting}
+
+Care that you choose a version with which your tensorflow or pytorch are compatible with.
+
+\subsection{Template Example bash submission script}
+
+\begin{warning}
+    This example assumes you have followed the previous steps and installed a python environment (using virtualenv, extra lines may  be needed using minconda, check the example script further below) as directed. Please adjust paths if you have an existing python environment, or if you already load your environment in ~/.bashrc (note: sbatch does not load ~/.bashrc, source it as per example script) . Do not uncomment \#SBATCH lines, keep them as below, make sure the \#SBATCH directives are directly after \verb|#!/bin/bash|
+\end{warning}
+
+Remember to make the sumbission script\footnote{example can be found at \texttt{/vol/bitbucket/shared/slurmseg.sh}}. executable with \verb|chmod +x <script_name>.sh|
+
+\begin{lstlisting}{language=bash}
+#!/bin/bash
+#SBATCH --gres=gpu:1
+#SBATCH --mail-type=ALL # required to send email notifcations
+#SBATCH --mail-user=<your_username> # required to send email notifcations
+export PATH=/vol/bitbucket/${USER}/myvenv/bin/:$PATH
+# the above path could also point to a miniconda install
+# if using miniconda, uncomment the below line
+# source ~/.bashrc
+source activate
+source /vol/cuda/12.0.0/setup.sh
+/usr/bin/nvidia-smi
+uptime
+\end{lstlisting}
+
+\subsection{Scheduling job}
+
+\begin{itemize}
+    \item \texttt{ssh gpucluster2}
+    \item \texttt{cd /vol/bitbucket/\$USER}
+    \item \texttt{sbatch <path to executable>.sh}
+    \item \texttt{less slurm-XYZ.out} saves the output.
+    \item \verb|squeue -l| for queue of running jobs
+    \item \verb|scancel <job ID>| to delete slurm job
+\end{itemize}
+
+\section{SageMaker}
+
+Access \href{https://studiolab.sagemaker.aws/}{SageMaker} and follow instructions in slides
+
+\section{PaperSpace}
+
+\begin{warning}
+    Remember to close the notebook when finished
+\end{warning}
+
+Access \href{https://console.paperspace.com/login}{Paperspace}
+
+After access granted, you can access \href{https://docs.paperspace.com/gradient/notebooks/notebooks-remote-kernel/}{this} and use paperspace as your location of the kernel to execute super fast.  
+
+\section{Python virtual environment} \label{sect:python-venv}
+
+\subsection{Where to store data}
+
+Data is stored in the \verb|/vol/bitbucket/${USER}|. It can be created with \verb|mkdir -p ...| if it doesnt exist. You should create personal folders here. Otherwise, if you store data in the home directory you risk going over the quota limit \href{https://www.imperial.ac.uk/computing/people/csg/guides/python/virtual-environment/#d.en.1235829}{[source]}\footnote{you can check disk quota with \texttt{quota -Q}}. \texttt{/vol/bitbucket} should only be used for temporary storage of material that cna be regenerated (downloads or compilations). To see where you are storing disk space use \texttt{/vol/linux/bin/usage} (disk space) and \texttt{/vol/linux/bin/nfiles} (number of files and directories) \href{https://www.imperial.ac.uk/computing/people/csg/guides/python/virtual-environment/#d.en.1235829}{[source]}.
+
+\subsubsection{Why do you need a python virtual environment?}
+
+Python isn't good at dependency management. \texttt{pip} places all external packages into \texttt{site-packages/} in the base Python installation. By creating a virtual environment you avoid system polluation (since these packages mix with system-relevant packages causing unexpected side effects)
+
+\subsubsection{Creating a Python Virtual Environment in /vol/bitbucket}
+
+\begin{warning}
+    Use a lab PC to prepare the Python environment; don't use the gpucluster machine for this. You may encounter 'out of space' errors.
+\end{warning}
+
+Its advised that you create Python virtual environments on \texttt{/vol/bitbucket}. Steps taken from \href{https://www.imperial.ac.uk/computing/people/csg/guides/python/virtual-environment/#d.en.1235829}{[source]}
+\begin{enumerate}
+    \item create \verb|/vol/bitbucket/${USER}|
+    \item create virtual environment
+          \begin{lstlisting}[language=sh]
+export PENV=/vol/bitbucket/${USER}/myenv
+python3 -m virtualenv $PENV
+ls -al $PENV
+          \end{lstlisting}
+    \item activate your VE:
+          \begin{lstlisting}[language=sh]
+source $PENV/bin/activate
+which pip
+[should say: /vol/bitbucket/${USER}/myenv/bin/pip]
+which python
+[should say: /vol/bitbucket/${USER}/myenv/bin/python]
+which python3
+[should say: /vol/bitbucket/${USER}/myenv/bin/python3]
+          \end{lstlisting}
+    \item install packages and verify with \texttt{which <module name>} that it is saved under \texttt{/vol/bitbucket/\${USER}/myenv/bin/}
+    \item Or prepare a package requirements file \texttt{requirements.txt} which speicifes a list of packages (optinally with specific version constriants) and install with \texttt{pip install -r requirements.txt}
+    \item once you're done working with the virtual environment you can deactivate it with \texttt{deactivate}
+    \item each time you login to a specific machine redo the activate stage with \texttt{source /vol/bitbucket/\${USER}/myenv/bin/activate} (this can be appended to the end of the \verb|~./bash_profile| in home dir.)
+\end{enumerate}
+
+\subsubsection{Why activate and deactivate?}
+
+Activating it gives us a new path for the pyhton executable because, in an active environment, the \$PATH environment variable is slightly modified.
+
+\end{document}

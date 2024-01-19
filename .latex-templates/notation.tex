@@ -6,3 +6,10 @@
 \newcommand{\C}[0]{\mathds{C}} % complex numbers
 \renewcommand{\vec}[1]{{\boldsymbol{{#1}}}} % vector
 \newcommand{\mat}[1]{{\boldsymbol{{#1}}}} % matrix
+
+\usepackage{pifont,mdframed}
+\newenvironment{warning}
+  {\par\begin{mdframed}[linewidth=1pt,linecolor=black]%
+    \begin{list}{}{\leftmargin=1cm
+                   \labelwidth=\leftmargin}\item[\Large\ding{43}]}
+  {\end{list}\end{mdframed}\par}
