@@ -123,10 +123,10 @@ uptime
 \subsection{Creating a SLURM job to act as a VM}
 
 \begin{lstlisting}[language=bash]
-    ssh gpucluster1
+    ssh texel10 # DON'T ssh into a gpucluster machine, it won't work
     cd /vol/bitbucket/az620
     python -m venv /vol/bitbucket/az620/dlenv
-    source /vol/bitbucket/az620/dlenv/bin/activate.csh
+    source /vol/bitbucket/az620/dlenv/bin/activate  
     pip3 install ipykernel
     pip3 install jupyterlab
     pip3 install jupyterhub
@@ -135,11 +135,13 @@ uptime
 
 \subsubsection{In Terminal 1}
 \begin{lstlisting}
+ssh gpucluster2
 salloc --gres=gpu:1
-squeue    
+squeue | grep az620
 \end{lstlisting}
 
 \subsubsection{In Terminal 2}
+If you have defined a config entry for \texttt{shell*} then replace accordingly with \texttt{az620@shell3.doc.ic.ac.uk} $\mapsto$ \texttt{shell3}.
 \begin{lstlisting}
 ssh -t -L 10001:localhost:10001 az620@shell3.doc.ic.ac.uk "/vol/linux/bin/slurm_sshtojob.sh -g -w ~/ -p 10001 -e /vol/bitbucket/{USER}/dlenv"
 \end{lstlisting}
@@ -148,7 +150,7 @@ http://localhost:10001/lab?token=\{from terminal\}
 
 \begin{warning}
     remember to:
-    \texttt{scancel <your job id>}
+    \texttt{scancel <your job id>} back in Terminal 1
 \end{warning}
 
 \subsubsection{In Jupyter}
