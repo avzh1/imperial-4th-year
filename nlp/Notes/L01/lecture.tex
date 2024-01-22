@@ -1,0 +1,278 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{Introduction Lecture for NLP and some ML baselines}
+\newcommand{\reportdescription}{THe introductory lecture for Natural Language Processing and some core concepts for Natural Language Processing with supplementary material regarding basic ML concepts required for this course}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\bibliography{../bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{Dealing with natural language}
+
+\subsection{Complexities}
+
+\begin{itemize}
+    \item Ambiguity at word level
+          \begin{lstlisting}
+            Can you bring me the file
+        \end{lstlisting}
+    \item Syntactic ambiguity (prepositional phrase attachment ambiguity)
+          \begin{lstlisting}
+            I saw the boy with a telescope
+        \end{lstlisting}
+    \item Semantic ambiguity
+          \begin{lstlisting}
+            I haven't slept for 10 days
+            The rabbit is ready for lunch
+        \end{lstlisting}
+    \item Referential ambiguity
+          \begin{lstlisting}
+            We gave the monkeys bananas because they were more than ready to eat.
+        \end{lstlisting}
+    \item Non-literal meaning
+          \begin{lstlisting}
+            Call me a cab, it's raining cats and dogs
+        \end{lstlisting}
+\end{itemize}
+
+\subsection{The role of Deep Learning}
+
+\begin{itemize}
+    \item The creation and maintenance of linguistic rules often is infeasible or impractical.
+    \item We'd much rather learn functions from data instead of creating rules based on intuition.
+    \item deep learning is very flexible, learnable framework fro representing information from many different modalities.
+\end{itemize}
+
+\subsection{Composites of Language}
+
+\subsubsection{Lexicon - morphological analysis}
+
+Definition: Words: segmentation, normalisation, morphology
+
+\begin{enumerate}
+    \item Word Segmentation (tokenization, decompounding): 
+    \begin{quote}
+        ``For example, most of what we are going to do with language relies on first separating out or tokenizing words from running text, the task of tokenization. English words are often separated from each othertokenization by whitespace, but whitespace is not always sufficient. New York and rock 'n' roll are sometimes treated as large words despite the fact that they contain spaces, while sometimes we'll need to separate I'm into the two words I and am''~\cite{book-speech-and-language-processing}
+    \end{quote}
+    \item Word normalization (capitalization, acronyms, spelling variants)
+    \item Lemmatisation (reduce to base form = valid word)
+    \begin{quote}
+        ``Another part of text normalization is lemmatization, the task of determining lemmatization that two words have the same root, despite their surface differences. For example, the words sang, sung, and sings are forms of the verb sing. The word sing is the common lemma of these words, and a lemmatizer maps from all of these to sing''~\cite{book-speech-and-language-processing}
+    \end{quote}
+    \item Stemming (reduce to root = not always valid word)
+    \begin{quote}
+        ``Stemming refers to a simpler version of lemmatization in which we mainly stemming just strip suffixes from the end of the word''~\cite{book-speech-and-language-processing}.
+    \end{quote}
+    \item Byte-pair encoding (BPE) and wordpieces
+    \begin{quote}
+        ``Instead of defining tokens as words (whether delimited by spaces or more complex algorithms), or as characters (as in Chinese), we can use our data to automatically tell us what the tokens should be''~\cite{book-speech-and-language-processing}.
+    \end{quote}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.8\linewidth]{images/bpe-algorithm.png}
+        \label{fig:bpe-algorithm}
+    \end{figure}
+
+    \begin{quote}
+        ``The BPE token learner begins BPE with a vocabulary that is just the set of all individual characters. It then examines the training corpus, chooses the two symbols that are most frequently adjacent (say 'A', 'B'), adds a new merged symbol 'AB' to the vocabulary, and replaces every adjacent 'A' 'B' in the corpus with the new 'AB'. It continues to count and merge, creating new longer and longer character strings, until k merges have been done creating k novel tokens; k is thus a parameter of the algorithm. The resulting vocabulary consists of the original set of characters plus k new symbols''~\cite{book-speech-and-language-processing}.
+    \end{quote}
+
+    \item Part-of-speech tagging (Recognize category of word): verb, noun, adverb, adjective, determiner, preposition... 
+    
+    It is the process of assigning a part-of-speech to each word in a text. This is a disambiguation task; words are ambiguous - have more tha one possible part-of-speech - and the goal is to find the correct tag for the sitauation. E.g. `book' can be a verb (`book that flight') or a noun (`hand me that book'). The POS-tagging resolves these ambiguities by choosing the proper tag for the context~\cite{book-speech-and-language-processing}.
+
+    \item Morphological analysis (recognize/generate word variants):
+    
+    \begin{quote}
+        ``Morphology is the study of the way words are built up from smaller meaning-bearing units called morphemes. Two broad classes of morphemes can be distinguished: stems—the central mor-stem pheme of the word, supplying the main meaning—and affixes—adding “additional”affix meanings of various kinds. So, for example, the word fox consists of one morpheme (the morpheme fox) and the word cats consists of two: the morpheme cat and the morpheme -s''~\cite{book-speech-and-language-processing}
+    \end{quote}
+\end{enumerate}
+
+\subsubsection{Syntax}
+
+Syntax comes from the Greek s'yntaxis, meaning “setting out together or arrangement”, and refers to the way words are arranged together~\cite{book-speech-and-language-processing}.
+
+We can form a parse tree based on some syntax rules which makes up grammar. This was typically used in applications before deep learning; there are sentences that make sense but don't follow grammar.
+
+\begin{tabular}{l c r}
+    \hline
+    \multicolumn{2}{c}{\textbf{Phrase Structure Rule}} & \textbf{Example} \\
+    \hline
+    $S \rightarrow NP \quad VP$ & Sentence $\rightarrow$ Noun-phrase Verb-phrase & I prefer a morning flight \\
+    $NP \rightarrow Det\ N$ & Noun-phrase $\rightarrow$ Determiner Noun & prefer a morning flight\\
+    $VP \rightarrow V NP$ & Verb-phrase $\rightarrow$ Verb Noun-phrase & leave Boston in the morning\\
+    $VP \rightarrow V$ & Verb-phrase $\rightarrow$ Verb & \\
+    $VP \rightarrow V PP$ & Verb-phrase $\rightarrow$ Verb Propositional-phrase & leaving on Thursday\\
+    $PP \rightarrow P NP$ & Preposition-phrase $\rightarrow$ Preposition Noun-phrase & from Los Angeles\\
+\end{tabular}
+
+\subsubsection{Semantics}
+
+Definition: Meaning of words and sentences
+
+``We also introduce word sense disambiguation (WSD), the task of determining which sense of a word is being used in a particular context [...] A sense (or word sense) is a discrete representation of one aspect of the meaning of a word.''~\cite{book-speech-and-language-processing}.
+
+Compositional meaning understands who did what to whom, when, where, how and why. It composes the meaning of the setnece, based on the meaning of the words and the structure of the sentence. Here, the dog chased the man = The man was chased by the dog, but The dog bit the man $\neq$ The man bit the dog.
+
+``Semantic role labeling (sometimes shortened as SRL) is the task of automatically finding the semantic roles of each argument of each predicate in a sentence''~\cite{book-speech-and-language-processing}.
+
+\subsubsection{Discourse}
+
+Definition: Meaning of a text (relationship between sentences)
+
+``language does not normally consist of isolated, unrelated sentences, but instead of collocated, structured, coherent groups of sentences. We refer to such a coherent structured group of sentences as a discourse, and we use the word coherence to refer to the relationship between sentences that makes real discourses different than just random assemblages of sentences''~\cite{book-speech-and-language-processing}.
+
+``Coreference resolution is the task of determining whether two mentions corefer, by which we mean they refer to the same entity in the discourse model (the same discourse entity)''~\cite{book-speech-and-language-processing}.
+
+\subsubsection{Pragmatics}
+
+Definition: Intentions, commands; what is the intent of the text, how to react to it?
+
+\section{ML Refresher}
+
+\subsection{Linear activation function}
+
+useful for regression
+
+\begin{equation}
+    f(x)=x
+\end{equation}
+
+\subsection{Non-linear activation functions}
+
+\subsubsection{Sigmoid}
+
+useful for binary classification
+
+useful for multi-label classification (predicting many classes)
+
+\begin{equation}
+    f(x)=\sigma(x)=\frac{1}{1 + e^{-x}}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.3\linewidth]{images/sigmoid.png}
+\end{figure}
+
+\subsubsection{ReLU}
+
+\begin{equation}
+    f(x)=ReLU(x)=\begin{dcases*}
+        0 & for $x \leq 0$ \\ 1 & for $x > 0$
+    \end{dcases*}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.3\linewidth]{images/relu.png}
+\end{figure}
+
+\subsubsection{Tanh}
+
+\begin{equation}
+    f(x)=\tanh(x)=\frac{e^x - e^{-x}}{e^x + e^{-x}}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.3\linewidth]{images/tanh.png}
+\end{figure}
+
+\subsubsection{Softmax}
+
+useful for multi-label classification (predicting one class out of many)
+
+\begin{equation}
+    softmax(z_i) = \frac{e^{z_i}}{\sum_k e^{z_k}}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.3\linewidth]{images/softmax.png}
+\end{figure}
+
+\subsection{Loss Functions}
+
+\subsubsection{Mean suqared error}
+
+useful for regression
+
+\begin{equation}
+    L = \frac{1}{N} \sum^N_{i=1} (y_i- \hat{y} _i )^2
+\end{equation}
+
+\subsubsection{Binary cross-entropy}
+
+useful for binary classification
+
+useful for multi-label classification (predicting many classes)
+
+\begin{equation}
+    L = -\frac{1}{N} \sum^N_{i=1} (y^{(i)}\log(\hat{y}^{(i)})+(1-y^{(i)})\log(1-\hat{y}^{(i)})
+\end{equation}
+
+\subsubsection{Categorical cross-entropy}
+
+useful for multi-label classification (predicting one class out of many)
+
+\begin{equation}
+    L = - \frac 1 N \sum^N_{i=1}\sum^C_{c=1} y_c^{(i)}\log(\hat{y}_c^{(i)})
+\end{equation}
+
+\subsection{Regularization}
+
+\begin{quote}
+    any modiﬁcation we make to a learning algorithm that is intended to reduce its generalization error but not its training error. (See Chapter 7 of~\cite{Goodfellow-et-al-2016})
+\end{quote}
+
+\section{Resources}
+
+\subsection{Pytorch}
+
+Pytorch will be used for the coursework, recommended is to look at \href{https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html}{this} link.
+
+\subsection{Books}
+
+Recommended NLP Books:
+
+\begin{itemize}
+    \item Speech and Language Processing. Dan Jurafsky and James H. Martin~\cite{book-speech-and-language-processing}
+    \item A Primer on Neural Network Models for Natural Language Processing.
+          Yoav Goldberg~\cite{primer-on-nlp}
+    \item Natural Language Processing. Jacob Eisenstein~\cite{git-natural-language-processing}
+\end{itemize}
+
+Recommended ML Books:
+
+\begin{itemize}
+    \item Artificial Intelligence: a Modern Approach. (2009) Stuart Russell \& Peter Norvig~\cite{AI-modern-approach} with the solutions available at~\cite{AI-modern-approach-slutions}
+    \item Machine Learning. (1997) Tom Mitchell~\cite{tom-mitchell-book}
+    \item Neural Networks and Deep Learning. Michael A. Nielsen.
+    \item Introduction to Deep Learning. Eugene Charniak~\cite{intro-to-dl-eugene-charniak}
+    \item Deep Learning by Ian Goodfellow~\cite{Goodfellow-et-al-2016}
+\end{itemize}
+
+State of the art NLP:
+
+\begin{itemize}
+    \item Papers with code:~\cite{papers-with-code}
+    \item  track the progress in Natural Language Processing:~\cite{track-progress-nlp}
+\end{itemize}
+
+\printbibliography
+
+\end{document}
