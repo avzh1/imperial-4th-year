@@ -16,6 +16,10 @@
 % Include the title page
 \input{../../../.latex-templates/titlepage}
 
+\tableofcontents
+
+\clearpage
+
 % Start of new text
 Hello World
 
