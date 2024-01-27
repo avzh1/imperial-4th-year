@@ -1,0 +1,194 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{Activation Functions}
+\newcommand{\reportdescription}{Lecture regarding Activation Layers and different types of normalization}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\begin{definition}[BLANK Activation]\label{eq:activation-}
+    \begin{equation*}
+        f(X)
+    \end{equation*}
+\end{definition}
+
+\section{Activation Functions}
+
+They determine how neurons in the network respond, or ``activate'', when they receive a set of inputs. Activation functions introduce non-linear properties into the system, allowing the network to learn from complex data.
+
+Activation functions are mathematical formulas that dictate the output of a neuron given a certain input. In essence, they act as the ``gatekeepers'' of each node, deciding how much signal should pass through to the next layer. A key point to remember is that activation functions introduce non-linearity into the network. This non-linearity is crucial because it allows the neural network to learn from complex and varied data. Without non-linear activation functions, your neural network would essentially become a simple linear regression model, incapable of learning complex functions.
+
+We aim to move beyond binary ``activated'' or ``not activated'' outputs, and isntead seek a more nuanced, continuous range of outputs. 
+
+\begin{equation*}
+    Input = \sum(w_i \cdot input) + b_i
+\end{equation*}
+
+A neuron applies weights and a bias to inputs it receives. This can vary between negative infinity and infinity. 
+
+We cannot simply truncate values because this isn't differentiable 
+
+\subsection{Linear}
+
+\begin{definition}[Linear Activation]\label{eq:activation-linear}
+    \begin{equation*}
+        f(x) = c\cdot x
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item This produces a constant gradient, meaning that during backpropagation, the updates applied to weights are constant and independent of the change in input, denoted by $\Delta x$.
+    \item If each layer in a multi-layered network employs a linear activation function, the output of one layer becomes the input to the next, perpetuating linearity throughout the network; no matter how many layers you have, the entire network behaves like a single-layer linear model. This means you could replace all N linear layers with just a single linear layer and achieve the same output. It renders the ``depth'' of the network irrelevant. 
+\end{itemize}
+
+Therefore, while linear activation functions may have some use-cases, they aren't typically chosen for complex machine learning tasks that require the network to capture more complex, non-linear relationships in the data. 
+
+\subsection{Sigmoid}
+
+\begin{definition}[Sigmoid Activation]\label{eq:activation-sigmoid}
+    \begin{equation*}
+        f(x) = \frac{1}{1+e^{-x}}
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item This function is non-linear, allowing us to stack layers in a neural network, thereby facilitating the learning of more complex representations. 
+    \item gives a more analog or continuous output w.r.t binary step function.
+    \item Smooth gradient which is crucial for gradient descent algorithms. One notable characteristic is that between the X values of -2 and 2, the curve is especially steep. This implies that small changes in the input within this region result in significant shifts in output, facilitating rapid learning during the training phase.
+    \item Towards the tails of the function, the curve flattens out, and the output values become less sensitive to changes in input. This results in a vanishing gradient problem, where gradients become too small for the network to learn effectively, leading to slow or stalled training. 
+\end{itemize}
+
+\subsection{Tanh}
+
+\begin{definition}[Tanh Activation]\label{eq:activation-tanh}
+    \begin{equation*}
+        f(x) = \frac{e^x-e^{-x}}{e^x+e^{-x}}
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item Scaled version of sigmoid but from -1 to 1 instead of 0 to 1
+    \item non-linear, we can stack it 
+    \item since $(-1,1)$ less concern about activations becoming too large and dominating the learning process
+    \item One key benefit of tanh over sigmoid is that its gradient is stronger; that is, the derivatives are steeper. This can make it a better choice for certain problems where faster convergence is desired.
+    \item its outputs are zero-centered, meaning the average output is close to zero. This is beneficial for the learning process of subsequent layers, as it tends to speed up convergence by allowing for a balanced distribution of outputs and gradients.
+\end{itemize}
+
+However, like the sigmoid function, tanh also suffers from the vanishing gradient problem when you stack many layers, which can slow down learning.
+
+Careful normalization of the inputs is also essential when using tanh to ensure effective learning.
+
+\subsection{ReLU}
+
+\begin{definition}[ReLU Activation]\label{eq:activation-relu}
+    \begin{equation*}
+        f(x) = max(0,x)
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item piecewise linear that outputs the input directly if it is positive, otherwise, it outputs zero
+    \item ReLU is inherently non-linear when considered as a whole, particularly due to the sharp corner at the origin.
+    \item combinations of ReLU functions are also non-linear, enabling us to stack layers in neural networks effectively. Because it is a universal approximator.
+    \item unbounded as $[0,\infty)$
+    \item unboundedness can cause explosions of activations if not managed properly
+    \item tends to produce sparse activations
+    \item In a neural network with many neurons, using activation functions like sigmoid or tanh would cause almost all neurons to activate to some degree, leading to dense activations. ReLU, on the other hand, will often output zero, effectively ignoring some neurons, which can make the network more computationally efficient.
+    \item Dying ReLU problem caused by often outputting zero (If a neuron's output is always zero (perhaps due to poor initialization), the gradient for that neuron will also be zero.) As a result, during backpropagation, the weights of that neuron remain unchanged, effectively "killing" the neuron. This can result in a portion of the neural network becoming inactive, thereby limiting its capacity to model complex functions.
+\end{itemize}
+
+\subsection{Leaky ReLU}
+
+\begin{definition}[Leaky ReLU Activation]\label{eq:activation-leaky-relu}
+    \begin{equation*}
+        f(x) = \begin{cases}
+            x & for \ x \geq 0 \\ 
+            0.01 \cdot x & for \ x < 0
+        \end{cases}
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item addresses the ``Dying ReLU problem''
+    \item Leaky ReLU attempts to solve this by introducing a small slope for negative values, typically 0.01, to ensure the gradient is non-zero. This small slope allows ``dead'' neurons to reactivate during the course of training. In other words, it provides a pathway for gradients to flow, even when the neuron is not active.
+    \item computationally efficient (simple math operations)
+    \item maintains benefit of ReLU such as sparsity and ability to approximate a wide range of functions
+\end{itemize}
+
+\subsection{PReLU}
+
+\begin{definition}[Parametric ReLU Activation]\label{eq:activation-prelu}
+    \begin{equation*}
+        f(x) = \begin{cases}
+            x & for \ x \geq 0 \\ 
+            a \cdot x & for \ x < 0
+        \end{cases}
+    \end{equation*}
+
+    Where $a$ is learnable.
+\end{definition}
+
+\begin{itemize}
+    \item negative slope becomes a learnable parameter
+    \item flexibility allows to adapt during training, potentially leading to better performance than Leaky ReLU in some scenarios.
+    \item scale invariant - if you multiply the input by a scalar, the shape of the output remains the same, just scaled. In the context of CNN architectures, where scale invariance can be valuable, PReLU and its variants can be especially useful
+\end{itemize}
+
+\subsection{SoftPlus}
+
+\begin{definition}[SoftPlus Activation]\label{eq:activation-softplus}
+    \begin{equation*}
+        f(x) = \frac 1 \beta \cdot \log (1 + e ^{\beta \cdot x}) 
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item smooth and (easier) differentiable approximation to ReLU
+    \item parameterized by a scale factor $\beta$ which controls how closely the function approximates the ReLU (highest meaning closest)
+    \item outputs only positive values, suitable for layers where you specifically require positive activations
+    \item numerical stability issues for large input values PyTorch implementation switches to a linear function when the condition $\beta \times x$ exceeds a predefined threshold
+    \item non-linear across its entire domain
+    \item SoftPlus is sensitive to the amplitude of the input signal, which means that it's non-linear regardless of the input size. That's beneficial for models where amplitude variation is a significant  feature.
+\end{itemize}
+
+\subsection{Exponential Linear Unit}
+
+\begin{definition}[ELU Activation]\label{eq:activation-elu}
+    \begin{equation*}
+        f(x) = \max(0,x) + \min(0,\alpha \cdot (e^x - 1))
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item extension to the ReLU, designed to be element-wise, operating on each element of the input independently.
+    \item One thing that sets ELU apart is its ability to output negative values. Unlike ReLU, which only outputs positive values, ELU can go below zero.
+    \item Being able to output negative values allows ELU to push the mean activation closer to zero. A zero-centered mean can help the network converge faster, a useful property in deep learning models.
+    \item soft and smooth version of ReLU while still being positive and negative 
+    \item ELU is a strong candidate for scenarios where you want a balance of smoothness, differentiability, and the ability to have a mean activation around zero
+    \item $\alpha$ can change everything
+\end{itemize}
+
+
+
+\section{Loss}
+
+\subsection{Why?}
+
+These functions measure how well your network is doing, quantifying the difference between the predicted outputs and the actual ground truth. Backpropagation uses this error measurement to update the model parameters, aiming to minimize this error.
+
+\section{Normalization}
+
+\end{document}

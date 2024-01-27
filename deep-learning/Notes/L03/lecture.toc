@@ -1,0 +1,13 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Activation Functions}{2}{section.3}%
+\contentsline {subsection}{\numberline {1.1}Linear}{2}{subsection.4}%
+\contentsline {subsection}{\numberline {1.2}Sigmoid}{2}{subsection.6}%
+\contentsline {subsection}{\numberline {1.3}Tanh}{3}{subsection.8}%
+\contentsline {subsection}{\numberline {1.4}ReLU}{3}{subsection.10}%
+\contentsline {subsection}{\numberline {1.5}Leaky ReLU}{4}{subsection.12}%
+\contentsline {subsection}{\numberline {1.6}PReLU}{4}{subsection.14}%
+\contentsline {subsection}{\numberline {1.7}SoftPlus}{4}{subsection.16}%
+\contentsline {subsection}{\numberline {1.8}Exponential Linear Unit}{5}{subsection.18}%
+\contentsline {section}{\numberline {2}Loss}{5}{section.20}%
+\contentsline {subsection}{\numberline {2.1}Why?}{5}{subsection.21}%
+\contentsline {section}{\numberline {3}Normalization}{5}{section.22}%
