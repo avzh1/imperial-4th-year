@@ -9,3 +9,9 @@
 *.out
 *.run.xml
 *.synctex.gz
+
+# Deep Learning
+
+## data files
+
+deep-learning/**/data
