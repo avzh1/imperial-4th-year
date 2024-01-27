@@ -1,4 +1,5 @@
-# Latex auxiliary files
+# General
+## Latex auxiliary files
 *.aux
 *.bbl
 *.bcf
@@ -10,8 +11,10 @@
 *.run.xml
 *.synctex.gz
 
+## Python Venv
+.venv
+.vscode
+
 # Deep Learning
-
 ## data files
-
 deep-learning/**/data
