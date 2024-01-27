@@ -1,0 +1,43 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Learning System}{3}{section.2}%
+\contentsline {subsection}{\numberline {1.1}Fundamental components}{3}{subsection.3}%
+\contentsline {subsection}{\numberline {1.2}Challenges in image analysis}{3}{subsection.7}%
+\contentsline {subsection}{\numberline {1.3}Universal Approximator}{3}{subsection.12}%
+\contentsline {subsubsection}{\numberline {1.3.1}Problems}{3}{subsubsection.16}%
+\contentsline {subsubsection}{\numberline {1.3.2}Solution}{4}{subsubsection.20}%
+\contentsline {section}{\numberline {2}Curse of Dimensionality}{4}{section.21}%
+\contentsline {subsection}{\numberline {2.1}Sample Explosion}{4}{subsection.27}%
+\contentsline {subsection}{\numberline {2.2}Sparseness}{5}{subsection.28}%
+\contentsline {subsubsection}{\numberline {2.2.1}Math}{5}{subsubsection.30}%
+\contentsline {subsection}{\numberline {2.3}Practical Meaning}{6}{subsection.49}%
+\contentsline {section}{\numberline {3}Invariance and Equivariance}{7}{section.52}%
+\contentsline {section}{\numberline {4}Inductive Bias/assumptions}{8}{section.56}%
+\contentsline {subsection}{\numberline {4.1}Translation invariance}{8}{subsection.57}%
+\contentsline {subsection}{\numberline {4.2}Locality}{8}{subsection.58}%
+\contentsline {subsection}{\numberline {4.3}Practical Application}{8}{subsection.59}%
+\contentsline {section}{\numberline {5}Convolutions}{8}{section.60}%
+\contentsline {subsection}{\numberline {5.1}Fully connected neural network}{8}{subsection.61}%
+\contentsline {subsection}{\numberline {5.2}Sparsely Connected neural networks }{9}{subsection.65}%
+\contentsline {subsection}{\numberline {5.3}Weight Sharing neural networks }{9}{subsection.69}%
+\contentsline {subsection}{\numberline {5.4}Convolution vs Correlation}{9}{subsection.73}%
+\contentsline {subsubsection}{\numberline {5.4.1}Commutativity}{10}{subsubsection.80}%
+\contentsline {subsubsection}{\numberline {5.4.2}Associativity}{10}{subsubsection.82}%
+\contentsline {subsubsection}{\numberline {5.4.3}Distributivity}{11}{subsubsection.84}%
+\contentsline {subsubsection}{\numberline {5.4.4}Associativity with scalar multiplication}{11}{subsubsection.86}%
+\contentsline {subsection}{\numberline {5.5}Why convolutions for pattern-matching?}{11}{subsection.88}%
+\contentsline {subsubsection}{\numberline {5.5.1}Historical Reasons}{11}{subsubsection.89}%
+\contentsline {subsubsection}{\numberline {5.5.2}Flipped Kernels}{11}{subsubsection.90}%
+\contentsline {subsubsection}{\numberline {5.5.3}Convolution vs Correlation}{12}{subsubsection.91}%
+\contentsline {subsubsection}{\numberline {5.5.4}Implementation}{12}{subsubsection.92}%
+\contentsline {subsection}{\numberline {5.6}Practical applications}{12}{subsection.93}%
+\contentsline {section}{\numberline {6}CNN}{12}{section.94}%
+\contentsline {subsection}{\numberline {6.1}Input Tensor}{12}{subsection.95}%
+\contentsline {subsection}{\numberline {6.2}Convolutional Layers}{13}{subsection.98}%
+\contentsline {subsection}{\numberline {6.3}Factorized Convolutions}{15}{subsection.103}%
+\contentsline {subsection}{\numberline {6.4}Separable Convolutions}{15}{subsection.105}%
+\contentsline {subsection}{\numberline {6.5}Pooling Layers.}{16}{subsection.106}%
+\contentsline {subsubsection}{\numberline {6.5.1}Max-pooling breaks shift-equivariance~\blx@tocontentsinit {0}\cite {youtubeMakingConvolutional}}{16}{subsubsection.111}%
+\contentsline {subsection}{\numberline {6.6}Rotation?}{17}{subsection.115}%
+\contentsline {subsection}{\numberline {6.7}Approximate Deformation Invariance?}{18}{subsection.117}%
+\contentsline {subsection}{\numberline {6.8}Flatten Layers}{18}{subsection.118}%
+\contentsline {section}{\numberline {7}Conclusion}{18}{section.120}%
