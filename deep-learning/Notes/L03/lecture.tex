@@ -19,13 +19,9 @@
 
 \clearpage
 
-\begin{definition}[BLANK Activation]\label{eq:activation-}
-    \begin{equation*}
-        f(X)
-    \end{equation*}
-\end{definition}
-
 \section{Activation Functions}
+
+\subsubsection{Introduction}
 
 They determine how neurons in the network respond, or ``activate'', when they receive a set of inputs. Activation functions introduce non-linear properties into the system, allowing the network to learn from complex data.
 
@@ -41,6 +37,16 @@ A neuron applies weights and a bias to inputs it receives. This can vary between
 
 We cannot simply truncate values because this isn't differentiable 
 
+\subsubsection{Bounded Value Clipping}
+
+no theoretical mathematical benefit (except that unbound things don't map well to probabilities -- In some cases, particularly in high-stakes scenarios, you might want your model not just to be accurate but also well-calibrated. This means the model's output probabilities should reflect true probabilities. Bounding the outputs can help in this calibration process.)
+
+If the outputs of neurons are unbounded or extremely varied, it becomes difficult to interpret these outputs in a meaningful way, especially when combining outputs from many neurons.
+
+Unbounded outputs can lead to numerical instability in training. Extremely high values can cause issues with gradients and can lead to problems like exploding gradients.
+
+A model that reacts too strongly to edge cases might overfit to those specific instances and fail to generalize well to other data. Limiting the output range can help in making the model more robust to unseen data.
+
 \subsection{Linear}
 
 \begin{definition}[Linear Activation]\label{eq:activation-linear}
@@ -49,6 +55,11 @@ We cannot simply truncate values because this isn't differentiable
     \end{equation*}
 \end{definition}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/Linear Activation.png}\label{fig:linear}
+\end{figure}
+
 \begin{itemize}
     \item This produces a constant gradient, meaning that during backpropagation, the updates applied to weights are constant and independent of the change in input, denoted by $\Delta x$.
     \item If each layer in a multi-layered network employs a linear activation function, the output of one layer becomes the input to the next, perpetuating linearity throughout the network; no matter how many layers you have, the entire network behaves like a single-layer linear model. This means you could replace all N linear layers with just a single linear layer and achieve the same output. It renders the ``depth'' of the network irrelevant. 
@@ -56,7 +67,9 @@ We cannot simply truncate values because this isn't differentiable
 
 Therefore, while linear activation functions may have some use-cases, they aren't typically chosen for complex machine learning tasks that require the network to capture more complex, non-linear relationships in the data. 
 
-\subsection{Sigmoid}
+\subsection{Non-linear Activation Functions}
+
+\subsubsection{Sigmoid}
 
 \begin{definition}[Sigmoid Activation]\label{eq:activation-sigmoid}
     \begin{equation*}
@@ -64,20 +77,31 @@ Therefore, while linear activation functions may have some use-cases, they aren'
     \end{equation*}
 \end{definition}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/Sigmoid Activation.png}\label{fig:sigmoid}
+\end{figure}
+
 \begin{itemize}
     \item This function is non-linear, allowing us to stack layers in a neural network, thereby facilitating the learning of more complex representations. 
     \item gives a more analog or continuous output w.r.t binary step function.
     \item Smooth gradient which is crucial for gradient descent algorithms. One notable characteristic is that between the X values of -2 and 2, the curve is especially steep. This implies that small changes in the input within this region result in significant shifts in output, facilitating rapid learning during the training phase.
     \item Towards the tails of the function, the curve flattens out, and the output values become less sensitive to changes in input. This results in a vanishing gradient problem, where gradients become too small for the network to learn effectively, leading to slow or stalled training. 
+    \item Good for classifiers
 \end{itemize}
 
-\subsection{Tanh}
+\subsubsection{Tanh}
 
 \begin{definition}[Tanh Activation]\label{eq:activation-tanh}
     \begin{equation*}
         f(x) = \frac{e^x-e^{-x}}{e^x+e^{-x}}
     \end{equation*}
 \end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/tanh Activation.png}\label{fig:tanh}
+\end{figure}
 
 \begin{itemize}
     \item Scaled version of sigmoid but from -1 to 1 instead of 0 to 1
@@ -91,13 +115,18 @@ However, like the sigmoid function, tanh also suffers from the vanishing gradien
 
 Careful normalization of the inputs is also essential when using tanh to ensure effective learning.
 
-\subsection{ReLU}
+\subsubsection{ReLU}
 
 \begin{definition}[ReLU Activation]\label{eq:activation-relu}
     \begin{equation*}
         f(x) = max(0,x)
     \end{equation*}
 \end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/ReLu Activation.png}\label{fig:relu}
+\end{figure}
 
 \begin{itemize}
     \item piecewise linear that outputs the input directly if it is positive, otherwise, it outputs zero
@@ -110,7 +139,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \item Dying ReLU problem caused by often outputting zero (If a neuron's output is always zero (perhaps due to poor initialization), the gradient for that neuron will also be zero.) As a result, during backpropagation, the weights of that neuron remain unchanged, effectively "killing" the neuron. This can result in a portion of the neural network becoming inactive, thereby limiting its capacity to model complex functions.
 \end{itemize}
 
-\subsection{Leaky ReLU}
+\subsubsection{Leaky ReLU}
 
 \begin{definition}[Leaky ReLU Activation]\label{eq:activation-leaky-relu}
     \begin{equation*}
@@ -121,6 +150,11 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \end{equation*}
 \end{definition}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/Leaky ReLU Activation.png}\label{fig:leaky-relu}
+\end{figure}
+
 \begin{itemize}
     \item addresses the ``Dying ReLU problem''
     \item Leaky ReLU attempts to solve this by introducing a small slope for negative values, typically 0.01, to ensure the gradient is non-zero. This small slope allows ``dead'' neurons to reactivate during the course of training. In other words, it provides a pathway for gradients to flow, even when the neuron is not active.
@@ -128,7 +162,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \item maintains benefit of ReLU such as sparsity and ability to approximate a wide range of functions
 \end{itemize}
 
-\subsection{PReLU}
+\subsubsection{PReLU}
 
 \begin{definition}[Parametric ReLU Activation]\label{eq:activation-prelu}
     \begin{equation*}
@@ -141,19 +175,29 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     Where $a$ is learnable.
 \end{definition}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/PReLU Activation.png}\label{fig:prelu}
+\end{figure}
+
 \begin{itemize}
     \item negative slope becomes a learnable parameter
     \item flexibility allows to adapt during training, potentially leading to better performance than Leaky ReLU in some scenarios.
     \item scale invariant - if you multiply the input by a scalar, the shape of the output remains the same, just scaled. In the context of CNN architectures, where scale invariance can be valuable, PReLU and its variants can be especially useful
 \end{itemize}
 
-\subsection{SoftPlus}
+\subsubsection{SoftPlus}
 
 \begin{definition}[SoftPlus Activation]\label{eq:activation-softplus}
     \begin{equation*}
         f(x) = \frac 1 \beta \cdot \log (1 + e ^{\beta \cdot x}) 
     \end{equation*}
 \end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/SoftPlus Activation.png}\label{fig:softplus}
+\end{figure}
 
 \begin{itemize}
     \item smooth and (easier) differentiable approximation to ReLU
@@ -164,13 +208,18 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \item SoftPlus is sensitive to the amplitude of the input signal, which means that it's non-linear regardless of the input size. That's beneficial for models where amplitude variation is a significant  feature.
 \end{itemize}
 
-\subsection{Exponential Linear Unit}
+\subsubsection{Exponential Linear Unit}
 
 \begin{definition}[ELU Activation]\label{eq:activation-elu}
     \begin{equation*}
         f(x) = \max(0,x) + \min(0,\alpha \cdot (e^x - 1))
     \end{equation*}
 \end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/ELU Activation.png}\label{fig:elu}
+\end{figure}
 
 \begin{itemize}
     \item extension to the ReLU, designed to be element-wise, operating on each element of the input independently.
@@ -181,14 +230,424 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \item $\alpha$ can change everything
 \end{itemize}
 
+\subsubsection{Continuously Differentiable Exponential Linear Unit}
 
+\begin{definition}[CELU Activation]\label{eq:activation-celu}
+    \begin{equation*}
+        \max(0,x) + \min(0,\alpha \cdot (e^{\frac x \alpha} - 1))
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/CELU Activation.png}\label{fig:celu}
+\end{figure}
+
+\begin{itemize}
+    \item also an element-wise function
+    \item computationally efficient to     apply across large tensors
+    \item special emphasis on continuous differentiability, denoted as C1 continuity (desirable in optimization tasks as it ensures a smooth gradient, facilitating more efficient backpropagation)
+    \item $\alpha$ doesn't just scale the exponential function for negative values, it also scales the input x inside the exponential term
+    \item When $\alpha \neq 1$ CELU is continuously differentiable across its entire domain 
+    \item can produce negative values, which centers the mean activation towards zero, which could speed up the convergence of deep learning modules.
+\end{itemize}
+
+\subsubsection{Scaled Exponential Linear Unit}
+
+\begin{definition}[SELU Ativation]\label{eq:activation-selu}
+    \begin{equation*}
+        scale \cdot (\max(0,x) + \min(0,\alpha \cdot (e^{x} - 1)))
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/SELU Activation.png}\label{fig:selu}
+\end{figure}
+
+\begin{itemize}
+    \item pre-defined $\alpha$ and $scale$ parameters which are solutions to fixed-point equation to maintain a mean of 0 and variance of 1 across layers.
+    \item performs internal normalization - mean and variance of the activations are preserved from one layer to the next
+    \item To achieve this normalization, the function needs to produce both positive and negative outputs, which allows it to shift the mean towards zero. 
+    \item gradient close to 0 which caused ``gradient vanishing'' in other functions is beneficial in SELU for internal normalization.
+    \item ELUs never die. Due to its design, SELU avoids the ``dying unit'' problem - robust!
+    \item operates well without other normalization techniques; it's specifically designed to keep the internal statistics of your network stable, which can lead to faster and more reliable training.
+\end{itemize}
+
+\subsubsection{Gaussian Error Linear Unit}
+
+\begin{definition}[GELU Ativation]\label{eq:activation-gelu}
+    \begin{equation*}
+        x \cdot \phi(x)
+    \end{equation*}
+    Where $\phi$ is the cumulative distribution function for gaussian distribution.
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/GELU Activation.png}\label{fig:gelu}
+\end{figure}
+
+\begin{itemize}
+    \item introduces probabilistic flavor to the activation process
+    \item implicates regularization of neural networks potentially providing a  beneficial influence on network training and performance.
+\end{itemize}
+
+\subsubsection{ReLU6}
+
+\begin{definition}[ReLU6 Ativation]\label{eq:activation-relu6}
+    \begin{equation*}
+        \min(\max(0,x),6)
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/ReLU6 Activation.png}\label{fig:relu6}
+\end{figure}
+
+\begin{itemize}
+    \item can saturize activations - activations are limited to a certain range, which can be useful in preventing activations from growing excessively and causing numerical instability.
+    \item 6 is a parameter than can be adjusted to achieve different levels of saturation
+    \item not necessarily same behavior as the hard sigmoid or tanh 
+\end{itemize}
+
+\subsubsection{LogSigmoid}
+
+\begin{definition}[LogSigmoid Ativation]\label{eq:activation-logsigmoid}
+    \begin{equation*}
+        \log(\frac{1}{1+e^{-x}})
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/LogSigmoid Activation.png}\label{fig:logsigmoid}
+\end{figure}
+
+\begin{itemize}
+    \item element-wise, it is applied separately to each element of the input tensor
+    \item used in the context of cost functions rather than as  a primary activation function in neural network layers
+    \item While LogSigmoid may not be a common choice for standard activation functions in neural network layers, its presence is significant in the realm of loss functions, where it contributes to the optimization process during training.
+\end{itemize}
+
+\subsubsection{Softmin}
+
+\begin{definition}[Softmin Ativation]\label{eq:activation-softmin}
+    \begin{equation*}
+        \frac{e^{-x_i}}{\sum_j e^{-x_j}}
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/Softmin Activation.png}\label{fig:softmin}
+\end{figure}
+
+\begin{itemize}
+    \item applies softmin to an n-dimensional input tensor rescaling them so that the elemnts of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
+    \item Softmin introduces multi-dimensional non-linearities to the neural network
+    \item representation may resemble a probability distribution (valuable in scenarios where you want to assign relative weights or preferences among multiple alternatives)
+    \item Softmin's role lies in rescaling and transforming input tensors into probability-like distributions, contributing to the multi-dimensional non-linearities of neural networks and enabling the modelling of various factors in the data
+\end{itemize}
+
+\subsubsection{Softmax}
+
+\begin{definition}[Softmax Ativation]\label{eq:activation-softmax}
+    \begin{equation*}
+        \frac{e^{x_i}}{\sum_j e^{x_j}}
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/Softmax Activation.png}\label{fig:softmax}
+\end{figure}
+
+\begin{itemize}
+    \item applies softmax to an n-dimensional input tensor rescaling them so that the elemnts of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
+    \item when dealing with image classification, the Softmax activation function is commonly employed to transform the network's logits into probabilities.
+\end{itemize}
+
+\subsubsection{LogSoftmax}
+
+\begin{definition}[LogSoftmax Ativation]\label{eq:activation-logsoftmax}
+    \begin{equation*}
+        \log(\frac{e^{x_i}}{\sum_j e^{x_j}})
+    \end{equation*}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.4\linewidth]{figures/LogSoftmax Activation.png}\label{fig:logsoftmax}
+\end{figure}
+
+\begin{itemize}
+    \item applies $\log(softmax)$ to an n-dimensional input tensor
+    \item This logarithmic transformation can offer benefits in certain contexts, especially when dealing with probabilities and handling numerical stability
+    \item logarithmic transformation provides a way to manipulate the Softmax probabilities to better align with the structure of certain loss functions
+    \item possible to simplify mathematical calculations and potentially improve the training process
+    \item LogSoftmax isn't typically used as an activation function in the output layers of neural networks, as its output values are not directly interpretable as class probabilities. Instead, it often plays a role in loss functions, helping to define the optimization process - logarithmic properties can be advantageous for numerical stability and simplifying mathematical operations.
+\end{itemize}
+
+\subsection{Period activations}
+
+\subsubsection{Sinusoidal Representation Network}
+
+\begin{definition}[SIREN Ativation]\label{eq:activation-logsoftmax}
+    \begin{equation*}
+        \Phi(\vec{x}) = \vec{W}_n(\phi_{n-1}\circ \phi_{n-2} \circ \ldots \circ \phi_{0})(\vec{x}) + \vec{b}_n, \quad \vec{x}_i \mapsto \phi_i(\vec{x}_i) = \sin(\vec{W}_i \vec{x}_i + \vec{b}_i)
+    \end{equation*}
+\end{definition}
+
+\begin{itemize}
+    \item deals with implicit representations involving finding a continuous function that represents sparse input data, such as images.
+    \item Unique architecture by levaraging sinusoidal activation functions 
+    \item well-suited for representing a wide range of signals, including images, wavefields, videos, and sounds, along with their derivatives
+    \item an address challenging boundary value problems, such as Eikonal equations, the Poisson equation, and the Helmholtz and wave equations. 
+    \item require careful considerations due to their distinct convergence properties and architecture.
+\end{itemize}
+
+\subsection{Summary}
+
+The choice of an activation function depends on the characteristics of the function you're aiming to approximate. If you have insights into the nature of the function, you can strategically select an activation function that aligns with those characteristics. This can significantly speed up the training process by allowing the network to approximate the desired function more efficiently. 
+
+\begin{itemize}
+    \item Choice of function depends on nature of targeted problem
+    \item Most often ReLU is fine, but if network doesn't converge, use leakyReLU or PReLU
+    \item Tanh is ok for regression and continuous reconstruction problems
+    \item representative power of your training set will usually outweigh the contribution of a smartly chosen activation function.
+\end{itemize}
 
 \section{Loss}
 
-\subsection{Why?}
+These functions measure how well your network is doing, quantifying the difference between the predicted outputs and the actual ground truth. Backpropagation uses this error measurement to update the model parameters, aiming to minimize this error. It quantifies the gap between the network's predictions and the ground truth. The lower the value of the loss function, the closer the system's predictions are to the desired outcome.
 
-These functions measure how well your network is doing, quantifying the difference between the predicted outputs and the actual ground truth. Backpropagation uses this error measurement to update the model parameters, aiming to minimize this error.
+\subsection{L2 Norm}
 
-\section{Normalization}
+\begin{definition}[L2 Norm, mean squared error]\label{eq:L2-norm}
+    \begin{equation*}
+        \ell(x,y)=\vec{\mathcal{L}} = \{ l_1, \ldots, l_N\}^T, \quad l_n=(x_n - y_n)^2
+    \end{equation*}
+
+    With further reduction to a single value can be either $mean(\mathcal L)$ or $sum(\mathcal{L})$ 
+\end{definition}
+
+
+\begin{itemize}
+    \item Measured discrepancy between the predicted output and the actual ground truth
+    \item in a mini-batch, perform squared difference calculation for each sample within the mini-batch, the individual squared errors can then be combined into a list.
+\end{itemize}
+
+\subsection{L1 Norm}
+
+\begin{definition}[L1 Norm]\label{eq:L1-norm}
+    \begin{equation*}
+        \ell(x,y)=\vec{\mathcal{L}} = \{ l_1, \ldots, l_N\}^T, \quad l_n=|x_n - y_n|
+    \end{equation*}
+
+    With further reduction to a single value can be either $mean(\mathcal L)$ or $sum(\mathcal{L})$ 
+\end{definition}
+
+\begin{itemize}
+    \item Use for robust regression (noisy data); In robust regression, you want to give significant weight to small errors, but not as much weight to large errors, making it less sensitive to outliers in your dataset.
+    \item it's not differentiable at exactly zero due to its pointy corners. This lack of differentiability can pose a problem during backpropagation in training neural networks. To address this, you can use a smoothed version of the L1 loss, such as the SmoothL1Loss
+\end{itemize}
+
+\subsection{Smooth L1}
+
+\begin{definition}[Smooth L1]\label{eq:smooth-l1-norm}
+    \begin{align*}
+        loss(x,y)=\frac 1 n \sum_i & z_i \\
+        & z_i = \begin{cases}
+            0.5(x_i-y_i)^2, & if |x_i - y_i| < 1 \\ |x_i - y_i | - 0.5, & otherwise
+        \end{cases}
+    \end{align*}
+
+    With further reduction to a single value can be either $mean(\mathcal L)$ or $sum(\mathcal{L})$ 
+\end{definition}
+
+\begin{itemize}
+    \item For errors close to zero, it behaves like the L2 loss, which means it's quadratic in that region. As the error magnitude increases, it transitions to behaving like the L1 loss, which is linear for larger errors. This dual behavior allows the loss to strike a balance between the two norms, making it more robust to outliers while still accounting for smaller errors.
+    \item Robustness against outliers makes SmoothL1 suitable for datasets containing noisy or outlier-ridden samples; prevents undue influence on the training process from those data points that deviate significantly from the norm.
+    \item introduces a scale factor, often set at 0.5 - choosing an appropriate scale factor can be challenging since it depends on the distribution of the errors in the dataset
+\end{itemize}
+
+\subsection{Negative log likelihood loss}
+
+\begin{definition}[Smooth L1]\label{eq:negative-log-likelihood-loss}
+    \begin{align*}
+        \ell(x,y) & = \vec{\mathcal L} = \{l_1, \ldots, l_N \}^T, \quad l_n = -w_{y_n} x_{n,y_n}, \quad w_c = weight[c] \cdot 1\{c \neq ignore_{index}\} \\
+        \ell(x,y) & = \begin{cases}
+            \sum^N_{n=1}\frac{1}{\sum^N_{n=1} w_{y_n}} l_n, & if\ reduction = mean \\ 
+            \sum^N_{n=1} l_n, & if\ reduction = sum
+        \end{cases}
+    \end{align*}
+    Assumption: network's output can be interpreted as log likelihoods, usually representing class probabilities.
+\end{definition}
+
+\begin{itemize}
+    \item LL loss is calculated for each data sample  with each term representing the negative logarithm of the network's output probability for the ground truth class
+    \item The weights $w_c$ are used to assign different importance to different classes. It's designed to maximize the likelihood of the correct class while minimizing the likelihoods of other classes
+    \item not limited to likelihoods, key idea is to drive the network to favor the correct class while penalizing other classes
+    \item flexible to assign different weights to classes, valuvable when training data exhibits class imbalance which helps counterbalance this issue during training
+    \item an alternative approach to handling class imbalance is to increase frequency of rae classes during trianing.
+\end{itemize}
+
+\subsection{Cross Entropy (CE) Loss}
+
+\begin{definition}[Cross Entropy]\label{eq:cross-entropy-loss}
+    \begin{align*}
+        loss(x, class) = -\log(\frac{e^{x[class]}}{\sum_j e^{x[j]}}) = -x[class] + \log(\sum_j e^{x[j]})
+    \end{align*}
+\end{definition}
+
+\begin{itemize}
+    \item Combines LogSoftmax and NLLLoss
+    \item Useful for classification problems with C classes
+    \item Classes can be weighted
+    \item In classification problems with C classes, the CE loss functions by taking the LogSoftmax of the input scores and then applying the NLL loss  It's designed to make the output of
+    the LogSoftmax as large as possible for the correct class while minimizing the scores for other classes. This is achieved by taking the negative logarithm of the softmax probability for the correct class. 
+    \item  Conceptually, it takes the scores, passes them through a softmax function, takes the logarithm of those values, and then optimizes to maximize the correct class's output while minimizing those of other classes
+    \item When you backpropagate through the LogSoftmax operation, it has the effect of making the scores of incorrect classes as small as possible, thereby focusing on improving the correct class's score. In simpler terms, it aims to minimize the negative score of the correct class and adds a log term to diminish the influence of scores from other classes.
+\end{itemize}
+
+\subsection{Binary Cross Entropy (BCE) Loss}
+
+\begin{definition}[Binary Cross Entropy]\label{eq:binary-cross-entropy-loss}
+    \begin{align*}
+        \ell (x,y) = \mathcal{L} = \{l_1,\ldots,l_N\}^T, \\
+        l_n = -w_n[y_n \cdot \log x_n + (1-y_n) \cdot \log (1- x_n)]
+    \end{align*}
+
+    \begin{itemize}
+        \item $x_n$ represents the predicted probability for the positive class
+        \item $y_n$ is the ground truth label (0 or 1) for that observation
+        \item $w_n$ is a weights associated with that sample
+    \end{itemize}
+
+    With further reduction to a single value can be either $mean(\mathcal L)$ or $sum(\mathcal{L})$ 
+\end{definition}
+
+\begin{itemize}
+    \item negative weighted sum of two entropy terms for each observation in the batch
+    \item the input probabilities, $x_n$, must lie in the [0, 1] range to ensure the loss's validity
+    \item Suitable for binary classification tasks where each observation belongs to one of two classes.
+\end{itemize}
+
+\subsection{Kullback-Leibler Divergence Loss}
+
+\begin{definition}[Kullback-Leibler Divergence Loss]\label{eq:kullback-loss}
+    \begin{align*}
+        \ell (x,y) = \mathcal{L} = \{l_1,\ldots,l_N\}^T, \quad l_n = y_n \cdot (\log y_n - x_n)
+    \end{align*}
+
+    \begin{itemize}
+        \item $y_n$ the ground truth probability
+        \item $x_n$ predicted probability
+    \end{itemize}
+\end{definition}
+
+\begin{itemize}
+    \item suitable when your target distribution is represented as a one-hot distribution, hwere a single category is assigned a value of 1 and others are 0
+    \item lacks incorporation of a softmax or log-softmax operation, suffers with numerical stability issues (especially with small probabilities)
+    \item strong in variational autoencoders (VAEs)
+\end{itemize}
+
+\subsection{Margin Ranking Loss/Ranking Losses/Contrastive Loss}
+
+\begin{definition}[Margin Ranking Loss/Ranking Losses/Contrastive Loss]\label{eq:Marign-Ranking-Loss}
+    \begin{align*}
+        loss(x,y)=\max(0,-y \cdot (x_1 - x_2) + margin)
+    \end{align*}
+\end{definition}
+
+\begin{itemize}
+    \item useful to push classes as far away as possible and fro metric learning
+    \item take category that scores is closest or higher than correct one change until difference is at least in the margin
+    \item It finds particular use in metric learning, a task where the objective is to learn a meaningful distance metric between data points
+    \item To better understand its practical application, consider scenarios where you aim to identify if two inputs belong to the same class (similar) or different classes (dissimilar). Instead of predicting specific values or labels, you're concerned with how these inputs relate in terms of similarity.
+    \item Start by extracting features from two inputs and obtaining embedded representations for them
+    \item using a metric function, like Euclidean distance, measure the similarity between these representations 
+    \item The goal is to train the feature extractors to produce similar representations for similar inputs and distinct    representations for dissimilar inputs
+\end{itemize}
+
+n essence, Margin Ranking Losses operate around the concept of pushing one input's score above another's by a defined margin. If the difference in scores satisfies this condition, the cost is zero. However, if the difference falls below the margin, the cost increases linearly. This loss is particularly handy in cases like classification, where you compare the scores of the correct answer ($x_1$) with the highest-scoring incorrect answer ($x_2$) in the mini-batch. Keep in mind, though, that Margin Ranking Losses aren't confined to classification tasks alone. They also shine in energy-based models, where they exert downward pressure on the correct answer's score and push the incorrect answer's score upward.
+
+\subsection{Triplet Margin Loss}
+
+\begin{definition}[Triplet Margin Loss]\label{eq:triplet-margin-loss}
+    \begin{align*}
+        \ell (x,y) = \mathcal{L} = \{l_1,\ldots,l_N\}^T, \\
+        l_n(x_a, x_p, x_n) = \max(0, m + |f(x_a) - f(x_p)| - | f(x_a) - f(x_n)|
+    \end{align*}
+
+    \begin{itemize}
+        \item $a$: actual
+        \item $p$: positive sample
+        \item $n$: negative sample
+    \end{itemize}
+\end{definition}
+
+\begin{itemize}
+    \item Make samples from same classes close and different classes far away
+    \item all about making samples from the same classes
+    come close to each other, while simultaneously pushing samples from different
+    classes farther apart
+    \item objective is to ensure that the distance between a
+    "good pair" (similar samples) is smaller than the distance between a "bad pair"
+    (dissimilar samples).
+    \item The actual
+    distances themselves don't need to be small, but rather the relative difference
+    matters more. In essence, we aim to reduce the distance between the "good" pair
+    while simultaneously increasing the distance between the "bad" pair by at least a
+    certain margin, denoted as 'm'
+    \item  focuses on
+    training models to generate meaningful representations that capture the relative
+    similarities or differences between data point
+    \item One common scenario is in
+    Siamese networks, where two inputs pass through a shared neural network, and
+    their resulting vectors are compared
+    \item Consider a scenario where we feed two images of the same category into a CNN,
+    yielding two vectors. In this case, we want the distance between these vectors to
+    be minimized. Conversely, for two images of different categories, we want the
+    distance between their vectors to be maximized.
+\end{itemize}
+
+\subsection{Cosine Embedding Loss}
+
+\begin{definition}[Cosine Embedding Loss]\label{eq:cosine-embedding-loss}
+    \begin{align*}
+        loss(x,y)=\begin{cases}a - cos(x_1, x_2), & if y = 1 \\ \max(0,cos(x_1,x_2)- margin), & if y = -1 \end{cases}
+    \end{align*}
+\end{definition}
+
+\begin{itemize}
+    \item Measure whether two inputs are similar or dissimilar (normalized Euclidiean distance)
+    \item compares similarity or dissimilarity between two input vectors $x_1$ and $x_2$.
+    \item $y=1 or -1$ indicates similar or dissimilar respectively
+    \item For pairs labeled as similar (y=1), the loss tries to minimize the angle
+    between the vectors, effectively making their cosine similarity close to 1
+    \item For pairs labeled as dissimilar (y=-1), the loss aims to ensure that the cosine
+    similarity is smaller than a specified margin. The margin is a hyperparameter
+    and is usually a small positive value
+    \item Use cosine similarity over euclidean distance because it focuses on direction of vector instead of magnitude
+    \item make similar vectors point in the same direction, while
+    dissimilar vectors should be separated but not necessarily be antipodal
+    \item This
+is why we often set the margin to a small positive value, maximizing the use of
+the "equatorial space" for dissimilar vectors
+\end{itemize}
+
+\subsection{Summary}
+
+\begin{itemize}
+    \item The choice of loss depends on the desired output (e.g., classification
+    vs. regression)
+    \item Loss functions are a hot topic of research.
+    \item It informs how the overall system behaves during training
+    \item Don't get scared by the equations. If you look closely the underlying
+    ideas are very simple
+\end{itemize}
 
 \end{document}
