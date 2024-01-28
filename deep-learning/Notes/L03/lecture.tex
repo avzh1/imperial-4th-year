@@ -21,13 +21,11 @@
 
 \section{Activation Functions}
 
-\subsubsection{Introduction}
-
 They determine how neurons in the network respond, or ``activate'', when they receive a set of inputs. Activation functions introduce non-linear properties into the system, allowing the network to learn from complex data.
 
 Activation functions are mathematical formulas that dictate the output of a neuron given a certain input. In essence, they act as the ``gatekeepers'' of each node, deciding how much signal should pass through to the next layer. A key point to remember is that activation functions introduce non-linearity into the network. This non-linearity is crucial because it allows the neural network to learn from complex and varied data. Without non-linear activation functions, your neural network would essentially become a simple linear regression model, incapable of learning complex functions.
 
-We aim to move beyond binary ``activated'' or ``not activated'' outputs, and isntead seek a more nuanced, continuous range of outputs. 
+We aim to move beyond binary ``activated'' or ``not activated'' outputs, and instead seek a more nuanced, continuous range of outputs. 
 
 \begin{equation*}
     Input = \sum(w_i \cdot input) + b_i
@@ -37,7 +35,7 @@ A neuron applies weights and a bias to inputs it receives. This can vary between
 
 We cannot simply truncate values because this isn't differentiable 
 
-\subsubsection{Bounded Value Clipping}
+\textbf{Bounded Value Clipping}
 
 no theoretical mathematical benefit (except that unbound things don't map well to probabilities -- In some cases, particularly in high-stakes scenarios, you might want your model not just to be accurate but also well-calibrated. This means the model's output probabilities should reflect true probabilities. Bounding the outputs can help in this calibration process.)
 
@@ -345,7 +343,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 \end{figure}
 
 \begin{itemize}
-    \item applies softmin to an n-dimensional input tensor rescaling them so that the elemnts of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
+    \item applies softmin to an n-dimensional input tensor rescaling them so that the elements of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
     \item Softmin introduces multi-dimensional non-linearities to the neural network
     \item representation may resemble a probability distribution (valuable in scenarios where you want to assign relative weights or preferences among multiple alternatives)
     \item Softmin's role lies in rescaling and transforming input tensors into probability-like distributions, contributing to the multi-dimensional non-linearities of neural networks and enabling the modelling of various factors in the data
@@ -365,7 +363,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 \end{figure}
 
 \begin{itemize}
-    \item applies softmax to an n-dimensional input tensor rescaling them so that the elemnts of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
+    \item applies softmax to an n-dimensional input tensor rescaling them so that the elements of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
     \item when dealing with image classification, the Softmax activation function is commonly employed to transform the network's logits into probabilities.
 \end{itemize}
 
@@ -394,7 +392,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 
 \subsubsection{Sinusoidal Representation Network}
 
-\begin{definition}[SIREN Ativation]\label{eq:activation-logsoftmax}
+\begin{definition}[SIREN Ativation]\label{eq:activation-siren}
     \begin{equation*}
         \Phi(\vec{x}) = \vec{W}_n(\phi_{n-1}\circ \phi_{n-2} \circ \ldots \circ \phi_{0})(\vec{x}) + \vec{b}_n, \quad \vec{x}_i \mapsto \phi_i(\vec{x}_i) = \sin(\vec{W}_i \vec{x}_i + \vec{b}_i)
     \end{equation*}
@@ -402,7 +400,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 
 \begin{itemize}
     \item deals with implicit representations involving finding a continuous function that represents sparse input data, such as images.
-    \item Unique architecture by levaraging sinusoidal activation functions 
+    \item Unique architecture by leveraging sinusoidal activation functions 
     \item well-suited for representing a wide range of signals, including images, wavefields, videos, and sounds, along with their derivatives
     \item an address challenging boundary value problems, such as Eikonal equations, the Poisson equation, and the Helmholtz and wave equations. 
     \item require careful considerations due to their distinct convergence properties and architecture.
@@ -490,8 +488,8 @@ These functions measure how well your network is doing, quantifying the differen
     \item LL loss is calculated for each data sample  with each term representing the negative logarithm of the network's output probability for the ground truth class
     \item The weights $w_c$ are used to assign different importance to different classes. It's designed to maximize the likelihood of the correct class while minimizing the likelihoods of other classes
     \item not limited to likelihoods, key idea is to drive the network to favor the correct class while penalizing other classes
-    \item flexible to assign different weights to classes, valuvable when training data exhibits class imbalance which helps counterbalance this issue during training
-    \item an alternative approach to handling class imbalance is to increase frequency of rae classes during trianing.
+    \item flexible to assign different weights to classes, valuable when training data exhibits class imbalance which helps counterbalance this issue during training
+    \item an alternative approach to handling class imbalance is to increase frequency of rae classes during training.
 \end{itemize}
 
 \subsection{Cross Entropy (CE) Loss}
@@ -549,7 +547,7 @@ These functions measure how well your network is doing, quantifying the differen
 \end{definition}
 
 \begin{itemize}
-    \item suitable when your target distribution is represented as a one-hot distribution, hwere a single category is assigned a value of 1 and others are 0
+    \item suitable when your target distribution is represented as a one-hot distribution, where a single category is assigned a value of 1 and others are 0
     \item lacks incorporation of a softmax or log-softmax operation, suffers with numerical stability issues (especially with small probabilities)
     \item strong in variational autoencoders (VAEs)
 \end{itemize}
