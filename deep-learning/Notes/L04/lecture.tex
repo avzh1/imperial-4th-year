@@ -153,7 +153,67 @@ Combining these blocks with dense layers, creates an entire family of architectu
 
 \subsection{Performance}
 
-VGG tends to be a lot slower when compared to the throughput of AlexNet, however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance. 
+VGG tends to be a lot slower when compared to the throughput of AlexNet, however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance.
+
+\begin{warning}
+    28.41
+\end{warning}
+
+\section{Batch Norm}
+
+The problem deep networks face is with convergence, making training difficult and time consuming. There is a strategy to perform ``deep supervision'' which involves backpropogating from intermediate stages to help the network learn - however, this has its limitations [TODO].
+
+\subsection{Motivation}
+
+Very deep models involve the composition of several functions or layers. The gradient tells how to update each parameter, under the assumption that the other layers do not change. In practice, we update all of the layers simultaneously; gradients flow from the top layer down to the bottom layers of the network. As a result, the last layers start to adapt first, followed by the layers below them, creating a cascade of adaptations throughout the network. 
+
+However, this leads to a problem: As the bottom layers adapt, they change the features that are fed back up to the top layers. This means that the top layers, which had already started to adapt, have to readjust to these new inputs. Training Deep Neural Networks is complicated by the fact that the distribution of each layer's inputs changes during training, as the parameters of the previous layers change~\cite{Goodfellow-et-al-2016}. \textbf{Each layer's learning destabilizes the next, causing a slow convergence process that takes a long time for all layers to adapt properly}.
+
+\subsection{Solution}
+
+Batch normalization can be applied to any input or hidden layer in a network~\cite{Goodfellow-et-al-2016}.
+
+Batch Norm mitigates this issue by normalizing the features within each mini-batch, thereby stabilizing the training process and speeding up convergence. The idea is to make minor corrections to the layers by adjusting their mean and variance during training.
+
+\begin{equation*}
+    \mu_B = \frac 1 {|B|}\sum_{i\in B} x_i \quad \sigma^2_B = \frac 1 {|B|} \sum _{i\in B} (x_i - \mu_B)^2 + \epsilon
+\end{equation*}
+
+\begin{equation}
+    x_{i+1} = \gamma \frac{x_i - \mu_B}{\sigma_B} + \beta\label{eq:batch-norm}
+\end{equation}
+
+\begin{center}
+Where $\gamma$ is variance and $\beta$ is the mean. $|B|$ represents the size of the mini-batch, and $x_i$ are the individual data points in that mini-batch. $\epsilon$ is a small positive value such as $10^{-8}$ introduced to avoid the potential problem of undefined gradient.
+\end{center}
+
+We compute the mean and variance of a given mini-batch during training. Then, re-normalize each input feature by subtracting its mean and dividing it by its standard deviation. The model also learns two parameters to scale ($\gamma$) and shift ($\beta$) the normalized features. 
+
+We then adjust these first and second moments separately from the rest of the network learning, leading to Equation~\ref{eq:batch-norm}. 
+
+\subsection{Advantages}
+
+This way, we are able to ``normalize'' each mini-batch separately, making the training of deep networks more stable and faster (dramatically reducing the number of training epochs required to train deep networks). The normalization can be undone by the network by learning appropriate $\gamma$ and $\beta$ parameters if it sees a benefit to it.
+
+\subsection{Updated Aim}
+
+The original motivation of batch normalization is reducing covariate shift. This is not correct. BatchNorm actually worsens covariate shift, yet it still aids in model convergence. 
+
+\textbf{BatchNorm is effectively acting as a form of regularization by introducing noise into the model}. 
+
+Here's how it works: You calculate the mean and variance of a mini-batch, let's say, of 64 observations. Since you're working with a small sample, both the mean and the variance are subject to noise. You then normalize the features using these noisy statistics, introducing a random scale and shift into your model at each batch. This random noise acts as a regularizing factor, which is why you often don't need additional regularization techniques like dropout when you're using BatchNorm. However, this property makes BatchNorm sensitive to the size of the mini-batch. 
+
+If your mini-batch is too large, you're not introducing enough noise for effective regularization. If it's too small, the noise level becomes counterproductive, affecting convergence. This mini-batch size sensitivity becomes especially significant in multi-GPU settings, where batch sizes are often adjusted.
+
+\subsection{Application}
+
+If you're working with a dense layer, a single normalization is applied to all the activations in that layer.
+
+In the case of a convolutional layer, a separate normalization is performed for each channel.
+
+\subsection{Randomization during use}
+
+You don't want this randomness when you're using the model for predictions. So, you fix the gamma and beta parameters that the model has learned during training. Instead of using batch statistics, you use the running average for the mean and variance to normalize the features.
 
 \printbibliography
 
