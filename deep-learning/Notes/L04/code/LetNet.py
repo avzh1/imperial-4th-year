@@ -1,4 +1,5 @@
 # from https://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
+# https://www.analyticsvidhya.com/blog/2023/11/lenet-architectural-insights-and-practical-implementation/
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,9 +12,9 @@ class Net(nn.Module):
         # 1 input image channel, 6 output channels, 5x5 square convolution
         # kernel
         self.conv1 = nn.Conv2d(1, 6, 5)
-        self.pool1 = nn.MaxPool2d(2)
+        self.pool1 = nn.AvgPool2d(2, stride=2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.pool2 = nn.MaxPool2d(2)
+        self.pool2 = nn.AvgPool2d(2, stride=2)
         # an affine operation: y = Wx + b
         self.fc1 = nn.Linear(16 * 5 * 5, 120)  # 5*5 from image dimension
         self.fc2 = nn.Linear(120, 84)

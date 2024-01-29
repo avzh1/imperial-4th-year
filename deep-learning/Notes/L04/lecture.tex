@@ -34,6 +34,127 @@ LeNet~\cite{LeNet} was initially designed for low-resolution, black and white im
 
 The last steps of the LeNet-5 architecture employ fully connected layers to convert features into final predictions. The scenario of MNIST data didn't matter, because of its small number of output classes. This \textit{complicates the architecture when scaling up, influencing both computational resources and architecture}.
 
+The Convolutional Neural Network Architecture ensures some degree of shift, scale and distortion invariance: \textit{local receptive fields, shared weights} (or weight replication), and spatial or temporal \textit{sub-sampling}.
+
+Once a feature has been detected, its exact location
+becomes less important. Only its approximate position
+relative to other features is relevant.
+
+\subsection{shared weights}
+
+This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter may b e very large, while it can be quite small for other parameters elsewhere in the network
+
+\subsection{sub-sampling}
+
+A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved
+with a so-called sub-sampling layers which performs a local
+averaging and a sub-sampling, reducing the resolution of
+the feature map, and reducing the sensitivity of the output
+to shifts and distortions.
+
+\subsection{Loss}
+
+Maximum Likelihood Estimation Criterion (MLE), which is equivalent to the Mean Squared Error (MSE)
+
+\begin{equation*}
+    E(W) = \frac 1 P \sum ^ P _{ p = 1} y_{D^P} (Z^P, W)
+\end{equation*}
+
+Where $y_{D^P}$ is the output of the $D_p$-th RBF unit, i.e. the one that corresponds to the correct class of the input pattern $Z^p$. 
+
+It lacks three important properties:
+
+\begin{enumerate}
+    \item \textbf{Trivial Solution with Adaptation of RBF Parameters}:
+        If the parameters of the Radial Basis Function (RBF) are allowed to adapt, the MLE criterion has a trivial and unacceptable solution.
+        In this solution, all RBF parameter vectors become equal, leading to a constant and unchanging state of the network.
+        The network effectively ignores the input, and all RBF outputs become equal to zero.
+    \item \textbf{Lack of Competition Between Classes}:
+        The MLE criterion lacks competition between different classes in the training process.
+        Introducing a more discriminative training criterion, referred to as the Maximum A Posteriori (MAP) criterion, could address this issue.
+        The MAP criterion aims to maximize the posterior probability of the correct class or minimize the logarithm of the probability of the correct class given the input.
+        Unlike MLE, MAP introduces a competitive element by pushing up the penalties of incorrect classes in addition to pushing down the penalty of the correct class.
+    \item \textbf{Potential Collapsing Phenomenon}:
+        When RBF weights are allowed to adapt with the MLE criterion, there is a risk of a collapsing phenomenon where all RBF centers become equal.
+        The discriminative criterion of MAP prevents this collapsing effect by keeping the RBF centers apart from each other.
+        The discriminative criterion ensures that the posterior probabilities of different classes remain distinct, preventing the network from ignoring the input.
+\end{enumerate}
+
+\section{AlexNet}
+
+The AlexNet~\cite{AlexNet} was introduced in 2012 and introduced more layers for larger inputs and larger filters. Originally, the architecture was split into two columns/streams, but this was a workaround for the hardware limitations at the time. 
+
+It used the ImageNet dataset which contained color images with nature objects of larger size compared to MNIST ($469\times 387$ vs $28 \times 28$) and 1.2 million images vs 60k images.
+
+Its key improvements on the LeNet were
+
+\begin{itemize}
+    \item Add a dropout layer after two hidden dense layers (better robustness /regularization)
+    
+    Dropout allowed for much deeper networks by introducing regularization not just at the input layer but throughout multiple layers of the network. This made it possible to control the complexity of the model more effectively.
+
+    \item Change activation function from sigmoid to ReLu (no more vanishing gradient)
+    
+    enabling training of deeper networks more efficiently.
+
+    \item MaxPooling instead of Average Pooling
+    
+    This made the learned features more shift-invariant, which is important for object recognition. Max pooling generally retains the most salient features and discards less useful information, making the model more robust.
+
+    \item Heavy data Augmentation like cropping, shifting, and rotation. 
+    \item Model ensembling 
+    
+    Ensemble methods is a machine learning technique that combines several base models in order to produce one optimal predictive model
+
+    \item Using softmax function for classification
+    \item Increase in kernel size and stride
+    
+    design choice to accommodate the higher resolution of images in the ImageNet dataset compared to MNIST.
+
+\end{itemize}
+
+AlexNet is substantially more complex, being about 250 times more computationally expensive. However, it is only ten times larger parametrically than LeNet-5. This way AlexNet is notorious for its high memory usage. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/AlexNetFigure.png}
+    \caption{Architecture of AlexNet}
+\end{figure}
+
+\lstinputlisting[language=python]{code/AlexNet.py}
+
+\section{VGG}
+
+The Visual Geometry Group~\cite{VGG} uses the `bigger means better' philosophy. VGG introduced the notion of repeated blocks.
+
+\begin{itemize}
+    \item \textbf{NOT Add more dense layers} - computationally expensive
+    \item \textbf{NOT Add more convolutional layers} - as the network grows, specifying each convolutional layer individually becomes tedious
+    \item \textbf{Group Layers into blocks} - these blocks can easily be parameterized, creating a more organized, modular architecture
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/VGGFigure.png}
+    \caption{Architecture of VGG}
+\end{figure}
+
+\lstinputlisting[language=python]{code/VGG.py}
+
+\subsection{fewer wide convolutions or more narrow convolutions?}
+
+Recent comprehensive analysis from papers has shown that using more layers of narrow convolutions outperforms using fewer wide ones. This has been a general trend in network design: having more layers of simpler functions is generally more powerful than fewer layers of more complex functions. 
+
+\subsection{The VGG block}
+
+Several $3\times 3$ convolutions, padded by one maintains the spatial dimensions from the input to the output layer, and at the end, max-pooling layer of 2x2 and stride of 2 halves the resolution. 
+
+Combining these blocks with dense layers, creates an entire family of architectures just by varying the number of blocks.
+
+\subsection{Performance}
+
+VGG tends to be a lot slower when compared to the throughput of AlexNet, however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance. 
+
 \printbibliography
 
 \end{document}
