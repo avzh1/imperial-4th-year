@@ -2,7 +2,7 @@
 
 % some definitions for the title page
 \newcommand{\reporttitle}{Popular Network Architectures (\& BatchNorm)}
-\newcommand{\reportdescription}{LeNet-5, MNIST, AlexNet, ImageNet, VGG, Inception (GoogleLeNet), BatchNorm, ResNet, DenseNet, Squeeze-Excite Net U-Net, Data Augmentation}
+\newcommand{\reportdescription}{LeNet-5~\cite{LeNet}, MNIST, AlexNet~\cite{AlexNet}, ImageNet, VGG~\cite{VGG}, Inception (GoogleLeNet), BatchNorm~\cite{BatchNorm}, ResNet~\cite{ResNet}, DenseNet, Squeeze-Excite Net U-Net, Data Augmentation}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
@@ -19,8 +19,20 @@
 
 \clearpage
 
-% Start of new text
-Hello World
+\section{LeNet-5}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/LeNetFigure.png}
+    \caption{Architecture of LeNet-5 a Convolutional Neural Network, here for digits recognition. Each plane is a feature map, i.e. a set of units
+    whose weights are constrained to be identical~\cite{LeNet}}
+\end{figure}
+
+\lstinputlisting[language=python,firstline=1,lastline=38]{code/LetNet.py}
+
+LeNet~\cite{LeNet} was initially designed for low-resolution, black and white image recognition, specifically for digits. It demonstrated that CNNs could reliably perform both tasks of object localization and recognition (on low-resolution black and white images).
+
+The last steps of the LeNet-5 architecture employ fully connected layers to convert features into final predictions. The scenario of MNIST data didn't matter, because of its small number of output classes. This \textit{complicates the architecture when scaling up, influencing both computational resources and architecture}.
 
 \printbibliography
 
