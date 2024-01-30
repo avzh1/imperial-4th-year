@@ -419,66 +419,6 @@ In the case of a convolutional layer, a separate normalization is performed for 
 
 You don't want this randomness when you're using the model for predictions. So, you fix the gamma and beta parameters that the model has learned during training. Instead of using batch statistics, you use the running average for the mean and variance to normalize the features.
 
-\section{Data Augmentation}
-
-\subsection{Input Augmentation}
-
-Input data augmentation is a technique used to increase the size and diversity of your
-training set. It does this by applying a series of random but realistic transformations to each data
-point during training
-
-By increasing the size of your training data artificially, you're effectively adding more "experiences" for your model, which can improve generalization.
-
-It can be done through \href{https://github.com/aleju/imgaug}{imgaug} or \href{https://pytorch.org/vision/stable/transforms.html}{pytorch.transforms}.
-
-One of the main benefits of data augmentation is its role as a regularizer. It helps prevent overfitting by ensuring that the model encounters a variety of different, yet plausible, examples during training.
-
-\subsection{Transformations}
-
-\begin{itemize}
-    \item Random 
-    \begin{itemize}
-        \item flipping - can simulate the natural orientations of objects or scenes in images
-        \item scaling - It helps the model generalize across different sizes of the same object or feature.
-        \item rotations - add another layer of complexity by altering the angle of the data points. This is especially useful in tasks like object recognition, where orientation can vary widely.
-        \item intensity/contrast variations - different lighting conditions and image qualities
-        \item cropping/padding - alter the focus and frame of the data points. This can be helpful for tasks where the subject can be off-center or partially visible
-        \item noise - serves as an effective way to improve the model's robustness. It mimics real-world scenarios where data may not always be clean or noise-free
-        \item affine transformations - translation, scaling, and shearing. These offer another way to introduce variability into your data, helping your model generalize better
-        \item perspective transformations -  alter the viewpoint of the object or scene. This helps in applications like augmented reality, where the perspective can dramatically change the appearance of object
-    \end{itemize}
-\end{itemize}
-
-\subsection{Anomaly detection}
-
-Pick out the unusualities out of one type of class. 
-
-\subsubsection{Predicit Continuation}
-
-You would train something that is able to regress, to predict the continuation of the function. Then you train some sort of auto encoder that is able from a limited set of inputs to continue this function. If you continue this function and the prediction is too different from your external observation, you reflect that it is an outlier.
-
-\subsubsection{Measure distance in Latent Space}
-
-TODO
-
-\subsubsection{Reconstruct the input}
-
-If you have an auto-encoder, you need to take an input image and reconstruct it. After training, in theory, the network would have a hard time reconstructing something that it has never seen - so it will likely remove it from the image, which means that if you then take the output reconstruction and subtract from the external input which has the anomaly then the error will get highlighted.
-
-\subsubsection{Classify artificial, subtle variations - out of distribution detection}
-
-\subsection{Approaches}
-
-\subsubsection{Unsupervised}
-
-Use auto-encoder reconstruction error and use moving averages, dropout and set time window
-
-\subsubsection{Supervised}
-
-RNNs Learn form a set of yes/nos ina  time series. RNNs can learn from a series of time steps and predict when the anomaly is about to occur.
-
-\subsubsection{Streaming and minibatches}
-
 \printbibliography
 
 \end{document}
