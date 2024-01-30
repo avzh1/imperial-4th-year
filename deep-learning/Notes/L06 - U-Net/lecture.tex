@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{U-Net architecture}
+\newcommand{\reportdescription}{Mentions: U-Net~\cite{U-Net}, 3D-U-Net~\cite{3D-U-Net}, Graph-U-Net~\cite{Graph-U-Net}, H-DenseUNet~\cite{H-DenseUNet}, nnU-Net~\cite{nnU-Net}, UNet++~\cite{UNet++}}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{U-Net}
+
+U-Net~\cite{U-Net} is for semantic image segmentation - each pixel represents a classification task.
+
+\begin{figure}[H]
+    \includegraphics[width=\linewidth]{figures/U-Net.png}
+    \caption{U-Net architecture}
+    \label{fig:u-net-architecture}
+\end{figure}
+
+BatchNormalization usually follow the convolutional layers.
+
+\subsection{Variants}
+
+\subsubsection{3D-U-Net}
+\subsubsection{Graph-U-Net}
+\subsubsection{H-DenseUnet}
+\subsubsection{nnU-Net}
+\subsubsection{UNet++}
+
+\printbibliography
+
+\end{document}
