@@ -2,7 +2,7 @@
 
 % some definitions for the title page
 \newcommand{\reporttitle}{Popular Network Architectures (\& BatchNorm)}
-\newcommand{\reportdescription}{LeNet-5~\cite{LeNet}, MNIST, AlexNet~\cite{AlexNet}, ImageNet, VGG~\cite{VGG}, Inception (GoogleLeNet), BatchNorm~\cite{BatchNorm}, ResNet~\cite{ResNet}, DenseNet, Squeeze-Excite Net U-Net, Data Augmentation}
+\newcommand{\reportdescription}{LeNet-5~\cite{LeNet}, MNIST, AlexNet~\cite{AlexNet}, ImageNet, VGG~\cite{VGG}, Inception (GoogleLeNet), BatchNorm~\cite{BatchNorm}, ResNet~\cite{ResNet}, DenseNet, Squeeze-Excite~\cite{SqueezeNet} Net U-Net, Data Augmentation}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
@@ -19,7 +19,9 @@
 
 \clearpage
 
-\section{LeNet-5}
+\section{Architectures}
+
+\subsection{LeNet-5}
 
 LeNet~\cite{LeNet} was initially designed for low-resolution, black and white image recognition, specifically for digits. It demonstrated that CNNs could reliably perform both tasks of object localization and recognition (on low-resolution black and white images).
 
@@ -31,15 +33,15 @@ Once a feature has been detected, its exact location
 becomes less important. Only its approximate position
 relative to other features is relevant.
 
-\subsection{shared weights}
+\subsubsection{shared weights}
 
 This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter maybe very large, while it can be quite small for other parameters elsewhere in the network
 
-\subsection{sub-sampling}
+\subsubsection{sub-sampling}
 
 A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved with a so-called sub-sampling layers which performs a local \textbf{averaging} and a sub-sampling, reducing the resolution of the feature map, and reducing the sensitivity of the output to shifts and distortions.
 
-\subsection{Loss}
+\subsubsection{Loss}
 
 Maximum Likelihood Estimation Criterion (MLE), which is equivalent to the Mean Squared Error (MSE)
 
@@ -77,7 +79,7 @@ Where $y_{D^P}$ is the output of the $D_p$-th RBF unit, i.e. the one that corres
 \lstinputlisting[language=python,firstline=1,lastline=38]{code/LetNet.py}
 
 
-\section{AlexNet}
+\subsection{AlexNet}
 
 The AlexNet~\cite{AlexNet} was introduced in 2012 and introduced more layers for larger inputs and larger filters. Originally, the architecture was split into two columns/streams, but this was a workaround for the hardware limitations at the time. 
 
@@ -120,7 +122,7 @@ AlexNet is substantially more complex, being about 250 times more computationall
 
 \lstinputlisting[language=python]{code/AlexNet.py}
 
-\section{VGG}
+\subsection{VGG}
 
 The Visual Geometry Group~\cite{VGG} uses the `bigger means better' philosophy. VGG introduced the notion of repeated blocks.
 
@@ -138,21 +140,21 @@ The Visual Geometry Group~\cite{VGG} uses the `bigger means better' philosophy. 
 
 \lstinputlisting[language=python]{code/VGG.py}
 
-\subsection{fewer wide convolutions or more narrow convolutions?}
+\subsubsection{fewer wide convolutions or more narrow convolutions?}
 
 Recent comprehensive analysis from papers has shown that using more layers of narrow convolutions outperforms using fewer wide ones. This has been a general trend in network design: having more layers of simpler functions is generally more powerful than fewer layers of more complex functions. 
 
-\subsection{The VGG block}
+\subsubsection{The VGG block}
 
 Several $3\times 3$ convolutions, padded by one maintains the spatial dimensions from the input to the output layer, and at the end, max-pooling layer of $ 2\times2$ and stride of 2 halves the resolution. 
 
 Combining these blocks with dense layers, creates an entire family of architectures just by varying the number of blocks.
 
-\subsection{Performance}
+\subsubsection{Performance}
 
 VGG tends to be a lot slower when compared to the throughput of AlexNet (Figure~\ref{fig:architecture-comparison}), however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance.
 
-\section{Inception}
+\subsection{Inception}
 
 \begin{figure}
     \centering
@@ -201,29 +203,29 @@ This comes with two major drawbacks
     \caption{Inception Module}
 \end{figure}
 
-\subsection{Naiive Inception Module}
+\subsubsection{Naiive Inception Module}
 
 ``In order to avoid patch-alignment issues, current incarnations of the Inception architecture are restricted to filter sizes $ 1\times1$, $ 3\times3$ and $ 5\times5$, however this decision was based more on convenience rather than necessity. It also means that the suggested architecture is a combination of all those layers with their output filter banks concatenated into a single output vector forming the input of the next stage. Additionally, since pooling operations have been essential for the success in current state of the art convolutional networks, it suggests that adding an alternative parallel pooling path in each such stage should have additional beneficial effect, too (Figure~\ref{fig:inception-naive})''~\cite{Inception}.
 
 The Problem with the naiive approach is that ``even a modest number of $ 5\times5$ convolutions can be prohibitively expensive on top of a convolutional layer with a large number of filters. This problem becomes even more pronounced once pooling units are added to the mix: their number of output filters equals to the number of filters in the previous stage. The merging of the output of the pooling layer with the outputs of convolutional layers would lead to an inevitable increase in the number of outputs from stage to stage. Even while this architecture might cover the optimal sparse structure, it would do it very inefficiently, leading to a computational blow up within a few stages''~\cite{Inception}.
 
-\subsection{Detailed Inception Module}
+\subsubsection{Detailed Inception Module}
 
 This leads to a second proposed architecture (Figure~\ref{fig:inception-detailed}). `` judiciously applying dimension reductions and projections wherever the computational requirements would increase too much otherwise. This is based on the success of embeddings: even low dimensional embeddings might contain a lot of information about a relatively large image patch. However, embeddings represent information in a dense, compressed form and compressed information is harder to model. We would like to keep our representation sparse at most places and compress the signals only whenever they have to be aggregated en masse. That is, $ 1\times1$ convolutions are used to compute reductions before the expensive $ 3\times3$ and $ 5\times5$ convolutions. Besides being used as reductions, they also include the use of rectified linear activation which makes them dual-purpose''~\cite{Inception}
 
-\subsection{How the Modules fit together}
+\subsubsection{How the Modules fit together}
 
 ``As these “Inception modules” are stacked on top of each other, their output correlation statistics are bound to vary: as features of higher abstraction are captured by higher layers, their spatial concentration is expected to decrease suggesting that the ratio of $ 3\times3$ and $ 5\times5$ convolutions should increase as we move to higher layers''~\cite{Inception}.
 
 Now, you might be wondering, how do all these different types of convolutions fit together in the Inception block? The key to making this work is using appropriate padding. For example, the 3$\times$3 convolutions use half-padding by one, and the 5$\times$5 convolutions use half-padding by two. This ensures that the dimensions of the inputs and outputs align and remain the same. Once that's taken care of, you simply stack all these layers together.
 
-\subsection{Channels}
+\subsubsection{Channels}
 
 The first inception block has channels sizes specified.
 
 The first Inception block uses 64 channels for the 1$\times$1 convolutions. For the 3$\times$3 convolutions, it uses 128 channels. And for the 5$\times$5 convolutions, 32 channels are used, primarily because 5$\times$5 convolutions already come with a large number of parameters—25 times 32 in this case. When it comes to max pooling, a few other dimensions are included. The goal is to have all these different parts sum up to 256 channels. 
 
-\subsection{Advantages}
+\subsubsection{Advantages}
 
 The Inception block is designed to use a relatively low number of parameters (better than just striaght up sticking with one dimension of convolution) and floating-point operations (FLOPs), without sacrificing performance.
 
@@ -243,9 +245,129 @@ We have the flexibility to adjust $c_{in} \wedge c_{out}$.
 
 By carefully allocating resources - varying the number of channels and kernel sizes - we can optimize the network's performance.
 
-\subsection{Channels}
+\subsubsection{Channels}
 
 The Inception blocks are designed in such a way that they need fewer parameters and less computational complexity than a single 3x3 or 5x5 convolutional layer, as shown in Table 1. If we were to have 256 channels in the output layer, Inception needs only 16,000 parameters and costs only 128 Mega FLOPS, whereas a 3x3 convolutional layer will need 44,000 parameters and cost 346 Mega FLOPS, and a 5x5 convolutional layer will need 1,22,000 parameters and cost 963 Mega FLOPS. So Inception blocks, essentially get the same job done as single convolutional layers, with much better memory and compute efficiency. \href{https://medium.com/swlh/understanding-inception-simplifying-the-network-architecture-54cd31d38949}{from here}
+
+\subsection{ReSNet}
+
+\subsubsection{Motivation: Does adding layers improve accuracy?}
+
+Gradients don't properly propagating through many layers. Once you add more layers, you change the function class, making it more versatile but also different; More layers means more parameters, granting us the power to model more complex functions.
+
+As you add more layers, the function class becomes more powerful, but also diverge - adding more layers might get you closer to this truth initially, but after a certain point you could drift away.
+
+In an ideal world, you'd like more layers to create a new function which neatly nests the previous function - making this similar to the last.  The goal is to have function classes that are both increasingly powerful and nested as we add layers.
+
+\subsubsection{Residual Networks}
+
+ResNet~\cite{ResNet} parameterizes around an identity function $f(x)=x$ instead of a zero function $f(x)=0$. Now, as you tune your parameters, you start to diverge from this identity function. The beauty is that you don't have to learn the identity function from scratch, reducing unnecessary computational overhead. It implies a different inductive bias and allows for the addition of new layers without disrupting the outputs of previous layers.
+
+Now, the functions don't precisely implement nested function classes, but it comes remarkably close in an approach called the ResNet block (Figure~\ref{fig:resblock}), where the input is added to the output residual.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\linewidth]{figures/ResBlock.png}
+    \caption{Residual learning: building block from~\cite{ResNet}}
+    \label{fig:resblock}
+\end{figure}
+
+Each block generally contains two or more convolutions, each followed by a batch normalization and a Rectified Linear Unit (ReLU). The innovation lies in adding the original input back to the output of this sequence. In some cases, we might run a 1x1 convolution on the input before adding it to the output, especially if we need to change the dimensionality of the input to match the output.
+
+This setup makes it easier for the network to learn an identity mapping, essentially enabling the network to decide whether or not a change is beneficial.
+
+\lstinputlisting{code/ResNet.py}
+
+\subsubsection{The Architecture}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\linewidth]{figures/resnet-block.png}
+    \caption{ResNet Module, code at \texttt{http:d2l.ai} 8.6. Residual Networks (ResNet) and ResNeXt}
+\end{figure}
+
+A typical ResNet module may include a block with down-sampling; this usually employs a stride of 2. Following this, several other standard ResNet blocks are stacked. Down-sampling in each module is commonly performed using a stride of 2, serving to reduce the spatial dimensions of the feature maps. To introduce complexity and non-linearity into the network, 1x1 convolutions are often employed within the ResNet blocks. Finally, these blocks are stacked together to form a deep and complex network architecture.
+
+Residual connections are a defining feature that contribute to the network's expressiveness and allow for training deeper models without facing vanishing or exploding gradients. To manage dimensionality, ResNet uses pooling and strides just like earlier architectures. Batch normalization layers are interspersed throughout to control the capacity and stabilize the training process.
+
+\subsection{DenseNet}
+
+Densely Connected Convolution Networks~\cite{DenseNet} have the characteristic that each layer in a DenseNet are connected to every other layer in a feed-forward manner, quite unlike traditional CNNs where each layer is only connected to its immediate successor.
+
+\begin{itemize}
+    \item The key advantage of this dense connectivity is feature reuse: each layer gets the feature maps from all the preceding layers, not just the last one. This makes it efficient and requires fewer parameters for high performance. So, you get a network that's both computationally and memory-efficient.
+
+    \item Dense connections also help alleviate the vanishing gradient problem by improving the gradient flow through the network, making optimization easier.
+    
+    \item It is also scalable, since you can easily adjust the number of layers and other hyper-parameters to make it suitable for a variety of tasks and data sizes.
+\end{itemize}
+
+Occasionally need to reduce resolution (transition layer)
+
+(Figures on presentation)
+
+\subsection{SqueezeNet}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[trim={0 0 0 0},clip,width=\linewidth]{figures/SqueezeNet.png}
+    \caption{SqueezeNet architecture from~\cite{SqueezeNet}} \label{fig:squeezeNet-architecture}
+\end{figure}
+
+SqueezeNets~\cite{SqueezeNet} use attention mechanisms. 
+
+\subsubsection{Attention}
+
+In machine learning, attention allows a model to focus on significant features within the data, rather than indiscriminately treating all features equally. Think of it like spotlighting the essential parts in an otherwise noisy scene.
+
+The paradox of needing to know what you are recognizing before you actually recognize it is addressed in the Squeeze-and-Excite Network (SE-Net) through the use of attention mechanisms.
+
+\subsubsection{Implementation}
+
+In a traditional network, information moves relatively slowly from layer to layer. This can mean that it takes several layers for information from one corner of an image to influence the other corner.
+
+The network calculates a global descriptor for each channel. These descriptors go through a small neural network that outputs new descriptors. These new descriptors are then used to scale or 'excite' the original channels. This is computationally efficient and offers a more refined way to focus on what's crucial in the image.
+
+\begin{enumerate}
+    \item \textbf{Squeeze} -  takes a global average pooling of each channel to get a single
+    descriptor that captures the global information of that channel.
+    \item \item \textbf{Descriptor} - These descriptors are then fed into a small neural network (usually a fully-
+    connected layer followed by a ReLU and another fully-connected layer) to create a new
+    set of descriptors. These new descriptors are designed to capture which channels are
+    more important given the current global context of the image
+    \item \item \textbf{Excite} - The output descriptors are then used to scale the original channels. This scaling
+    effectively "excites" or enhances the channels that are likely to be more important for a
+    given task, based on the global context of the image
+    \item \item \textbf{Re-weighting Channels} - So if the global context suggests that the image likely contains
+    a cat, the "cat channel" would be scaled up, emphasizing features relevant to cats and
+    making it easier for subsequent layers to detect the cat.
+    This procedure is computationally efficient and allows the network to focus on relevant
+    features without needing to explicitly know in advance what those features represent
+    (like a "cat" or a "dog"). It's a way of allowing the network to dynamically allocate its
+    attention based on the overall features in the image, resolving the paradox.
+\end{enumerate}
+
+\subsection{Evaluation}
+
+\subsubsection{Performance}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[trim={0 0 0 0},clip,width=.7\linewidth]{figures/bokeh_plot.png}
+    \caption{The \href{https://cv.gluon.ai/model_zoo/classification.html}{performance} of the architectures} \label{fig:architecture-comparison}
+\end{figure}
+
+\subsubsection{What we learnt}
+
+\begin{itemize}
+    \item Dense layers are computationally and memory intensive. Real-world problems with big input tensors and many classes will prohibit their use.
+    \item $1\times 1$ convolutions act like a multi-layer perceptron per pixel
+    \item Scientists are humans and need a while to understand the power of new approaches. Eventually they do but a lot of vanity is involved in the process
+    \item If not sure, just take all options and let the optimization decide or even learn this through trial and error (genetic algorithm, AmoebaNet)
+    \item Deeper is not necessarily better if the function space is not regularized.
+    \item ResNet is the workhorse of Deep Learning (For now) 
+    \item Lot's of variations have been proposed but it often boils down to how you train a network and for what purpose
+\end{itemize}
 
 \section{Batch Norm}
 
@@ -303,13 +425,9 @@ In the case of a convolutional layer, a separate normalization is performed for 
 
 You don't want this randomness when you're using the model for predictions. So, you fix the gamma and beta parameters that the model has learned during training. Instead of using batch statistics, you use the running average for the mean and variance to normalize the features.
 
-\section{Performance}
+\section{Data Augmentation}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[trim={0 0 0 0},clip,width=.7\linewidth]{figures/bokeh_plot.png}
-    \caption{The \href{https://cv.gluon.ai/model_zoo/classification.html}{performance} of the architectures} \label{fig:architecture-comparison}
-\end{figure}
+
 
 \printbibliography
 
