@@ -33,11 +33,12 @@
 \contentsline {section}{\numberline {6}CNN}{12}{section.94}%
 \contentsline {subsection}{\numberline {6.1}Input Tensor}{12}{subsection.95}%
 \contentsline {subsection}{\numberline {6.2}Convolutional Layers}{13}{subsection.98}%
-\contentsline {subsection}{\numberline {6.3}Factorized Convolutions}{15}{subsection.103}%
-\contentsline {subsection}{\numberline {6.4}Separable Convolutions}{15}{subsection.105}%
-\contentsline {subsection}{\numberline {6.5}Pooling Layers.}{16}{subsection.106}%
-\contentsline {subsubsection}{\numberline {6.5.1}Max-pooling breaks shift-equivariance~\blx@tocontentsinit {0}\cite {youtubeMakingConvolutional}}{16}{subsubsection.111}%
-\contentsline {subsection}{\numberline {6.6}Rotation?}{17}{subsection.115}%
-\contentsline {subsection}{\numberline {6.7}Approximate Deformation Invariance?}{18}{subsection.117}%
-\contentsline {subsection}{\numberline {6.8}Flatten Layers}{18}{subsection.118}%
-\contentsline {section}{\numberline {7}Conclusion}{18}{section.120}%
+\contentsline {subsection}{\numberline {6.3}1$\times $1 convolution}{15}{subsection.102}%
+\contentsline {subsection}{\numberline {6.4}Factorized Convolutions}{15}{subsection.104}%
+\contentsline {subsection}{\numberline {6.5}Separable Convolutions}{16}{subsection.106}%
+\contentsline {subsection}{\numberline {6.6}Pooling Layers.}{16}{subsection.107}%
+\contentsline {subsubsection}{\numberline {6.6.1}Max-pooling breaks shift-equivariance~\blx@tocontentsinit {0}\cite {youtubeMakingConvolutional}}{17}{subsubsection.112}%
+\contentsline {subsection}{\numberline {6.7}Rotation?}{17}{subsection.116}%
+\contentsline {subsection}{\numberline {6.8}Approximate Deformation Invariance?}{18}{subsection.118}%
+\contentsline {subsection}{\numberline {6.9}Flatten Layers}{18}{subsection.119}%
+\contentsline {section}{\numberline {7}Conclusion}{18}{section.121}%

@@ -69,5 +69,5 @@ def _vgg(arch: str, cfg: str, batch_norm: bool, progress: bool, **kwargs: Any ) 
     model = VGG(make_layers(cfgs[cfg], batch_norm=batch_norm, **kwargs))
     return model
 
-def vgg16(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> VGG:
-    return _vgg('vgg_16', "D", False, pretrained, progress, **kwargs)
+def vgg16(progress: bool = True, **kwargs: Any) -> VGG:
+    return _vgg('vgg_16', "D", False, progress, **kwargs)

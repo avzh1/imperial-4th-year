@@ -21,15 +21,6 @@
 
 \section{LeNet-5}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{figures/LeNetFigure.png}
-    \caption{Architecture of LeNet-5 a Convolutional Neural Network, here for digits recognition. Each plane is a feature map, i.e. a set of units
-    whose weights are constrained to be identical~\cite{LeNet}}
-\end{figure}
-
-\lstinputlisting[language=python,firstline=1,lastline=38]{code/LetNet.py}
-
 LeNet~\cite{LeNet} was initially designed for low-resolution, black and white image recognition, specifically for digits. It demonstrated that CNNs could reliably perform both tasks of object localization and recognition (on low-resolution black and white images).
 
 The last steps of the LeNet-5 architecture employ fully connected layers to convert features into final predictions. The scenario of MNIST data didn't matter, because of its small number of output classes. This \textit{complicates the architecture when scaling up, influencing both computational resources and architecture}.
@@ -42,15 +33,11 @@ relative to other features is relevant.
 
 \subsection{shared weights}
 
-This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter may b e very large, while it can be quite small for other parameters elsewhere in the network
+This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter maybe very large, while it can be quite small for other parameters elsewhere in the network
 
 \subsection{sub-sampling}
 
-A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved
-with a so-called sub-sampling layers which performs a local
-averaging and a sub-sampling, reducing the resolution of
-the feature map, and reducing the sensitivity of the output
-to shifts and distortions.
+A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved with a so-called sub-sampling layers which performs a local \textbf{averaging} and a sub-sampling, reducing the resolution of the feature map, and reducing the sensitivity of the output to shifts and distortions.
 
 \subsection{Loss}
 
@@ -62,23 +49,33 @@ Maximum Likelihood Estimation Criterion (MLE), which is equivalent to the Mean S
 
 Where $y_{D^P}$ is the output of the $D_p$-th RBF unit, i.e. the one that corresponds to the correct class of the input pattern $Z^p$. 
 
-It lacks three important properties:
+% It lacks three important properties:
 
-\begin{enumerate}
-    \item \textbf{Trivial Solution with Adaptation of RBF Parameters}:
-        If the parameters of the Radial Basis Function (RBF) are allowed to adapt, the MLE criterion has a trivial and unacceptable solution.
-        In this solution, all RBF parameter vectors become equal, leading to a constant and unchanging state of the network.
-        The network effectively ignores the input, and all RBF outputs become equal to zero.
-    \item \textbf{Lack of Competition Between Classes}:
-        The MLE criterion lacks competition between different classes in the training process.
-        Introducing a more discriminative training criterion, referred to as the Maximum A Posteriori (MAP) criterion, could address this issue.
-        The MAP criterion aims to maximize the posterior probability of the correct class or minimize the logarithm of the probability of the correct class given the input.
-        Unlike MLE, MAP introduces a competitive element by pushing up the penalties of incorrect classes in addition to pushing down the penalty of the correct class.
-    \item \textbf{Potential Collapsing Phenomenon}:
-        When RBF weights are allowed to adapt with the MLE criterion, there is a risk of a collapsing phenomenon where all RBF centers become equal.
-        The discriminative criterion of MAP prevents this collapsing effect by keeping the RBF centers apart from each other.
-        The discriminative criterion ensures that the posterior probabilities of different classes remain distinct, preventing the network from ignoring the input.
-\end{enumerate}
+% \begin{enumerate}
+%     \item \textbf{Trivial Solution with Adaptation of RBF Parameters}:
+%         If the parameters of the Radial Basis Function (RBF) are allowed to adapt, the MLE criterion has a trivial and unacceptable solution.
+%         In this solution, all RBF parameter vectors become equal, leading to a constant and unchanging state of the network.
+%         The network effectively ignores the input, and all RBF outputs become equal to zero.
+%     \item \textbf{Lack of Competition Between Classes}:
+%         The MLE criterion lacks competition between different classes in the training process.
+%         Introducing a more discriminative training criterion, referred to as the Maximum A Posteriori (MAP) criterion, could address this issue.
+%         The MAP criterion aims to maximize the posterior probability of the correct class or minimize the logarithm of the probability of the correct class given the input.
+%         Unlike MLE, MAP introduces a competitive element by pushing up the penalties of incorrect classes in addition to pushing down the penalty of the correct class.
+%     \item \textbf{Potential Collapsing Phenomenon}:
+%         When RBF weights are allowed to adapt with the MLE criterion, there is a risk of a collapsing phenomenon where all RBF centers become equal.
+%         The discriminative criterion of MAP prevents this collapsing effect by keeping the RBF centers apart from each other.
+%         The discriminative criterion ensures that the posterior probabilities of different classes remain distinct, preventing the network from ignoring the input.
+% \end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/LeNetFigure.png}
+    \caption{Architecture of LeNet-5 a Convolutional Neural Network, here for digits recognition. Each plane is a feature map, i.e. a set of units
+    whose weights are constrained to be identical~\cite{LeNet}}
+\end{figure}
+
+\lstinputlisting[language=python,firstline=1,lastline=38]{code/LetNet.py}
+
 
 \section{AlexNet}
 
@@ -147,17 +144,108 @@ Recent comprehensive analysis from papers has shown that using more layers of na
 
 \subsection{The VGG block}
 
-Several $3\times 3$ convolutions, padded by one maintains the spatial dimensions from the input to the output layer, and at the end, max-pooling layer of 2x2 and stride of 2 halves the resolution. 
+Several $3\times 3$ convolutions, padded by one maintains the spatial dimensions from the input to the output layer, and at the end, max-pooling layer of $ 2\times2$ and stride of 2 halves the resolution. 
 
 Combining these blocks with dense layers, creates an entire family of architectures just by varying the number of blocks.
 
 \subsection{Performance}
 
-VGG tends to be a lot slower when compared to the throughput of AlexNet, however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance.
+VGG tends to be a lot slower when compared to the throughput of AlexNet (Figure~\ref{fig:architecture-comparison}), however, it makes up for in terms of accuracy. While VGG might require more computational resources, it generally provides superior performance.
 
-\begin{warning}
-    28.41
-\end{warning}
+\section{Inception}
+
+\begin{figure}
+    \centering
+    \subfigure[Inception Architecture]
+        {
+            \begin{turn}{90}
+                \includegraphics[width=23.2cm, height=0.6\textheight, keepaspectratio]{figures/Inception1-2-300x67-4041309011.png}
+            \end{turn}
+        }
+    \subfigure[Simplified Inception architecture]
+        {
+            \begin{turn}{90}
+                \includegraphics[width=\linewidth]{figures/inception-simplified-view.png}
+            \end{turn}
+        }
+    \caption{Inception code can be found at \texttt{http://d2l.ai} chapter named 8.4. Multi-Branch Networks (GoogLeNet)}
+\end{figure}
+
+The Inception architecture~\cite{Inception} is both deep and introduces the concept of parallel paths within the network which offers multiple pathways for data to flow. The architecture combines the best of different types of convolutions and pooling layers to enhance its performance.
+
+The decision was:
+
+\begin{quote}
+    if you opt for $ 5\times5$ convolutions, you will end up with many parameters, leading to a lot of computational cost and possibly overfitting, even though it might be more expressive. On the other hand, if you go with $ 1\times1$ convolutions, you'll have a more controlled, memory-efficient architecture, but it may not perform as well.
+\end{quote}
+
+``The most straightforward way of improving the performance of deep neural networks is by increasing their size. This includes both increasing the depth - the number of levels - of the network and its width: the number of units at each level. This is as an easy and safe way of training higher quality models, especially given the availability of a large amount of labeled training data''~\cite{Inception}
+
+
+This comes with two major drawbacks
+\begin{itemize}
+    \item Bigger size typically means a larger number of parameters, which makes the enlarged network more prone to overfitting, especially if the number of labeled examples in the training set is limited. 
+    
+    This can become a major bottleneck, since the creation of high quality training sets can be tricky and expensive, especially if expert human raters are necessary to distinguish between fine-grained visual categories like those in ImageNet
+    \item Another drawback of uniformly increased network size is the dramatically increased use of computational resources. For example, in a deep vision network, if two convolutional layers are chained, any uniform increase in the number of their filters results in a quadratic increase of computation. If the added capacity is used inefficiently (for example, if most weights end up to be close to zero), then a lot of computation is wasted.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[Inception module, naive version]{%
+        \includegraphics[width=.45\linewidth, height=0.3\textheight, keepaspectratio]{figures/inception-naiive.png}\label{fig:inception-naive}
+    }
+    \subfigure[Inception module with dimension reductions]{%
+        \includegraphics[width=.45\linewidth, height=0.3\textheight, keepaspectratio]{figures/inception-detailed.png}\label{fig:inception-detailed}
+    }
+    \caption{Inception Module}
+\end{figure}
+
+\subsection{Naiive Inception Module}
+
+``In order to avoid patch-alignment issues, current incarnations of the Inception architecture are restricted to filter sizes $ 1\times1$, $ 3\times3$ and $ 5\times5$, however this decision was based more on convenience rather than necessity. It also means that the suggested architecture is a combination of all those layers with their output filter banks concatenated into a single output vector forming the input of the next stage. Additionally, since pooling operations have been essential for the success in current state of the art convolutional networks, it suggests that adding an alternative parallel pooling path in each such stage should have additional beneficial effect, too (Figure~\ref{fig:inception-naive})''~\cite{Inception}.
+
+The Problem with the naiive approach is that ``even a modest number of $ 5\times5$ convolutions can be prohibitively expensive on top of a convolutional layer with a large number of filters. This problem becomes even more pronounced once pooling units are added to the mix: their number of output filters equals to the number of filters in the previous stage. The merging of the output of the pooling layer with the outputs of convolutional layers would lead to an inevitable increase in the number of outputs from stage to stage. Even while this architecture might cover the optimal sparse structure, it would do it very inefficiently, leading to a computational blow up within a few stages''~\cite{Inception}.
+
+\subsection{Detailed Inception Module}
+
+This leads to a second proposed architecture (Figure~\ref{fig:inception-detailed}). `` judiciously applying dimension reductions and projections wherever the computational requirements would increase too much otherwise. This is based on the success of embeddings: even low dimensional embeddings might contain a lot of information about a relatively large image patch. However, embeddings represent information in a dense, compressed form and compressed information is harder to model. We would like to keep our representation sparse at most places and compress the signals only whenever they have to be aggregated en masse. That is, $ 1\times1$ convolutions are used to compute reductions before the expensive $ 3\times3$ and $ 5\times5$ convolutions. Besides being used as reductions, they also include the use of rectified linear activation which makes them dual-purpose''~\cite{Inception}
+
+\subsection{How the Modules fit together}
+
+``As these “Inception modules” are stacked on top of each other, their output correlation statistics are bound to vary: as features of higher abstraction are captured by higher layers, their spatial concentration is expected to decrease suggesting that the ratio of $ 3\times3$ and $ 5\times5$ convolutions should increase as we move to higher layers''~\cite{Inception}.
+
+Now, you might be wondering, how do all these different types of convolutions fit together in the Inception block? The key to making this work is using appropriate padding. For example, the 3$\times$3 convolutions use half-padding by one, and the 5$\times$5 convolutions use half-padding by two. This ensures that the dimensions of the inputs and outputs align and remain the same. Once that's taken care of, you simply stack all these layers together.
+
+\subsection{Channels}
+
+The first inception block has channels sizes specified.
+
+The first Inception block uses 64 channels for the 1$\times$1 convolutions. For the 3$\times$3 convolutions, it uses 128 channels. And for the 5$\times$5 convolutions, 32 channels are used, primarily because 5$\times$5 convolutions already come with a large number of parameters—25 times 32 in this case. When it comes to max pooling, a few other dimensions are included. The goal is to have all these different parts sum up to 256 channels. 
+
+\subsection{Advantages}
+
+The Inception block is designed to use a relatively low number of parameters (better than just striaght up sticking with one dimension of convolution) and floating-point operations (FLOPs), without sacrificing performance.
+
+It has less computational operations:
+
+\begin{equation*}
+    k^2 \times \stackrel{fixed}{\boxed{c_{in}}} \times c_{out} \times \stackrel{fixed}{\boxed{m_h \times m_w}}
+\end{equation*}
+
+Consider a convolutional kernel of size $k\times k$, $c$ relating to the channels and dimension of the image $m$. 
+
+We have the flexibility to adjust $c_{in} \wedge c_{out}$.
+
+\begin{equation*}
+    \stackrel{fixed}{\boxed{c_{in} \times m_h \times m_w}} \times \sum_{j \in paths}\bigl(k^2_j \times c_{out,j}\bigr)
+\end{equation*}
+
+By carefully allocating resources - varying the number of channels and kernel sizes - we can optimize the network's performance.
+
+\subsection{Channels}
+
+The Inception blocks are designed in such a way that they need fewer parameters and less computational complexity than a single 3x3 or 5x5 convolutional layer, as shown in Table 1. If we were to have 256 channels in the output layer, Inception needs only 16,000 parameters and costs only 128 Mega FLOPS, whereas a 3x3 convolutional layer will need 44,000 parameters and cost 346 Mega FLOPS, and a 5x5 convolutional layer will need 1,22,000 parameters and cost 963 Mega FLOPS. So Inception blocks, essentially get the same job done as single convolutional layers, with much better memory and compute efficiency. \href{https://medium.com/swlh/understanding-inception-simplifying-the-network-architecture-54cd31d38949}{from here}
 
 \section{Batch Norm}
 
@@ -214,6 +302,14 @@ In the case of a convolutional layer, a separate normalization is performed for 
 \subsection{Randomization during use}
 
 You don't want this randomness when you're using the model for predictions. So, you fix the gamma and beta parameters that the model has learned during training. Instead of using batch statistics, you use the running average for the mean and variance to normalize the features.
+
+\section{Performance}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[trim={0 0 0 0},clip,width=.7\linewidth]{figures/bokeh_plot.png}
+    \caption{The \href{https://cv.gluon.ai/model_zoo/classification.html}{performance} of the architectures} \label{fig:architecture-comparison}
+\end{figure}
 
 \printbibliography
 
