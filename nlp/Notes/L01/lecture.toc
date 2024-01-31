@@ -12,13 +12,13 @@
 \contentsline {subsection}{\numberline {2.1}One-hot-encoding}{4}{subsection.20}%
 \contentsline {section}{\numberline {3}ML Refresher}{5}{section.21}%
 \contentsline {subsection}{\numberline {3.1}Linear activation function}{5}{subsection.22}%
-\contentsline {subsection}{\numberline {3.2}Non-linear activation functions}{5}{subsection.24}%
-\contentsline {subsubsection}{\numberline {3.2.1}Sigmoid}{5}{subsubsection.25}%
-\contentsline {subsubsection}{\numberline {3.2.2}ReLU}{5}{subsubsection.28}%
-\contentsline {subsubsection}{\numberline {3.2.3}Tanh}{5}{subsubsection.31}%
-\contentsline {subsubsection}{\numberline {3.2.4}Softmax}{6}{subsubsection.34}%
-\contentsline {subsection}{\numberline {3.3}Loss Functions}{6}{subsection.37}%
-\contentsline {subsubsection}{\numberline {3.3.1}Mean suqared error}{6}{subsubsection.38}%
-\contentsline {subsubsection}{\numberline {3.3.2}Binary cross-entropy}{6}{subsubsection.40}%
-\contentsline {subsubsection}{\numberline {3.3.3}Categorical cross-entropy}{6}{subsubsection.42}%
-\contentsline {subsection}{\numberline {3.4}Regularization}{7}{subsection.44}%
+\contentsline {subsection}{\numberline {3.2}Non-linear activation functions}{5}{subsection.25}%
+\contentsline {subsubsection}{\numberline {3.2.1}Sigmoid}{5}{subsubsection.26}%
+\contentsline {subsubsection}{\numberline {3.2.2}ReLU}{6}{subsubsection.29}%
+\contentsline {subsubsection}{\numberline {3.2.3}Tanh}{7}{subsubsection.32}%
+\contentsline {subsubsection}{\numberline {3.2.4}Softmax}{8}{subsubsection.35}%
+\contentsline {subsection}{\numberline {3.3}Loss Functions}{8}{subsection.39}%
+\contentsline {subsubsection}{\numberline {3.3.1}Mean suqared error}{8}{subsubsection.40}%
+\contentsline {subsubsection}{\numberline {3.3.2}Binary cross-entropy}{9}{subsubsection.42}%
+\contentsline {subsubsection}{\numberline {3.3.3}Categorical cross-entropy}{9}{subsubsection.44}%
+\contentsline {subsection}{\numberline {3.4}Regularization}{9}{subsection.46}%

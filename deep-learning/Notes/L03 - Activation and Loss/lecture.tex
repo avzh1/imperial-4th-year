@@ -47,6 +47,8 @@ A model that reacts too strongly to edge cases might overfit to those specific i
 
 \subsection{Linear}
 
+%<*nlp-linear>
+
 \begin{definition}[Linear Activation]\label{eq:activation-linear}
     \begin{equation*}
         f(x) = c\cdot x
@@ -61,13 +63,18 @@ A model that reacts too strongly to edge cases might overfit to those specific i
 \begin{itemize}
     \item This produces a constant gradient, meaning that during backpropagation, the updates applied to weights are constant and independent of the change in input, denoted by $\Delta x$.
     \item If each layer in a multi-layered network employs a linear activation function, the output of one layer becomes the input to the next, perpetuating linearity throughout the network; no matter how many layers you have, the entire network behaves like a single-layer linear model. This means you could replace all N linear layers with just a single linear layer and achieve the same output. It renders the ``depth'' of the network irrelevant. 
+    \item Useful for regression % from nlp notes
 \end{itemize}
 
 Therefore, while linear activation functions may have some use-cases, they aren't typically chosen for complex machine learning tasks that require the network to capture more complex, non-linear relationships in the data. 
 
+%</nlp-linear>
+
 \subsection{Non-linear Activation Functions}
 
 \subsubsection{Sigmoid}
+
+%<*nlp-sigmoid>
 
 \begin{definition}[Sigmoid Activation]\label{eq:activation-sigmoid}
     \begin{equation*}
@@ -85,10 +92,14 @@ Therefore, while linear activation functions may have some use-cases, they aren'
     \item gives a more analog or continuous output w.r.t binary step function.
     \item Smooth gradient which is crucial for gradient descent algorithms. One notable characteristic is that between the X values of -2 and 2, the curve is especially steep. This implies that small changes in the input within this region result in significant shifts in output, facilitating rapid learning during the training phase.
     \item Towards the tails of the function, the curve flattens out, and the output values become less sensitive to changes in input. This results in a vanishing gradient problem, where gradients become too small for the network to learn effectively, leading to slow or stalled training. 
-    \item Good for classifiers
+    \item Good for classifiers (binary and multi-label classification)
 \end{itemize}
 
+%</nlp-sigmoid>
+
 \subsubsection{Tanh}
+
+%<*nlp-tanh>
 
 \begin{definition}[Tanh Activation]\label{eq:activation-tanh}
     \begin{equation*}
@@ -113,7 +124,11 @@ However, like the sigmoid function, tanh also suffers from the vanishing gradien
 
 Careful normalization of the inputs is also essential when using tanh to ensure effective learning.
 
+%</nlp-tanh>
+
 \subsubsection{ReLU}
+
+%<*nlp-relu>
 
 \begin{definition}[ReLU Activation]\label{eq:activation-relu}
     \begin{equation*}
@@ -136,6 +151,8 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
     \item In a neural network with many neurons, using activation functions like sigmoid or tanh would cause almost all neurons to activate to some degree, leading to dense activations. ReLU, on the other hand, will often output zero, effectively ignoring some neurons, which can make the network more computationally efficient.
     \item Dying ReLU problem caused by often outputting zero (If a neuron's output is always zero (perhaps due to poor initialization), the gradient for that neuron will also be zero.) As a result, during backpropagation, the weights of that neuron remain unchanged, effectively "killing" the neuron. This can result in a portion of the neural network becoming inactive, thereby limiting its capacity to model complex functions.
 \end{itemize}
+
+%</nlp-relu>
 
 \subsubsection{Leaky ReLU}
 
@@ -351,9 +368,11 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 
 \subsubsection{Softmax}
 
+%<*nlp-softmax>
+
 \begin{definition}[Softmax Ativation]\label{eq:activation-softmax}
     \begin{equation*}
-        \frac{e^{x_i}}{\sum_j e^{x_j}}
+        softmax(z_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
     \end{equation*}
 \end{definition}
 
@@ -365,7 +384,10 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 \begin{itemize}
     \item applies softmax to an n-dimensional input tensor rescaling them so that the elements of the n-dimensional output tensor lie in the range $[0,1]$ and sum to 1
     \item when dealing with image classification, the Softmax activation function is commonly employed to transform the network's logits into probabilities.
+    \item useful for multi-label classification (predicting one class out of many)
 \end{itemize}
+
+%</nlp-softmax>
 
 \subsubsection{LogSoftmax}
 
@@ -423,6 +445,8 @@ These functions measure how well your network is doing, quantifying the differen
 
 \subsection{L2 Norm}
 
+%<*nlp-mse>
+
 \begin{definition}[L2 Norm, mean squared error]\label{eq:L2-norm}
     \begin{equation*}
         \ell(x,y)=\vec{\mathcal{L}} = \{ l_1, \ldots, l_N\}^T, \quad l_n=(x_n - y_n)^2
@@ -431,11 +455,13 @@ These functions measure how well your network is doing, quantifying the differen
     With further reduction to a single value can be either $mean(\mathcal L)$ or $sum(\mathcal{L})$ 
 \end{definition}
 
-
 \begin{itemize}
     \item Measured discrepancy between the predicted output and the actual ground truth
     \item in a mini-batch, perform squared difference calculation for each sample within the mini-batch, the individual squared errors can then be combined into a list.
+    \item Useful for regression
 \end{itemize}
+
+%</nlp-mse>
 
 \subsection{L1 Norm}
 
@@ -512,6 +538,8 @@ These functions measure how well your network is doing, quantifying the differen
 
 \subsection{Binary Cross Entropy (BCE) Loss}
 
+%<*nlp-bce>
+
 \begin{definition}[Binary Cross Entropy]\label{eq:binary-cross-entropy-loss}
     \begin{align*}
         \ell (x,y) = \mathcal{L} = \{l_1,\ldots,l_N\}^T, \\
@@ -531,7 +559,11 @@ These functions measure how well your network is doing, quantifying the differen
     \item negative weighted sum of two entropy terms for each observation in the batch
     \item the input probabilities, $x_n$, must lie in the [0, 1] range to ensure the loss's validity
     \item Suitable for binary classification tasks where each observation belongs to one of two classes.
+    \item Useful for binary classification
+    \item Useful for multi-label classification (predicting many classes)
 \end{itemize}
+
+%</nlp-bce>
 
 \subsection{Kullback-Leibler Divergence Loss}
 

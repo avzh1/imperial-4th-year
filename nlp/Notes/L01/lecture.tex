@@ -8,6 +8,8 @@
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
+\usepackage{catchfilebetweentags} % to read input from another file
+
 \bibliography{../bibliography}
 
 \begin{document}
@@ -82,7 +84,7 @@ Definition: Words: segmentation, normalisation, morphology
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=.8\linewidth]{images/bpe-algorithm.png}
+        \includegraphics[width=.8\linewidth]{figures/bpe-algorithm.png}
         \label{fig:bpe-algorithm}
     \end{figure}
 
@@ -158,85 +160,40 @@ Definition: Intentions, commands; what is the intent of the text, how to react t
 
 \subsection{Linear activation function}
 
-useful for regression
-
-\begin{equation}
-    f(x)=x
-\end{equation}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-linear}
 
 \subsection{Non-linear activation functions}
 
 \subsubsection{Sigmoid}
 
-useful for binary classification
-
-useful for multi-label classification (predicting many classes)
-
-\begin{equation}
-    f(x)=\sigma(x)=\frac{1}{1 + e^{-x}}
-\end{equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics*[width=.3\linewidth]{images/sigmoid.png}
-\end{figure}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-sigmoid}
 
 \subsubsection{ReLU}
 
-\begin{equation}
-    f(x)=ReLU(x)=\begin{dcases*}
-        0 & for $x \leq 0$ \\ 1 & for $x > 0$
-    \end{dcases*}
-\end{equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics*[width=.3\linewidth]{images/relu.png}
-\end{figure}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-relu}
 
 \subsubsection{Tanh}
 
-\begin{equation}
-    f(x)=\tanh(x)=\frac{e^x - e^{-x}}{e^x + e^{-x}}
-\end{equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics*[width=.3\linewidth]{images/tanh.png}
-\end{figure}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-tanh}
 
 \subsubsection{Softmax}
 
-useful for multi-label classification (predicting one class out of many)
-
-\begin{equation}
-    softmax(z_i) = \frac{e^{z_i}}{\sum_k e^{z_k}}
-\end{equation}
-
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=.3\linewidth]{images/softmax.png}
+    \includegraphics*[width=.3\linewidth]{figures/softmax.png}
 \end{figure}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-softmax}
 
 \subsection{Loss Functions}
 
 \subsubsection{Mean suqared error}
 
-useful for regression
-
-\begin{equation}
-    L = \frac{1}{N} \sum^N_{i=1} (y_i- \hat{y} _i )^2
-\end{equation}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-mse}
 
 \subsubsection{Binary cross-entropy}
 
-useful for binary classification
-
-useful for multi-label classification (predicting many classes)
-
-\begin{equation}
-    L = -\frac{1}{N} \sum^N_{i=1} (y^{(i)}\log(\hat{y}^{(i)})+(1-y^{(i)})\log(1-\hat{y}^{(i)})
-\end{equation}
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-bce}
 
 \subsubsection{Categorical cross-entropy}
 
