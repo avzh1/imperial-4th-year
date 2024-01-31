@@ -8,8 +8,6 @@
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
-\usepackage{catchfilebetweentags} % to read input from another file
-
 \bibliography{../bibliography}
 
 \begin{document}
@@ -143,7 +141,7 @@ Definition: Meaning of a text (relationship between sentences)
 
 Definition: Intentions, commands; what is the intent of the text, how to react to it?
 
-\section{How to represent language to an algorithm}
+\section{Word Representation}
 
 \subsection{One-hot-encoding}
 
@@ -153,60 +151,5 @@ Definition: Intentions, commands; what is the intent of the text, how to react t
     \item token: the atomic unit of a sequence (e.g. a word)
     \item vocabulary: the unique tokens across our entire corpus
 \end{itemize}
-
-
-
-\section{ML Refresher}
-
-\subsection{Linear activation function}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-linear}
-
-\subsection{Non-linear activation functions}
-
-\subsubsection{Sigmoid}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-sigmoid}
-
-\subsubsection{ReLU}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-relu}
-
-\subsubsection{Tanh}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-tanh}
-
-\subsubsection{Softmax}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics*[width=.3\linewidth]{figures/softmax.png}
-\end{figure}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-softmax}
-
-\subsection{Loss Functions}
-
-\subsubsection{Mean suqared error}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-mse}
-
-\subsubsection{Binary cross-entropy}
-
-\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-bce}
-
-\subsubsection{Categorical cross-entropy}
-
-useful for multi-label classification (predicting one class out of many)
-
-\begin{equation}
-    L = - \frac 1 N \sum^N_{i=1}\sum^C_{c=1} y_c^{(i)}\log(\hat{y}_c^{(i)})
-\end{equation}
-
-\subsection{Regularization}
-
-\begin{quote}
-    any modiﬁcation we make to a learning algorithm that is intended to reduce its generalization error but not its training error. (See Chapter 7 of~\cite{Goodfellow-et-al-2016})
-\end{quote}
 
 \end{document}

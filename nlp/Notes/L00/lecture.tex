@@ -1,12 +1,14 @@
 \documentclass[11pt]{article}
 
 % some definitions for the title page
-\newcommand{\reporttitle}{example}
-\newcommand{\reportdescription}{example description}
+\newcommand{\reporttitle}{Intro Lecture and foundations}
+\newcommand{\reportdescription}{}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
+
+\usepackage{catchfilebetweentags} % to read input from another file
 
 \bibliography{../bibliography}
 
@@ -16,6 +18,8 @@
 \input{../../../.latex-templates/titlepage}
 
 \tableofcontents
+
+\clearpage
 
 \section{Pytorch}
 
@@ -48,6 +52,65 @@ State of the art NLP:
     \item Papers with code:~\cite{papers-with-code}
     \item  track the progress in Natural Language Processing:~\cite{track-progress-nlp}
 \end{itemize}
+
+\section{ML Refresher}
+
+\subsection{Linear activation function}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-linear}
+
+\subsection{Non-linear activation functions}
+
+\subsubsection{Sigmoid}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-sigmoid}
+
+\subsubsection{ReLU}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-relu}
+
+\subsubsection{Tanh}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-tanh}
+
+\subsubsection{Softmax}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.3\linewidth]{figures/softmax.png}
+\end{figure}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-softmax}
+
+\subsection{Loss Functions}
+
+\subsubsection{Mean suqared error}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-mse}
+
+\subsubsection{Binary cross-entropy}
+
+\ExecuteMetaData[../../../deep-learning/Notes/L03 - Activation and Loss/lecture]{nlp-bce}
+
+\subsubsection{Categorical cross-entropy}
+
+useful for multi-label classification (predicting one class out of many)
+
+\begin{equation}
+    L = - \frac 1 N \sum^N_{i=1}\sum^C_{c=1} y_c^{(i)}\log(\hat{y}_c^{(i)})
+\end{equation}
+
+\subsection{Regularization}
+
+\begin{quote}
+    any modiﬁcation we make to a learning algorithm that is intended to reduce its generalization error but not its training error. (See Chapter 7 of~\cite{Goodfellow-et-al-2016})
+\end{quote}
+
+\section{Multi-Layer Perceptron Math}
+
+\begin{warning}
+    Section not complete. Content of L01.1
+\end{warning}
 
 \printbibliography
 
