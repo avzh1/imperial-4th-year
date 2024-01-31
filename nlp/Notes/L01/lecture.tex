@@ -143,13 +143,269 @@ Definition: Intentions, commands; what is the intent of the text, how to react t
 
 \section{Word Representation}
 
-\subsection{One-hot-encoding}
-
 \begin{itemize}
     \item Corpus: A collection of documents, i.e. our entire dataset
     \item Document: one item of our corpus (e.g. a sequence)
-    \item token: the atomic unit of a sequence (e.g. a word)
+    \item token: the atomic unit of a sequence (e.g. a word). In a document, a word type is the distinct words, e.g. `They picnicked by the pool, then lay back on the grass and looked at the stars.' has 16 tokens but 14 types.
     \item vocabulary: the unique tokens across our entire corpus
 \end{itemize}
+
+Continuous representations allow us to group similar things together
+
+\subsection{One-hot-encoding}
+
+A \textbf{One-hot vector} is a vector that has one element equal to 1. In our case, we represent each word in a vector, and for a given word we mark one element in the dimension corresponding to the word as a 1 and the other elements are set to 0.
+
+If Toothpaste has is in dimension 5, then
+
+\begin{align*}
+    \left[\stackrel{1}{0} \quad \stackrel{2}{0} \quad \stackrel{3}{0} \quad \stackrel{4}{0} \quad \stackrel{5}{1} \quad \stackrel{6}{0} \quad \stackrel{7}{0} \quad \ldots \quad \stackrel{|V|}{0}  \right]
+\end{align*}
+
+The complete document can represented by horizontally concatenating these one-hot vectors~\cite{git-natural-language-processing}, so the shape of a representation of a Document would be $|Docuemnt| \times |Vocabulary|$.
+
+\subsubsection{Issues}
+
+\begin{itemize}
+    \item The representation is very sparse so there is a lot of wasted space. This is because each dimension represents a feature, in one-hot representation each feature combination receives their own dimensions.
+
+    \item Vectors are orthogonal, every word is equidistant from every other word. Features are completely independent from one another; the feature word `dog' is as dis-similar to `thinking' as it is to `cat'.
+    
+    \item Cannot represent out of vocabulary words that didn't appear during training. Typically an extra token with unknown meaning is included in a vector, but it doesn't have a meaning.
+\end{itemize}
+
+\subsection{WordNet}
+
+WordNet~\cite{wordnet-how-to} is a tool created pre-deep-learning which maps words to broader concepts. It reduces vector size and maps some similar words together.
+
+\subsubsection{Issues}
+
+\begin{itemize}
+    \item Relies on the completeness of a manually curated database
+    \item Misses out on rare and new meanings
+    \item Vectors are still orthogonal and equally distant from each other
+    \item Disambiguating word meanings is difficult
+\end{itemize}
+
+\subsection{Word Embedding}
+
+Most modern NLP is founded on the concept of the distributional hypotheses. It states that the meaning of a word can be understood by the context the word appears in. 
+
+Word Embedding represent each feature as a vector in a fixed low dimensional dense space representation learned by the neural network algorithm.
+
+\subsubsection{Euclidean Distance}
+
+\begin{definition}[Euclidean Distance]
+    \begin{equation*}
+        \sqrt{\sum^n_{i=1}(q_d - d_i)^2}
+    \end{equation*}    
+\end{definition}
+
+Measures the distance between two points.
+
+\subsubsection{Cosine Distance}
+
+\begin{definition}[Cosine Distance]
+    \begin{equation*}
+        similarity = \cos(\theta) = \frac{p_1 \cdot p_2}{||p_1|| \times ||p_2||}    
+    \end{equation*}
+\end{definition}
+
+Measure the angle between two points. Where $||p_1||$ represents the norm of the vector $p_1$. Most commonly, it means the euclidean norm, or the ``geometric length'' but there can be other norms you use.
+
+\section{Algorithm - Word2Vec}
+
+Word2Vec is a ``family'' of NN based algorithms to obtain embeddings. 
+
+\subsection{Window}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{figures/window.png}
+\end{figure}
+
+A context word is a word that is ``window\_size'' away from a target word. In this example, window\_size is 2. That means the context words are the 2 words preceding the target word, and the 2 words proceeding the target word.
+
+It creates a context list and a set of targets based upon a hyperparameter window. With a window size of 2 we get the following:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Context} & \textbf{Target} \\
+        \hline
+        riding & is \\ 
+        riding & like \\
+        riding & a \\ 
+        riding & bicycle \\ 
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Continuous bag-of-words}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.3\linewidth]{figures/CBOW.png}
+\end{figure}
+
+In CBOW, we feed our context words as input to our model. Our model is then optimized to predict what the target word actually is.
+
+\subsection{Skip-gram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.3\linewidth]{figures/SkipGram.png}
+\end{figure}
+
+In Skip-gram~\cite{WordSenseDisambiguation,CBOW-and-skipgram}, we do the opposite. We feed in our target word as input, and the model aims to predict what the context words are
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[trim={0 0 0 5px}, clip, width=\linewidth]{figures/SkipGramDetailed.png}
+\end{figure}
+
+The architecture is a 2 layered neural network without any non-linearities in between them. 
+
+\begin{enumerate}
+    \item Give 1-hot vector of the target word as input x
+    \item Map that to the embedding of that target word, using weight matrix W $h=xW$
+    
+    \begin{figure}
+        \centering
+        \includegraphics*[width=\linewidth]{figures/one-hot-word-embedding-extraction.png}
+    \end{figure}
+
+    \item Map the embedding of the target word to the possible context words, using weight matrix W': $y=hW'$
+    \item y has length of the whole vocabulary. Apply softmax to make y into a probability distribution over the whole vocabulary $y'=softmax(y)$
+\end{enumerate}
+
+The softmax currently performs a binary classification, whereas we want to find the entire bubble of context words around the word.
+
+\subsubsection{Training}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[trim={0 0 0 5px}, clip, width=.8\linewidth]{figures/training-skip-gram.png}
+\end{figure}
+
+During training we are building multiple training samples for each target word that we have. More specifically, for each target word, we will normally have $window\_size*2$ training samples; therefore we optimize the model 4 times for each word, each time against a different context word (if it appears multiple times and window is full)
+
+\subsubsection{Loss}
+
+$p(.|.)$ is a probability distribution calculated by softmax.
+
+\begin{equation}
+    p(w_{t+j}|w_t) = \frac{\exp({u_{w_{t+j}}^\top h_{w_t}})}{\sum^W_{w'=1} \exp({u_{w'}^\top h_{w_t}})}
+    \label{eq:softmax-problem}
+\end{equation}
+
+We want to maximise the probability of a context word being correctly predicted for a target word for all words in our target. 
+
+\begin{equation*}
+    \max \prod_t \prod_j p(w_{t+j}|w_t)
+\end{equation*}
+
+We then turn this into a minimization problem
+
+\begin{equation*}
+    \min_\theta - \prod_t \prod_j p(w_{t+j}|w_t;\theta)
+\end{equation*}
+
+Multiplying gives the problem of vanishing gradients, therefore we take the logarithm
+
+\begin{equation*}
+    \min_\theta - \sum_t \sum_j \log p(w_{t+j}|w_t;\theta)
+\end{equation*}
+
+We then explicitly state that we don't calculate a loss over $j=0$ and the loss for one document is the average loss for each word in that document.
+
+\begin{equation*}
+    \sum_{-c\leq j \leq c, j \neq 0} \log p(w_{t+j} | w_t ; \theta)
+\end{equation*}
+
+Since the loss for the corpus will be this applied over every document in our corpus we have another term
+
+\begin{equation*}
+    \frac1 T \sum^T_{t=1} \sum_{-c\leq j \leq c, j \neq 0} \log p(w_{t+j} | w_t ; \theta)
+\end{equation*}
+
+All in all, this is actually just a cross-entropy loss function for every target-context training pair we have.
+
+\subsubsection{Using Word Embeddings}
+
+Now that the model is trained, we can separate out the training of the word embeddings and the downstream task we wanted to do. What this means is that we can take our text corpus and train a word2vec algo on it. We can then use one of the learned weights embedding matrix (next slide) to extract out a vector for each word.
+
+\subsubsection{Softmax problem}
+
+In Equation~\ref{eq:softmax-problem} the bottom sum is expensive to compute a single forward pass of the model, we have to sum across the entire corpus vocabulary; this gets inefficient with large vocabularies and large embedding.
+
+We therefore try to approximate softmax instead.
+
+\subsubsection{Negative Sampling}
+
+Use binary classification to distinguish real context words from noise context words. We train a vocabulary number of binary classifiers. That is, each item in the vocabulary has a binary classifier which attempts to predict whether a target word appears in the context of a context word or not.
+
+\begin{equation*}
+    \log p(D=1|w_t , w_{t+1}) + k \mathbb{E}_{\tilde{c}\sim P_{noise}}\left[\log p(D=0|w_t, \tilde{c})\right]
+\end{equation*}
+
+$p(D=1|w_t, w_{t+1})$ is a binary logistic regression probability of seeing the word $w_t$ in the context $w_{t+1}$.
+
+Approximate expectation by drawing $k$ contrastive context words from a noisy distribution $\tilde{c}$. This comes from randomly drawing from the $P_{noise}$ distribution which could be random sampling or frequency based sampling.
+
+On the left, we have $D=1$, i.e. we want to maximize the probability of correctly predicting that a target word and a TRUE context word appear in context of each other (i.e. predicting a 1 with our binary classifier.)
+
+On the right, we want to maximize the probability of correctly predicting that a target word and a noise word do NOT appear in context of each other ($D=0$).
+
+\textbf{Example:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.5\linewidth]{figures/skip-gram-negative-sampling-example.png}
+\end{figure}
+
+We therefore replace Equation~\ref{eq:softmax-problem} with
+
+\begin{equation}
+    p(D=1|w_t, w_{t+1}) = \frac{1}{1 + \exp{-u_{w_{t+1}}^\top h_{w_t}}}\label{eq:sigmoid}
+\end{equation}
+
+\subsubsection{Size of k?}
+
+5-20 negative words works well for smaller datasets but 2-5 negative words for larger datasets.
+
+Let's say we had k=5: For a model with weight matrix 300x10K, need to update weights for 1 positive word, plus 5 negative samples. That's 6 output neurons. So 6 * 300 = 1800 weight parameters need to be updated. That is only 0.06\% of the 3M weights in the output layer!
+
+\subsubsection{Noise Distribution}
+
+Random Sampling:
+
+\begin{equation*}
+    p(w_i) = \frac 1 {|V|}
+\end{equation*}
+
+Frequency Based Sampling:
+
+\begin{equation*}
+    p(w_i) = \frac{f(w_i)^{3/4}}{\sum_{w'}f(w')^{3/4}}
+\end{equation*}
+
+We sample words from the vocabulary
+
+\section{What can we do with vectors?}
+
+\begin{enumerate}
+    \item We can use them to find the most similar other words, given an input word
+    \item Analogy Recovery
+
+    Idea: The offset of the vectors should reflect their relation: $a-b \approx c -d \iff d \approx c - a + b$. For example: queen $\approx$ king - man + woman.
+
+    \item Multilingual word embeddings
+    
+    If we have words from many languages can we a shared embedding space for words that exist within this language?
+\end{enumerate}
+
+\printbibliography
 
 \end{document}
