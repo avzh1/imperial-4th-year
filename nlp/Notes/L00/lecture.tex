@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{example}
+\newcommand{\reportdescription}{example description}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\bibliography{../bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\section{Pytorch}
+
+Pytorch will be used for the coursework, recommended is to look at \href{https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html}{this} link.
+
+\section{Books}
+
+Recommended NLP Books:
+
+\begin{itemize}
+    \item Speech and Language Processing. Dan Jurafsky and James H. Martin~\cite{book-speech-and-language-processing}
+    \item A Primer on Neural Network Models for Natural Language Processing.
+          Yoav Goldberg~\cite{primer-on-nlp}
+    \item Natural Language Processing. Jacob Eisenstein~\cite{git-natural-language-processing}
+\end{itemize}
+
+Recommended ML Books:
+
+\begin{itemize}
+    \item Artificial Intelligence: a Modern Approach. (2009) Stuart Russell \& Peter Norvig~\cite{AI-modern-approach} with the solutions available at~\cite{AI-modern-approach-slutions}
+    \item Machine Learning. (1997) Tom Mitchell~\cite{tom-mitchell-book}
+    \item Neural Networks and Deep Learning. Michael A. Nielsen.
+    \item Introduction to Deep Learning. Eugene Charniak~\cite{intro-to-dl-eugene-charniak}
+    \item Deep Learning by Ian Goodfellow~\cite{Goodfellow-et-al-2016}
+\end{itemize}
+
+State of the art NLP:
+
+\begin{itemize}
+    \item Papers with code:~\cite{papers-with-code}
+    \item  track the progress in Natural Language Processing:~\cite{track-progress-nlp}
+\end{itemize}
+
+\printbibliography
+
+\end{document}

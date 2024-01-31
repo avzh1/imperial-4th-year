@@ -1,25 +1,24 @@
 \babel@toc {english}{}\relax 
 \contentsline {section}{\numberline {1}Dealing with natural language}{2}{section.2}%
 \contentsline {subsection}{\numberline {1.1}Complexities}{2}{subsection.3}%
-\contentsline {subsection}{\numberline {1.2}The role of Deep Learning}{2}{subsection.15}%
-\contentsline {subsection}{\numberline {1.3}Composites of Language}{2}{subsection.16}%
-\contentsline {subsubsection}{\numberline {1.3.1}Lexicon - morphological analysis}{2}{subsubsection.17}%
-\contentsline {subsubsection}{\numberline {1.3.2}Syntax}{3}{subsubsection.26}%
-\contentsline {subsubsection}{\numberline {1.3.3}Semantics}{4}{subsubsection.27}%
-\contentsline {subsubsection}{\numberline {1.3.4}Discourse}{4}{subsubsection.28}%
-\contentsline {subsubsection}{\numberline {1.3.5}Pragmatics}{4}{subsubsection.29}%
-\contentsline {section}{\numberline {2}ML Refresher}{4}{section.30}%
-\contentsline {subsection}{\numberline {2.1}Linear activation function}{4}{subsection.31}%
-\contentsline {subsection}{\numberline {2.2}Non-linear activation functions}{5}{subsection.33}%
-\contentsline {subsubsection}{\numberline {2.2.1}Sigmoid}{5}{subsubsection.34}%
-\contentsline {subsubsection}{\numberline {2.2.2}ReLU}{5}{subsubsection.37}%
-\contentsline {subsubsection}{\numberline {2.2.3}Tanh}{5}{subsubsection.40}%
-\contentsline {subsubsection}{\numberline {2.2.4}Softmax}{5}{subsubsection.43}%
-\contentsline {subsection}{\numberline {2.3}Loss Functions}{6}{subsection.46}%
-\contentsline {subsubsection}{\numberline {2.3.1}Mean suqared error}{6}{subsubsection.47}%
-\contentsline {subsubsection}{\numberline {2.3.2}Binary cross-entropy}{6}{subsubsection.49}%
-\contentsline {subsubsection}{\numberline {2.3.3}Categorical cross-entropy}{6}{subsubsection.51}%
-\contentsline {subsection}{\numberline {2.4}Regularization}{6}{subsection.53}%
-\contentsline {section}{\numberline {3}Resources}{6}{section.54}%
-\contentsline {subsection}{\numberline {3.1}Pytorch}{6}{subsection.55}%
-\contentsline {subsection}{\numberline {3.2}Books}{7}{subsection.56}%
+\contentsline {subsection}{\numberline {1.2}The role of Deep Learning}{2}{subsection.4}%
+\contentsline {subsection}{\numberline {1.3}Composites of Language}{2}{subsection.5}%
+\contentsline {subsubsection}{\numberline {1.3.1}Lexicon - morphological analysis}{2}{subsubsection.6}%
+\contentsline {subsubsection}{\numberline {1.3.2}Syntax}{3}{subsubsection.15}%
+\contentsline {subsubsection}{\numberline {1.3.3}Semantics}{4}{subsubsection.16}%
+\contentsline {subsubsection}{\numberline {1.3.4}Discourse}{4}{subsubsection.17}%
+\contentsline {subsubsection}{\numberline {1.3.5}Pragmatics}{4}{subsubsection.18}%
+\contentsline {section}{\numberline {2}How to represent language to an algorithm}{4}{section.19}%
+\contentsline {subsection}{\numberline {2.1}One-hot-encoding}{4}{subsection.20}%
+\contentsline {section}{\numberline {3}ML Refresher}{5}{section.21}%
+\contentsline {subsection}{\numberline {3.1}Linear activation function}{5}{subsection.22}%
+\contentsline {subsection}{\numberline {3.2}Non-linear activation functions}{5}{subsection.24}%
+\contentsline {subsubsection}{\numberline {3.2.1}Sigmoid}{5}{subsubsection.25}%
+\contentsline {subsubsection}{\numberline {3.2.2}ReLU}{5}{subsubsection.28}%
+\contentsline {subsubsection}{\numberline {3.2.3}Tanh}{5}{subsubsection.31}%
+\contentsline {subsubsection}{\numberline {3.2.4}Softmax}{6}{subsubsection.34}%
+\contentsline {subsection}{\numberline {3.3}Loss Functions}{6}{subsection.37}%
+\contentsline {subsubsection}{\numberline {3.3.1}Mean suqared error}{6}{subsubsection.38}%
+\contentsline {subsubsection}{\numberline {3.3.2}Binary cross-entropy}{6}{subsubsection.40}%
+\contentsline {subsubsection}{\numberline {3.3.3}Categorical cross-entropy}{6}{subsubsection.42}%
+\contentsline {subsection}{\numberline {3.4}Regularization}{7}{subsection.44}%
