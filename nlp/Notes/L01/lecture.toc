@@ -28,3 +28,4 @@
 \contentsline {subsubsection}{\numberline {3.3.6}Size of k?}{11}{subsubsection.52}%
 \contentsline {subsubsection}{\numberline {3.3.7}Noise Distribution}{11}{subsubsection.53}%
 \contentsline {section}{\numberline {4}What can we do with vectors?}{11}{section.54}%
+\contentsline {section}{\numberline {5}Byte Pair Encoding}{12}{section.58}%
