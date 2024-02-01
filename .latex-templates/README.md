@@ -11,6 +11,8 @@
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
+%\bibliography{bibliography}
+
 \begin{document}
 
 % Include the title page
@@ -22,6 +24,9 @@
 
 % Start of new text
 Hello World
+
+% \printbibliography
+% \addcontentsline{toc}{section}{Bibliography}
 
 \end{document}
 ```
