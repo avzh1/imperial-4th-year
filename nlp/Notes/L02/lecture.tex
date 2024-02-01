@@ -153,7 +153,8 @@ where $w$ is how important an input feature is to the classification decision an
 
 If we don't have the w, then we learn parameters to make the model predictions close to our labels by using a loss function (to measure the distance between the true and predicted labels) and optimization algorithm (to minimize the function usually through gradient descent.)
 
-\begin{definition}[Logistic Regression]
+\begin{definition}[Logistic Regression]\label{eq:logistic-regression}
+    How close is the predicted distribution Q to the true distribution P
     \begin{equation*}
         H(P,Q) = -\sum_i P(y_i)\log Q(y_i)
     \end{equation*}
@@ -388,7 +389,7 @@ We can then take the exponent of this.
 
 We have an issue here with longer outputs: The longer the output is, the lower its likelihood (many multiplications give a small number)
 
-\subsubsection{Perplexity}
+\subsection{Perplexity}
 
 We normalize by the length of the text `the inverse probability of a text, normalized by the \# of the words'
 
@@ -409,19 +410,101 @@ We can then use the chain rule to expand the probability of $W$
 
 Note that because of the inverse, the higher the conditional probability of the word sequence, the lower the perplexity. Thus, minimizing perplexity is equivalent to maximizing the test set probability according to the language model. It is a measure of the surprise in an LM when seeing new text.
 
+\begin{itemize}
+    \item if we are finding the perplexity of a single word, the best possible score is 1.
+    \item if our model uniformly picks words across a vocabulary of size $|V|$, the perplexity of a single word is: $|V|$. This is becuase (as mentioned in Section~\ref{content:weighted-average-branching-factor}) if each sample has a chance $1/|V|$ of getting chosen.
+\end{itemize}
+
 \subsubsection{Summary}
 
 Perplxeity allows us to choose the best LM for a test data: LM1 vs LM2: best LM is the one with the lowest perplexity
 \begin{itemize}
     \item However, perplexity is specific to the test-set
     
-    ``We can consider perplexity as the weighted average branching factor of a language. The branching factor of a language is the number of possible next words that can follow any word. Consider the task of recognizing the digits n English (zero, one, two,..., nine), given that (both in some training set and in some test set) each of the 10 digits occurs with equal probability $P=1/10$  The perplexity of this mini-language is in fact 10. To see that, imagine a test string of digits of length $N$, and assume that in the training set all the digits occurred with equal probability.
+    ``We can consider perplexity as the weighted average branching factor of a language. The branching factor of a language is the number of possible next words that can follow any word. Consider the task of recognizing the digits n English (zero, one, two,..., nine), given that (both in some training set and in some test set) each of the 10 digits occurs with equal probability $P=1/10$  The perplexity of this mini-language is in fact 10. To see that, imagine a test string of digits of length $N$, and assume that in the training set all the digits occurred with equal probability. \label{content:weighted-average-branching-factor}
 
     But suppose that the number zero is really frequent and occurs far more often than other numbers. Let’s say that 0 occur 91 times in the training set, and each of the other digits occurred 1 time each. Now we see the following test set: 0 0 0 0 0 3 0 0 0 0. We should expect the perplexity of this test set to be lower since most of the time the next number will be zero, which is very predictable, i.e. has a high probability. Thus, although the branching factor is still 10, the perplexity or weighted branching factor is smaller''~\cite{book-speech-and-language-processing}
-    
+
     \item How you tokenize the data matters
 \end{itemize}
 
+\subsection{Cross Entropy Loss}
+
+The cross-entropy is useful when we don't know the actual probability distribution p that generated some data. It allows us to use some m, which is a model of p (i.e., an approximation to p). We don't know the true distribution, e.g. the likelihood of each possible next word, we only know how many times things happen in the training data. 
+
+Below, $q(x_i)$ is the model predicted probability of the word $x_i$ given the previous words $x_1, \ldots, x_{i-1}$:
+
+\begin{equation*}
+    H(T,q)=-\sum^N_{i=1}\frac 1 N \ln q_e(x_i)
+\end{equation*}
+
+For a single observation (from Definition~\ref{eq:logistic-regression}):
+
+\begin{align*}
+    H(P,Q) = -\sum_i P(y_i)\log Q(y_i) 
+\end{align*}    
+
+\subsubsection{Maximum Likelihood Estimation}
+
+\begin{itemize}
+    \item Consider $\mathbb{X} = {x_1, \ldots, x_n}$ examples drawn independently form a true but unknown data generating distirbution $p_{data}(x)$.
+    \item Let $p_{model}(x;\theta)$ be a parametric family of probability distributions over the same space indexed by $\theta$. In other words, $p_{model}(x;\theta)$ maps any configuration x to a real number estimating the true probability $p_{data}(x)$.
+    \item The maximum likelihood estimator for $\theta$ is $\arg \max _\theta p_{model}(\mathbb{X};\theta) = \arg \max _\theta \prod_{x\in \mathbb{X}} p_{model}(x;\theta)$
+    \item since this is prone to numerical underflow, we go into the logarithm space: \\ $\arg \max_\theta \sum_{x\in \mathbb{X}} \log p_{model}(x;\theta)$
+    \item Because the arg max does not change when we rescale the cost function, we can divide by m to obtain a version of the criterion that is expressed as an expectation with respect to the empirical distribution $\arg \max _\theta \mathbb{E}_{x\sim \hat{p}_{data}} \log p_{model}(x;\theta)$
+\end{itemize}
+
+\subsubsection{Conditional Cross-Entropy Loss}
+
+The maximum likelihood estimator can readily be generalized to estimate a conditional probability $P(x|y;\theta)$ in order to predict y given x, we denote Y as our observed targets and X as our observed inputs. Here $\theta$ represents the parameters of the model that we're triyng to optimize.
+
+We choose parmeters based on the loss for the whole corpus
+
+In the given sequence of equations, the objective is transformed from maximizing the likelihood estimation to minimizing the negative log-likelihood. This is equivalent to minimizing the cross-entropy between the model's predictions and the true data distribution. The following steps are taken from \href{https://stats.stackexchange.com/questions/428937/mle-and-cross-entropy-for-conditional-probabilities/477867#477867}{this link}.
+
+\begin{eqnarray} 
+    \hat{\theta}_{ML} &=& \arg\max_{\theta} p_{model}(Y|X;\theta) \label{eq:MLE-0} \\
+    &=& \arg\max_{\theta} \frac{1}{N} \prod_{i=1}^{N} p_{model}(y^{(i)}|x^{(i)};\theta) \label{eq:MLE-1} \\
+    &=& \arg\max_{\theta} \frac{1}{N} \sum_{i=1}^{N} \log p_{model}(y^{(i)}|x^{(i)};\theta) \label{eq:MLE-1} \\
+    &=& \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^{N} - \log p_{model}(y^{(i)}|x^{(i)};\theta)  \label{eq:MLE-2} \\
+    &=& \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^{N} - \log p_{model}(y^{(i)}|x^{(i)};\theta) - \log p(x^{(i)}) \label{eq:MLE-3} \\
+    &=& \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^{N} - \log p_{model}(y^{(i)}|x^{(i)};\theta) - \log p_{model}(x^{(i)}|\theta) \label{eq:MLE-4} \\
+    &=& \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^{N} - \log \left( p_{model}(y^{(i)}|x^{(i)};\theta)p_{model}(x^{(i)}|\theta) \right) \label{eq:MLE-5} \\
+    &=& \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^{N} - \log  p_{model}(y^{(i)}, x^{(i)}|\theta) \label{eq:MLE-6} \\
+    &\approx& \arg\min_{\theta} \left(\mathbb{E}_{p_{data}(x,y)}\left[ -\log p_{model}(y,x|\theta) \right] \right) \label{eq:MLE-7} \\
+    &=& \arg\min_{\theta} \left(\mathbb{E}_{p_{data}(x,y)}\left[ -\log p_{model(\theta)}(y,x) \right] \right) \label{eq:MLE-8} 
+\end{eqnarray}
+
+In step~\ref{eq:MLE-3} we turn it into a minimisation problem. In step~\ref{eq:MLE-4} we subtracted logarithm of true and unknown probability of drawing the sample $x_i$, which does not change the argmax, as it is independent of $\theta$. In step~\ref{eq:MLE-5} we redefine $p_{model}(x^{(i)}|\theta) \equiv p_{model}(x^{(i)}|\theta)$ since our model is actually not modeling probability of the sample $x_i$
+
+    % \begin{align}
+    %     H(P,Q) & = -\sum_{x \in \mathcal{X}} P(x)\log q(x) \quad \text{Here $x$ refers to $(x,y)$} \\
+    %     & = \arg \min_\theta \frac 1 N \sum ^N_{i=1} -\log  p_{model} (y^{(i)}|x^{(i)}; \theta) \quad \text{Sample $x,y$ from the dataset for an approximation} \\
+    %     & = \arg \min_\theta \frac 1 N \sum ^N_{i=1} -\log  (p_{model} (y^{(i)}|x^{(i)}; \theta)p_{model} (x^{(i)}|\theta)) \quad \text{Separate to conditional probabilities} \\
+    %     & = \arg \min_\theta \frac 1 N \sum ^N_{i=1} -\log p_{model} (y^{(i)}|x^{(i)}; \theta) - \log p_{model} (x^{(i)}|\theta) \quad \text{Separate to two log expressions} \\
+    %     & = \arg \min_\theta \frac 1 N \sum ^N_{i=1} -\log p_{model} (y^{(i)}|x^{(i)}; \theta) - \log p(x^{(i)}) \quad\text{$P_{model}(x)$ doesn't depend on theta} \\
+    %     & = \arg \min_\theta \frac 1 N \sum^N_{i=1} - \log p_{model} (y^{(i)}|x^{(i)}; \theta) \quad \text{We have our loss as we expected}
+    % \end{align}
+    
+\begin{definition}[Cross-Entropy Loss]
+    \begin{equation*}
+        H(T,q) = - \sum^N_{i=1} \frac 1 N \ln q(x_i)    
+    \end{equation*}
+
+    Where $q(x_i)$ is the model predicted probability of the word $x_i$ given the previous words $x_1, \ldots, x_{i-1}$:
+\end{definition}
+
+\subsection{Converting Between Cross Entropy and Loss}
+
+if you calculate Cross Entropy to the base e (if it is in base two then it is $2^H$)
+
+\begin{equation*}
+    Perplexity(M) = e^H 
+\end{equation*}
+
+\subsection{Extrinsic vs Intrinsic Evaluation}
+
+If the goal of the languag model is to support with another task, the best choice of language model is the one that improves downstream task performance the most (extrinsic evaluation). Perplexity is less useful in this case (intrinsic evaluation).
 
 \printbibliography
 \addcontentsline{toc}{section}{Bibliography}
