@@ -8,6 +8,8 @@
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
+\bibliography{../bibliography}
+
 \begin{document}
 
 % Include the title page
@@ -30,7 +32,7 @@ A Model produces a score (logit), a sigmoid makes this between 0 and 1, and 0.5 
 
 \subsection{Natural Language Inference}
 
-a model is presented with a pair of sentences and must classify the relationship between their meanings. For example in the MultiNLI corpus, pairs of sentences are given one of 3 labels: entails, contradicts and neutral. These labels describe a relationship between the meaning of the first sentence (the premise) and the meaning of the second sentence (the hypothesis). Here are representative examples of each class from the corpus:
+a model is presented with a pair of sentences and must classify the relationship between their meanings. For example in the MultiNLI corpus, pairs of sentences are given one of 3 labels: entails, contradicts and neutral. These labels describe a relationship between the meaning of the first sentence (the premise) and the meaning of the second sentence (the hypothesis)~\cite{book-speech-and-language-processing}. Here are representative examples of each class from the corpus:
 
 \begin{itemize}
     \item \textbf{Premise}: The kitten is climbing the curtains again
@@ -53,36 +55,26 @@ a model is presented with a pair of sentences and must classify the relationship
 Since $P(x)$ won't change for different classes
 
 \begin{warning}
-    why?
+    why? - because I believe it is the training data. The training data in a model won't change unless it is retrained, in which case the probabilities will change but the classification outcome shouldn't change because for each $x$ we are always dividing by the same $P(x)$.
 \end{warning}
 
 \begin{equation*}
     \hat{y} = \arg \max_y P(y|x) = \arg \max_y P(x|y)P(y)
 \end{equation*}
 
-We can further state that since $x$ is a set of features $x_1, \ldots, x_I$ we have a independence assumption:
+We can further make an assumption that $x$ is a set of features $x_1, \ldots, x_I$ that are independent:
 
 \begin{definition}[Naiive Bayes Classifier]\label{eq:naiive-bayes-classifier}
     \begin{align*}
-        & P(x_1, \ldots, x_I|y)=P(x_1|y) \cdots P(x_I|y) \\
-        \hat{y} = \arg \max_y & P(x_1, \ldots, x_I|y)P(y) = \arg \max_y P(y) \prod ^ I _{i=1} P(x_i|y)
+        \hat{y} = \arg \max_y & \overbrace{P(x_1, \ldots, x_I|y)}^{P(x_1|y) \cdot \ldots \cdot P(x_I|y)}P(y) = \arg \max_y P(y) \prod ^ I _{i=1} P(x_i|y)
     \end{align*}
 \end{definition}
 
-\subsection{Add-one smoothing}
+\subsection{Bag of Words Input Representations}
 
 Raw input is transformed into a numerical representation - i.e. each input $x$ is represented by a feature vector by using a Bag of Words approach (count of each word in the input)
 ``This was another good movie for holiday watchers. There was a nice little twist at the end''
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|c|}
-        \hline
-        & \textbf{a} & \textbf{about} & \textbf{another} & \textbf{and} & \textbf{$\cdots$} & \textbf{was} & \textbf{you} \\
-        \hline
-        Review \#1 & 1 & 0 & 1 & 0 & & 2 & 0 \\
-        \hline
-    \end{tabular}
-\end{table}
+
 Collect statistics from our training data (find what $P(y|x)$ is) after performing limited data-preprocessing.
 
 \begin{figure}[H]
@@ -96,6 +88,8 @@ Collect statistics from our training data (find what $P(y|x)$ is) after performi
     P(good|+) & = \frac 2 4 & \text{i.e. } \frac{\text{frequency of word for class}}{\text{total count of words for this class}}
 \end{align*}
 
+\subsection{One smoothed Naive Bayes Classifier}
+
 this introduces the problem that one of our probabilities could be zero; therefore, adjust naive bayes classifier with `Add-one smoothing'
 
 \begin{definition}[Add-one smoothing]\label{eq:add-one-smoothing}
@@ -105,9 +99,9 @@ this introduces the problem that one of our probabilities could be zero; therefo
 \end{definition}
 
 \begin{align*}
-    P(good|+) = \frac {2 + 1} {4 + 3} = \frac 3 7 & P(good|-) = \frac{1 + 1}{3 + 3} = \frac 2 6 \\
-    P(movie|+) = \frac{1 + 1}{4 + 3} = \frac 2 7  & P(movie|-) = \frac{1 + 1}{3 + 3} = \frac 2 6  \\
-    P(bad|+) = \frac{1 + 1}{4 + 3} = \frac 2 7  & P(bad|-) = \frac{1 + 1}{3 + 3} = \frac 2 6
+    P(good|+) = \frac {2 + 1} {4 + 3} & = \frac 3 7 & P(good|-) = \frac{1 + 1}{3 + 3} & = \frac 2 6 \\
+    P(movie|+) = \frac{1 + 1}{4 + 3} & = \frac 2 7  & P(movie|-) = \frac{1 + 1}{3 + 3} & = \frac 2 6  \\
+    P(bad|+) = \frac{1 + 1}{4 + 3} & = \frac 2 7  & P(bad|-) = \frac{1 + 1}{3 + 3} & = \frac 2 6
 \end{align*} 
 
 Therefore for a test example: ``Not as \textbf{good} as the old \textbf{movie}, rather \textbf{bad}'' we use Equation~\ref{eq:naiive-bayes-classifier} to get $P(+)P(x|+) = \frac 3 5 \times \frac{3\times 2 \times 2}{7^3} = 0.021$ and $P(-)P(x|-) = \frac 2 5 \times \frac{2\times 2 \times 2}{6^3} = 0.014$. So final outcome of the model is $+$. However, this sentence is clearly negative, yet we classify as positive.
@@ -151,7 +145,8 @@ where $w$ is how important an input feature is to the classification decision an
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=.6\linewidth]{figures/example2.png}
+    \includegraphics[trim={0.7cm 0 0 0}, clip, width=.6\linewidth]{figures/example2.png}
+    \caption{Here the vector $\vec{x}$ is made up of the collection of words, here, $x_1=count(movie) \wedge x_2=count(bad)$}
 \end{figure}
 
 If we don't have the w, then we learn parameters to make the model predictions close to our labels by using a loss function (to measure the distance between the true and predicted labels) and optimization algorithm (to minimize the function usually through gradient descent.)
@@ -164,7 +159,15 @@ If we don't have the w, then we learn parameters to make the model predictions c
 
 \subsection{Multiple Classes}
 
-Weights and bias are learnt per class, then use a softmax function over the result of finding $z_i$.
+In the case where we have words
+
+\begin{align*}
+    x_1 (bad) & = 1 \\
+    x_2 (good) & = 1 \\
+    x_3 (and) & = 2 \\
+\end{align*}
+
+With sentiment analysis over 3 classes (+, -, and neutral), weights and bias are learnt per class. Then, they use a softmax function over the result of finding $z_i$.
 
 \begin{equation*}
     y=g(z_i)=\frac{e^{z_i}}{\sum^k_{j=1}e^{z_j}}
@@ -194,9 +197,9 @@ Logistic Regression considers the importance of feautres, so is better (than Nai
     \end{equation*}
 \end{definition}
 
-The neural networks allow for automatically learning dense feature representations, not one-hot encodings.
+The neural networks allow for automatically learning dense feature representations (or alternatively pre-trained dense representations), not one-hot encodings.
 
-\subsection{Docuemnt Representation}
+\subsection{Document Representation}
 
 How to get a document representation of sentence of
 fixed dimensionality?
@@ -216,7 +219,7 @@ Automatically learned features; flexibility to fit highly complex relationships 
     \includegraphics[width=.6\linewidth]{figures/RNN.png}    
 \end{figure}
 
-Natural language data is made up of sequences, so its natural to represent in a RNN; the value of a unit depends on own previous outputs - the last hidden state is the input to the output layer.
+Natural language data is made up of sequences, so its natural to represent in a RNN; the value of a unit depends on own previous outputs - the last hidden state is the input to the output layer. The words are input into the model after an embedding layer which vecotrizes the ipnut.
 
 \begin{figure}[H]
     \centering
@@ -265,15 +268,18 @@ averaging of each class F1 scores: increases the emphasis on less frequent class
 
 TPs, TNs,  FNs. FPs are summed across each class.
 
-Microaveraged F1
+\subsubsection{Microaveraged F1}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.6\linewidth]{figures/f1.png}    
+    \includegraphics[width=.9\linewidth]{figures/f1.png}    
 \end{figure}
 
 \begin{equation*}
     \frac{\sum^C_i TP_i}{\sum^C_i TP_i + 0.5 (\sum^C_i FP_i + \sum^C_i FN_i)} = \frac{\sum^C_i TP_i}{|Dataset|} = Accuracy
 \end{equation*}
+
+\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
 
 \end{document}
