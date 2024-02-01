@@ -19,7 +19,9 @@
 
 \clearpage
 
-\section{NLP Classification tasks}
+\section{Classification}
+
+\subsection{NLP Classification tasks}
 
 \begin{definition}[Classification]
     \begin{equation}
@@ -30,7 +32,7 @@
 
 A Model produces a score (logit), a sigmoid makes this between 0 and 1, and 0.5 is our decision boundary. In multi-class classification we then use softmax.
 
-\subsection{Natural Language Inference}
+\subsubsection{Natural Language Inference}
 
 a model is presented with a pair of sentences and must classify the relationship between their meanings. For example in the MultiNLI corpus, pairs of sentences are given one of 3 labels: entails, contradicts and neutral. These labels describe a relationship between the meaning of the first sentence (the premise) and the meaning of the second sentence (the hypothesis)~\cite{book-speech-and-language-processing}. Here are representative examples of each class from the corpus:
 
@@ -42,7 +44,7 @@ a model is presented with a pair of sentences and must classify the relationship
     \item \textbf{Neutral}: otherwise (neither is necessarily true)
 \end{itemize}
 
-\section{Naive Bayes}
+\subsection{Naive Bayes}
 
 (Generative Algorithm)
 
@@ -70,7 +72,7 @@ We can further make an assumption that $x$ is a set of features $x_1, \ldots, x_
     \end{align*}
 \end{definition}
 
-\subsection{Bag of Words Input Representations}
+\subsubsection{Bag of Words Input Representations}
 
 Raw input is transformed into a numerical representation - i.e. each input $x$ is represented by a feature vector by using a Bag of Words approach (count of each word in the input)
 ``This was another good movie for holiday watchers. There was a nice little twist at the end''
@@ -88,7 +90,7 @@ Collect statistics from our training data (find what $P(y|x)$ is) after performi
     P(good|+) & = \frac 2 4 & \text{i.e. } \frac{\text{frequency of word for class}}{\text{total count of words for this class}}
 \end{align*}
 
-\subsection{One smoothed Naive Bayes Classifier}
+\subsubsection{One smoothed Naive Bayes Classifier}
 
 this introduces the problem that one of our probabilities could be zero; therefore, adjust naive bayes classifier with `Add-one smoothing'
 
@@ -106,19 +108,19 @@ this introduces the problem that one of our probabilities could be zero; therefo
 
 Therefore for a test example: ``Not as \textbf{good} as the old \textbf{movie}, rather \textbf{bad}'' we use Equation~\ref{eq:naiive-bayes-classifier} to get $P(+)P(x|+) = \frac 3 5 \times \frac{3\times 2 \times 2}{7^3} = 0.021$ and $P(-)P(x|-) = \frac 2 5 \times \frac{2\times 2 \times 2}{6^3} = 0.014$. So final outcome of the model is $+$. However, this sentence is clearly negative, yet we classify as positive.
 
-\subsection{Binary Naive Bayes}
+\subsubsection{Binary Naive Bayes}
 
 Within binary naive bayes, we only consider if a feature is present, rather than considering every time it occurs. Note, this means re-calculating the conditional probabilities from the training data.
 
 E.g. ``Not as \textbf{good} as the old \textbf{movie}, rather \textbf{bad movie}'' we have $P(+)P(x|+) = \frac 3 5 \times \frac{3\times 2 \times 2}{7^3} = 0.021$ and $P(-)P(x|-) = \frac 2 5 \times \frac{2 \times 2 \times 2}{6^3} = 0.014$. If we were still operating under the same formula in Equation~\ref{eq:naiive-bayes-classifier} then we would have iterated over the label `movie' twice, and thus multiplied by $P(good|+)$ twice (in the positive case).
 
-\subsection{Controlling for negation}
+\subsubsection{Controlling for negation}
 
 We append `Not\_' after any logical negation (e..g n't, not, no, never) until the next punctuation mark.
 
 ``I didn't like the movie, but it was better than Top Gun'' becomes ``I didn't NOT\_like NOT\_the NOT\_movie, but it was better than Top Gun''
 
-\subsection{Problems}
+\subsubsection{Problems}
 
 \begin{itemize}
     \item Conditional independence assumption
@@ -127,11 +129,11 @@ We append `Not\_' after any logical negation (e..g n't, not, no, never) until th
     \item New words (not seen at training) cannot be used
 \end{itemize}
 
-\subsection{Summary}
+\subsubsection{Summary}
 
 Very quick to train, Some evidence it works well on very small datasets.
 
-\section{Logistic Regression}
+\subsection{Logistic Regression}
 
 (Discriminative Algorithm) because we directly learn $P(Y|X)$ since we don't care about $P(Y)$ or $P(X)$. They learn the input feauters most useful to discriminate between the different classes, without considering the likelihood of the input itself.
 
@@ -157,7 +159,7 @@ If we don't have the w, then we learn parameters to make the model predictions c
     \end{equation*}
 \end{definition}
 
-\subsection{Multiple Classes}
+\subsubsection{Multiple Classes}
 
 In the case where we have words
 
@@ -173,11 +175,11 @@ With sentiment analysis over 3 classes (+, -, and neutral), weights and bias are
     y=g(z_i)=\frac{e^{z_i}}{\sum^k_{j=1}e^{z_j}}
 \end{equation*}
 
-\subsection{Summary}
+\subsubsection{Summary}
 
 Logistic Regression considers the importance of feautres, so is better (than Naive Bayes) at dealing with correlated feautres, also better (than Naive Bayes) with larger datasets.
 
-\section{Neural Networks (NNs)}
+\subsection{Neural Networks (NNs)}
 
 \begin{definition}[Linear Layer]
     \begin{equation*}
@@ -199,7 +201,7 @@ Logistic Regression considers the importance of feautres, so is better (than Nai
 
 The neural networks allow for automatically learning dense feature representations (or alternatively pre-trained dense representations), not one-hot encodings.
 
-\subsection{Document Representation}
+\subsubsection{Document Representation}
 
 How to get a document representation of sentence of
 fixed dimensionality?
@@ -208,11 +210,11 @@ Average of sentence - bad idea:
     
 Model architecutre fixed to sentence length size, model wieghts learnt for specific word positions
 
-\subsection{Neural Networks}
+\subsubsection{Neural Networks}
 
 Automatically learned features; flexibility to fit highly complex relationships in data, but they require more data to learn more complex patterns.
 
-\section{Recurrent neural networks (RNNs)}
+\subsection{Recurrent neural networks (RNNs)}
 
 \begin{figure}[H]
     \centering
@@ -226,7 +228,7 @@ Natural language data is made up of sequences, so its natural to represent in a 
     \includegraphics[width=.6\linewidth]{figures/VanillaRNN.png}    
 \end{figure}
 
-\subsection{Vanishing gradient problem}
+\subsubsection{Vanishing gradient problem}
 
 The model is less able to learn from earlier inputs (Tanh derivatives are between 0 and 1) (Sigmoid derivatives are between 0 and 0.25) - Gradient for earlier layers involves repeated multiplication
 of the same matrix W - depending on the dominant eignevalue this can cause gradients to either `vanish' or `explode'
@@ -235,7 +237,7 @@ of the same matrix W - depending on the dominant eignevalue this can cause gradi
     RNNs perform better when you need to understand longer range dependencies
 \end{warning}
 
-\section{CNNs}
+\subsection{CNNs}
 
 CNNs are composed of a series of convolution layers,
 pooling layers and fully connected layers. Convolutional layers Detect important patterns in the inputs. Pooling layers Reduce dimensionality of features and transform them into a fixed-size. Fully connected layers Train weights of learned representation for a specific task.
@@ -246,7 +248,7 @@ We can stack multiple filters on-top of eachother also.
     CNNs can perform well if the task involves key phrase recognition.
 \end{warning}
 
-\section{Accuracy and F1}
+\subsection{Accuracy and F1}
 
 \begin{definition}[accuracy]
     \begin{equation*}
@@ -260,11 +262,11 @@ We can stack multiple filters on-top of eachother also.
     \end{equation*}
 \end{definition}
 
-\subsection{Macro averaging}
+\subsubsection{Macro averaging}
 
 averaging of each class F1 scores: increases the emphasis on less frequent classes
 
-\subsection{Micro averaging}
+\subsubsection{Micro averaging}
 
 TPs, TNs,  FNs. FPs are summed across each class.
 
@@ -272,12 +274,154 @@ TPs, TNs,  FNs. FPs are summed across each class.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.9\linewidth]{figures/f1.png}    
+    \includegraphics[trim={0 .5cm 0 0}, clip, width=.9\linewidth]{figures/f1.png}    
 \end{figure}
 
 \begin{equation*}
     \frac{\sum^C_i TP_i}{\sum^C_i TP_i + 0.5 (\sum^C_i FP_i + \sum^C_i FN_i)} = \frac{\sum^C_i TP_i}{|Dataset|} = Accuracy
 \end{equation*}
+
+\section{Language Models}
+
+\subsection{Definition}
+
+\begin{definition}
+    Language modeling involves assigning probabilities to sequences of words. This could involve, predicting the next word in a sqeunce of words, or predicting a masked word in a sentence.
+
+    ``Models that assign probabilities to sequences of words are called language models''\cite{book-speech-and-language-processing}
+\end{definition}
+
+\subsubsection{Uni-directional}
+
+Here we use information from the left of the sentence to generate predictions about words that will appear to the right.
+
+\subsubsection{Bi-directional}
+
+Here we use information from both sides of the mask to 'fill in the gap'
+
+\subsection{N-Gram Modelling}
+
+The task of computing $P(w|h)$, the probability of a word w given some history h.
+\begin{equation*}
+    =P(w_n|w_1^{n-1})
+\end{equation*}
+
+One way to estimate this probability is from relative frequency counts: take a very large corpus, count the number of times we see the history and count the number of times that $w$ directly followed the history.
+
+\begin{equation*}
+    P(\text{the}|\text{its water is so transparent that}) = \frac{C(\text{its water is so transparent that the})}{C(\text{its water is so transparent that})}   
+\end{equation*}
+
+However, this doesn't work for long histories. This is because language is creative; new sentences are created all the time, and we won't always be able to count entire sentence. Even simple legal extensions of the example sentence may have counts of zero on the web.
+
+\textbf{The intuition of the n-gram model is that instead of computing the probability of a word given its entire history, we can approximate the history by just the last few words.}
+
+\begin{align*}
+    P(\text{the}|\text{its water is so transparent that}) = Full\ context & = P(w_n|w_1^{n-1}) \\
+    Unigram\ approximation & \approx P(w_n) = P(\text{the}) \\
+    Bigram\ approximation & \approx P(w_n|w_{n-1}) = P(\text{the}|\text{that}) \\
+    Triagram\ approximation & \approx P(w_n|w_{n-2,n-1}) = P(\text{the}|\text{transparent\ that})
+\end{align*}
+
+\begin{definition}[N-gram modelling]
+    The N-gram models approximat ehistory by just the few last words with relation
+    \begin{equation*}
+        P(w_n|w_1^{n-1}) \approx P(w_n|w_{n-N+1}^{n-1})
+    \end{equation*}\label{def:n-gram} 
+\end{definition}
+
+We can then estimate these probabilities as `MLE as relative frequencies' 
+
+\begin{equation*}
+    P(w_n|w_1^{n-1}) \approx P(w_n|w_{n-N+1}^{n-1}) = \frac{C(w_{n-N+1}^{n-1}w_n)}{C(w_{n-N+1}^{n-1})}
+\end{equation*}
+
+The larger, the better the counts - larger n possible, however, trigams are often enough. 
+
+\begin{figure}[H]
+    \centering
+    \subfigure[shows the bigram counts from a piece of a bigram grammar from the Berkeley Restaurant Project. Note that the majority of the values are zero. In fact, we have chosen the sample words to cohere with each other; a matrix selected from a random set of eight words would be even more sparse~\cite{book-speech-and-language-processing}]{\includegraphics[width=.6\linewidth]{figures/n-gram-table-example.png}}
+    \subfigure[Shows total occurrances of each word~\cite{book-speech-and-language-processing}]{\includegraphics[width=.6\linewidth]{figures/n-gram-table-example-occurrences-.png}}
+    \subfigure[Bigram probabilities for eight words in the Berkeley Restaurant Project corpus     of 9332 sentences. Zero probabilities are in gray.~\cite{book-speech-and-language-processing}]{\includegraphics[width=.6\linewidth]{figures/n-gram-table-example-probs.png}}
+    \caption{Bigram example}
+\end{figure}
+
+E.g. to find the probability of ``want to'' $\equiv P(to|want)$ use Definition~\ref{def:n-gram}
+    
+\begin{align*}
+    P_{N=2}(w_n|w_1^{n-1}) & \approx P(w_n|w_{n-2+1}^{n-1}) \\
+    & = \frac{C(w_{n-1}^{n-1}w_n)}{C(w_{n-1}^{n-1})} \\
+    & = \frac{C(\text{to}|\text{want})}{C(\text{want})} \\
+    & = \frac{C(\text{608})}{C(\text{927})} = 0.65587918
+\end{align*}
+
+\subsection{Evaluating Language Models}
+
+We can evaluate a sequence by considering the product of conditional probabilities.
+
+\begin{equation}\label{eq:evaluate-language-model-multiply}
+    P(w_1, \ldots, w_n) = \prod^n_{k=1}P(w_k|w_1^{k-1})
+\end{equation}
+
+E.g. To find $P(<s>\text{I want chinese food}</s>)$ Given the above table and using Definition~\ref{def:n-gram}
+
+(given also that $P(i|<s>) = 0.25 \wedge P(</s>|food) = 0.68$) 
+
+\begin{align*}
+    P_{N=2}(w_n|w_1^{n-1}) & \approx P(w_n|w_{n-2+1}^{n-1}) \\
+    & = \frac{C(w_{n-1}^{n-1}w_n)}{C(w_{n-1}^{n-1})} \\
+    & \Rightarrow P(i|<s>) \cdot P(want|i) \cdot P(chinese|want) \cdot P(food|chinese) \cdot P(</s>|food) \\
+    & \approx 0.25 \cdot \frac{C(\text{want}|\text{i})}{C(\text{i})} \cdot \frac{C(\text{chinese}|\text{want})}{C(\text{want})} \cdot \frac{C(\text{food}|\text{chinese})}{C(\text{chinese})} \cdot 0.68 \\
+    & \approx 0.25 \cdot 0.33 \cdot 0.0065 \cdot 0.52 \cdot 0.68 \\
+    & = 0.000189618
+\end{align*}
+
+However, in Equation~\ref{eq:evaluate-language-model-multiply} we are multiplying many small numbers together that are less than 0. This is a very small number, so we can switch to log space \& replace multiplication by addition
+
+\begin{align*}
+    \log(P(w_1, \ldots, w_n)) = \log(\prod^n_{k=1}P(w_k|w_1^{k-1})) = \sum^n_{k=1}\log(P(w_k|w_1^{k-1}))
+\end{align*}
+
+We can then take the exponent of this.
+
+\subsubsection{Problems with this approach}
+
+We have an issue here with longer outputs: The longer the output is, the lower its likelihood (many multiplications give a small number)
+
+\subsubsection{Perplexity}
+
+We normalize by the length of the text `the inverse probability of a text, normalized by the \# of the words'
+
+\begin{definition}[Perplexity]
+    In practice we don't use raw probability as our metric for evaluating language models, but a variant called perplexity. The perplexity (sometimes called PPL for short) of a language model on a test set is the inverse probability of the test set, normalized by the number of words.
+\end{definition}
+
+Here $n$ is the number of words:
+
+\begin{align*}
+    PPL(w) & =P(w_1,w_2,\ldots,w_n)^\frac{-1}{N} \\
+    & = \sqrt[n]{\frac{1}{P(w_1,w_2,\ldots,w_n)}}
+\end{align*}
+We can then use the chain rule to expand the probability of $W$
+\begin{align*}
+    PPL(w) & = \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1,\ldots,w_{i-1})}} = \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1^{k-1})}}
+\end{align*}
+
+Note that because of the inverse, the higher the conditional probability of the word sequence, the lower the perplexity. Thus, minimizing perplexity is equivalent to maximizing the test set probability according to the language model. It is a measure of the surprise in an LM when seeing new text.
+
+\subsubsection{Summary}
+
+Perplxeity allows us to choose the best LM for a test data: LM1 vs LM2: best LM is the one with the lowest perplexity
+\begin{itemize}
+    \item However, perplexity is specific to the test-set
+    
+    ``We can consider perplexity as the weighted average branching factor of a language. The branching factor of a language is the number of possible next words that can follow any word. Consider the task of recognizing the digits n English (zero, one, two,..., nine), given that (both in some training set and in some test set) each of the 10 digits occurs with equal probability $P=1/10$  The perplexity of this mini-language is in fact 10. To see that, imagine a test string of digits of length $N$, and assume that in the training set all the digits occurred with equal probability.
+
+    But suppose that the number zero is really frequent and occurs far more often than other numbers. Let’s say that 0 occur 91 times in the training set, and each of the other digits occurred 1 time each. Now we see the following test set: 0 0 0 0 0 3 0 0 0 0. We should expect the perplexity of this test set to be lower since most of the time the next number will be zero, which is very predictable, i.e. has a high probability. Thus, although the branching factor is still 10, the perplexity or weighted branching factor is smaller''~\cite{book-speech-and-language-processing}
+    
+    \item How you tokenize the data matters
+\end{itemize}
+
 
 \printbibliography
 \addcontentsline{toc}{section}{Bibliography}
