@@ -8,7 +8,7 @@
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
-%\bibliography{bibliography}
+\bibliography{../bibliography}
 
 \begin{document}
 
@@ -67,6 +67,10 @@ If we don't have any occurrences in our current (trigram) model, we can back-off
         \end{cases} \\
         s(w_i) &= \frac{C(w_i)} N
     \end{align*}    
+
+    \begin{warning}
+        Note, this is not a probability, but a score
+    \end{warning}
 \end{definition}
 
 Where $N$ is the number of words in the text
@@ -89,15 +93,235 @@ Combine evidence from different n-grams:
 
 \section{Feed-forward neural language models}
 
+\begin{figure}[H]
+    \centering
+    \subfigure[Lecture diagram]{\includegraphics[width=.8\linewidth]{figures/FFLM-lecture.png}}
+    \subfigure[Paper diagram~\cite{FFLM-2003}]{\includegraphics[width=.8\linewidth]{figures/FFLM-paper.png}}
+    \caption{FFLM diagrams}\label{fig:fflm}
+\end{figure}
+
+It approximates history with last C words (C affects model size) e.g. 4-gram FFLM has a context size of 3. The context is formed by concatenating word embeddings.
+
 \section{Vanilla RNNs for language modelling}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/Rnn-architecture.png}
+\end{figure}
+
+Before we had classifciation, each function took a hidden state and output this into the output layer. We could do this differently, but instead of taking the final we could max on each dimension also.
+
+\subsection{Many-to-many RNN}
+
+Every input has a label, in languag emodelling you predict the next word. The LM loss is predicted form the cross-entropy losses from each timestep.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/rnn-mtm.png}
+\end{figure}
+
+In addition to passing the hidden state to the next funciton, you also use it in the output layer. The size of $W$: lets say the hidden state has H dimensions, it must go to the size of the vocab, becuase you're predicting which word is going to come next out of the whole vocab, so it is $V\times H$.
+
+We take the log probabilities because you want to use the cross entropy loss (which is the average across the outputs)
+
+\subsubsection{Teacher forcing}
+
+In the event where this network predicts an incorrect label some way along the prediction, we force it to use the actual expected label because otherwise the network would be learning some strange behaviour if you are given incorrect predictions somewhere along the line.
+
+If you don't use it, then there is instability in the model.
+
+\subsubsection{Weight tying, reducing the no. of parameters}
+
+We have very big models; big vocabulary causes matricies of dimension $V\times \cdot$.
+
+We can use the same embedding weights in our output layer: ($E$ has dimensions: $H \times |V|$). If you have a matrix $E$ that maps from a one-hot vector into an embedding, you can use E transpose in the output layer.
+
+\begin{align*}
+    & e_t & = & Ex_t & \\ 
+    & h_{t+1} & = & \tanh(Wh_t + Ue_t) & \\
+    & y_t & = & softmax(E^\top h_t) & E^\top \text{ has dimensions}: |V| \times H
+\end{align*}
+
+U could be from the size of the imbedding to the size of the hidden state, but if we do the weight tying then it has to be $H \times H$.
 
 \section{Bi-directional RNNs}
 
-\section{LSTMs and GRUs}
+\subsection{Bi-directional RNNs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/bi-directional-rnn.png}
+\end{figure}
+
+We can concatenate the representations at the end of the RNNs for both directions. 
+
+When comparing the number of parameters in this vs a single directional rnn, it doubles. The output layer also doubles (because we are given a matrix $H\times O$ twice from each direction making the output layer have dimension $H\times H \times O$).
+
+\subsection{Multi-layered RNNs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/rnn-bidirectional-not-single-output.png}
+\end{figure}
+
+We can also predict every single token (every word we input). We concattenate them and can make a prediction at each time step. Then, following this, we can stack networks on-top of eachother.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/multi-layered-rnn.png}
+\end{figure}
+
+\subsection{Bi-directional multi-layered RNNs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/bi-directional-multi-layered-rnn.png}
+\end{figure}
+
+Currently forward output and backward output is concatenated after each layer. But, for language modeling, we need independent forward rnn and backward rnn util the last layer and output concatenation is only need at the last layer.
+
+\section{LSTMs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/lstm.png}
+\end{figure}
+
+Cell states ($C_t$) represnt `long term memory', and hidden states ($h_t$) is current working memory (same as for vanilla RNN).
+
+\subsection{How it works}
+
+\subsubsection{Step 1: we start from what we know already}
+
+We used vanilla rnns before. The current value is:
+
+\begin{equation*}
+    g_t = \tanh(W_{ig}x_t + W_{hg}h_{t-1} + b_g)
+\end{equation*}
+
+\subsubsection{Step 2: we define our cell state}
+
+With LSTM, we also want a cell state for long term memory
+
+\begin{equation*}
+    c_t = f_t \ast c_{t-1} + i_t \ast g_t
+\end{equation*}
+
+We define this by the cell state from the previous time step $c_{t-1}$ and add it to some of what we got form this time step $g_t$ with some multiplier for each of those.
+
+The model can now choose to keep this state the same or forget everything. 
+
+Note that $f_t \wedge i_t$  are in terms of t so they're not the same every time step - so we can choose when to remember or when to forget. The decision should be based on what the input is for that time step and what the context is up to thtat point.
+
+\subsubsection{Step 2. The forget gate}
+
+$f_t$ is the forget gate, and is a vector between 0 and 1. It needs to consider $x_t \wedge h_{t-1}$ and returns a vector between 0 and 1.
+
+\begin{equation*}
+    f_t = \sigma (W_{if}x_t + W_{hf}h_{t-1}+b_f)
+\end{equation*}
+
+\subsubsection{Step 2. The input gate}
+
+Similarly, with $i_t$ it is the input gate and is a vector between 0 and 1.
+
+\begin{equation*}
+    fi_t = \sigma (W_{ii}x_t + W_{hi}h_{t-1}+b_i)
+\end{equation*}
+
+\subsubsection{Step 3. prepare next hidden state}
+
+Here, we are transforming $c_t$ to give us $h_t$. 
+
+\begin{equation*}
+    h_t = o_t \ast \tanh(c_t) 
+\end{equation*}
+
+\subsection{Full equations}
+
+\begin{align*}
+    i_t & = \sigma (W_{ii}x_t + W_{hi}h_{t-1}+b_i) \\
+    f_t & = \sigma (W_{if}x_t + W_{hf}h_{t-1}+b_f) \\
+    o_t & = \sigma (W_{io}x_t + W_{ho}h_{t-1}+b_o) \\
+    g_t & = \tanh(W_{ig}x_t + W_{hg}h_{t-1}+b_g)
+\end{align*}
+
+\begin{align*}
+    c_t & = f_t \ast c_{(t-1)} + i_t \ast g_t \\
+    h_t & = o_t \ast \tanh(c_t)
+\end{align*}
+
+\subsubsection{Dimensions}
+
+If we have $E$ dimensional embeddings and $H$ dimensional vectors.
+
+\begin{itemize}
+    \item $W_{ii}=(H\times E)$ is the weight matrix applied to the input. We go from the embeddings to $i_t$. We know that $i_t$ is $H$ dimensional 
+    \item $W_{hi}=(H\times H)$ is the weight matrix applied to the input gate whose dimensions must match the addition of the step prior, 
+\end{itemize}
+
+\textbf{EXAMPLE}
+
+If we have 100 dimensional hidden states, 500 dimensional embeddings and a classificaiton taks with 5 classes (no bias term in the output layer), then excluding any embedding layer, how many parameters do we have?
+
+Look at the dimensions of the weight matricies, we have $100 \times 500$ and $100 \times 100$. The bias term in these intermediate hidden layers is therefore 100 also. Then similarly for the rest so $(100 \times 500 + 100 \times 100 + 100)\times 4$.
+
+In the output layer, we have 5 output classes, so we must convert from having $H$ dimensions to $5$ dimensions in our weight matrix i.e. $100\times 5$.
+
+Therefore, we have $24,900$ parameters.
+
+\textbf{EXAMPLE BIDIRECTIONAL}
+
+Same as above, only we multiply by 2 in the hidden layers, and 2 once again in the output layer because we're getting data sent in from two streams, each without output dimension $H$.
+
+\subsection{Why do LSTMs help with vanishing gradients?}
+
+The gradients thorugh the cell states are hard to vanishing
+\begin{enumerate}
+    \item Additive formula means we don't ahve repeated multiplication of the same matrix (we have a derivative thats more `well behaved')
+    \item The forget gate means that our model can learn when to let the gradients vanish, and when to preseve them .This gate can take different values at different time steps.
+\end{enumerate}
+
+\section{GRU}
+
+\subsection{How it works}
+
+Similar, only instead of having two distinct gates, we have $z_t \wedge (1-z_t)$. Also we have a update gate $r_t$.
+
+\subsubsection{Step 1. Current value}
+
+\begin{equation*}
+    g_t = \tanh(W_{ig}x_t + r_t \ast (W_{hg}h_{t-1} + b_g))
+\end{equation*}
+
+\subsubsection{Step 1. Update gate}
+
+How much do we consdier the previous hidden state
+
+\begin{equation*}
+    r_t = \sigma(W_{ir}x_t + W_{hr}h_{t-1} + b_r)
+\end{equation*}
+
+\subsubsection{Step 2. Long term memory}
+
+Our long term memory is only controlled by a reset gate ($z_t$)
+
+\begin{equation*}
+    h_t = (1-z_t) \ast g_t + z_t \ast h_{t-1}
+\end{equation*}
+
+\subsubsection{Step 2. Reset gate}
+
+\begin{equation*}
+    z_t = \sigma(W_{iz}x_t + W_{hz}h_{t-1} + b_z)
+\end{equation*}
+
+\subsubsection{No output gate}
+
 
 \section{Revision \& little tangent on de-biasing}
 
-% \printbibliography
-% \addcontentsline{toc}{section}{Bibliography}
+\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
 
 \end{document}
