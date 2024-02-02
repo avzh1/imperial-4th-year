@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{example}
+\newcommand{\reportdescription}{example description}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{Sparsity}
+
+\subsection{Problem}
+
+If certain words are absent then the proability in the n-gram is zero. We can use smoothing to solve this or give it unknown word tokens. 
+% Alternatively, we can give an unknown word token (but these have to be in the training set and the test set). This unknown word is used if a word appears to little times, or we apply this directly to our vocabulary set.
+
+\subsection{Add-one smoothing}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[Counts after one-smoothing (we've added +1 to EVERYTHING)]{\includegraphics[width=.8\linewidth]{figures/after-one-smoothing.png}}
+    \subfigure[probabilities before one-smoothing]{\includegraphics[width=.8\linewidth]{figures/before-one-smoothing.png}}
+    \subfigure[probabilities after one-smoothing]{\includegraphics[width=.8\linewidth]{figures/after-one-smoothing-probs.png}}
+    \subfigure[total instances of words]{\includegraphics[width=.8\linewidth]{figures/bi-gram-total.png}}
+    \caption{difference between smoothing and not}\label{fig:smoothing-example}
+\end{figure}
+
+\begin{equation*}
+    P_{add-1}(w_n|w_{n-1})=\frac{C(w_{n-1},w_n)+1}{C(w_{n-1})+V}
+\end{equation*}
+
+Given words with sparse statistics, they steal probability mass from more frequent words. This is because smaller instances of vocabulary are more influenced by the V and +1 term appearing in the new fraction. However, for larger occurrences they shrink because the nominator is large (so +1) won't change it by much, but the denominator grows larger, making the overall probability less.
+
+The change here is great between the hilighted terms in Figure~\ref{fig:smoothing-example}. ``If we have very few instances of the word `want' the smoothing will impact this a lot and this number will therefore change a lot. Wheras, if we have a lot of counts within the word `i' then it wont change the probability a lot.'' Indeed, looking at the total instances of word i, the denominator is so large already that the number wasn't impacted, and `want' was impacted.
+
+\subsubsection{Problems}
+
+Although easy to implement, it takes too much probability mass from more likely occurrences (see Figure~\ref{fig:smoothing-example}) and assigns too much probability to unseen events. Therefore, we could try +k smoothing witha  smaller value of k.
+
+\subsection{Back-off smoothing}
+
+If we don't have any occurrences in our current (trigram) model, we can back-off and see how many occurrences there are in the smaller (bigram) model.
+
+\begin{definition}[Back off smoothing ``sutpid back-off'']
+    \begin{align*}
+        S(w_i|w_{i-2}w_{i-1}) &=
+        \begin{cases}
+            \frac{C(w_{i-2}w_{i-1}w_i)}{C(w_{i-2}w_{i-1})} , & if\ C(w_{i-2}w_{i-1}w_i) > 0 \\
+            0.4 \cdot S(w_i|w_{i-1}) , & otherwise    
+        \end{cases} \\
+        S(w_i|w_{i-1}) &=
+        \begin{cases}
+            \frac{C(w_{i-1}w_i)}{C(w_{i-1})} , & if\ C(w_{i-1}w_i) > 0 \\
+            0.4 \cdot S(w_i) , & otherwise    
+        \end{cases} \\
+        s(w_i) &= \frac{C(w_i)} N
+    \end{align*}    
+\end{definition}
+
+Where $N$ is the number of words in the text
+
+\subsubsection{Problems}
+
+suppose that the bigram ``a b'' and the unigram ``c'' are very common, but the trigram ``a b c'' is never seen. Since ``a b'' and ``c'' are very common, it may be significant (that is, not due to chance) that ``a b c'' is never seen.
+
+Perhaps it's not allowed by the rules of the grammar.  Instead of assigning a more appropriate value of 0, the method will back off to the bigram and estimate $P(c | b)$, which may be too high
+
+\subsection{Interpolation}
+
+Combine evidence from different n-grams:
+
+\begin{definition}[Interpolation]
+    \begin{equation*}
+        P_{interp}(w_i|w_{i-2}w_{i-1})=\lambda_1 P(w_i|w_{i-2} w_{i-1}) + \lambda_2 P(w_i|w_{i-1}) + \lambda_3 P(w_i), \quad where\ \lambda_1 + \lambda_2 + \lambda_3 = 1
+    \end{equation*}
+\end{definition}
+
+\section{Feed-forward neural language models}
+
+\section{Vanilla RNNs for language modelling}
+
+\section{Bi-directional RNNs}
+
+\section{LSTMs and GRUs}
+
+\section{Revision \& little tangent on de-biasing}
+
+% \printbibliography
+% \addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
