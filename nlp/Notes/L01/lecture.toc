@@ -4,28 +4,32 @@
 \contentsline {subsection}{\numberline {1.2}The role of Deep Learning}{3}{subsection.4}%
 \contentsline {subsection}{\numberline {1.3}Composites of Language}{3}{subsection.5}%
 \contentsline {subsubsection}{\numberline {1.3.1}Lexicon - morphological analysis}{3}{subsubsection.6}%
-\contentsline {subsubsection}{\numberline {1.3.2}Syntax}{4}{subsubsection.15}%
-\contentsline {subsubsection}{\numberline {1.3.3}Semantics}{5}{subsubsection.16}%
-\contentsline {subsubsection}{\numberline {1.3.4}Discourse}{5}{subsubsection.17}%
-\contentsline {subsubsection}{\numberline {1.3.5}Pragmatics}{5}{subsubsection.18}%
-\contentsline {section}{\numberline {2}Word Representation}{5}{section.19}%
-\contentsline {subsection}{\numberline {2.1}One-hot-encoding}{6}{subsection.20}%
-\contentsline {subsubsection}{\numberline {2.1.1}Issues}{6}{subsubsection.21}%
-\contentsline {subsection}{\numberline {2.2}WordNet}{6}{subsection.22}%
-\contentsline {subsubsection}{\numberline {2.2.1}Issues}{6}{subsubsection.23}%
-\contentsline {subsection}{\numberline {2.3}Word Embedding}{6}{subsection.24}%
-\contentsline {subsubsection}{\numberline {2.3.1}Euclidean Distance}{6}{subsubsection.25}%
-\contentsline {subsubsection}{\numberline {2.3.2}Cosine Distance}{7}{subsubsection.27}%
-\contentsline {section}{\numberline {3}Algorithm - Word2Vec}{7}{section.29}%
-\contentsline {subsection}{\numberline {3.1}Window}{7}{subsection.30}%
-\contentsline {subsection}{\numberline {3.2}Continuous bag-of-words}{8}{subsection.33}%
-\contentsline {subsection}{\numberline {3.3}Skip-gram}{8}{subsection.35}%
-\contentsline {subsubsection}{\numberline {3.3.1}Training}{9}{subsubsection.43}%
-\contentsline {subsubsection}{\numberline {3.3.2}Loss}{9}{subsubsection.45}%
-\contentsline {subsubsection}{\numberline {3.3.3}Using Word Embeddings}{10}{subsubsection.47}%
-\contentsline {subsubsection}{\numberline {3.3.4}Softmax problem}{10}{subsubsection.48}%
-\contentsline {subsubsection}{\numberline {3.3.5}Negative Sampling}{10}{subsubsection.49}%
-\contentsline {subsubsection}{\numberline {3.3.6}Size of k?}{11}{subsubsection.52}%
-\contentsline {subsubsection}{\numberline {3.3.7}Noise Distribution}{11}{subsubsection.53}%
-\contentsline {section}{\numberline {4}What can we do with vectors?}{11}{section.54}%
-\contentsline {section}{\numberline {5}Byte Pair Encoding}{12}{section.58}%
+\contentsline {subsubsection}{\numberline {1.3.2}Syntax}{4}{subsubsection.14}%
+\contentsline {subsubsection}{\numberline {1.3.3}Semantics}{4}{subsubsection.15}%
+\contentsline {subsubsection}{\numberline {1.3.4}Discourse}{5}{subsubsection.16}%
+\contentsline {subsubsection}{\numberline {1.3.5}Pragmatics}{5}{subsubsection.17}%
+\contentsline {section}{\numberline {2}Word Representation}{5}{section.18}%
+\contentsline {subsection}{\numberline {2.1}One-hot-encoding}{5}{subsection.19}%
+\contentsline {subsubsection}{\numberline {2.1.1}Issues}{5}{subsubsection.20}%
+\contentsline {subsection}{\numberline {2.2}WordNet}{6}{subsection.21}%
+\contentsline {subsubsection}{\numberline {2.2.1}Issues}{6}{subsubsection.22}%
+\contentsline {subsection}{\numberline {2.3}Word Embedding}{6}{subsection.23}%
+\contentsline {subsubsection}{\numberline {2.3.1}Euclidean Distance}{6}{subsubsection.24}%
+\contentsline {subsubsection}{\numberline {2.3.2}Cosine Distance}{6}{subsubsection.26}%
+\contentsline {section}{\numberline {3}Algorithm - Word2Vec}{6}{section.28}%
+\contentsline {subsection}{\numberline {3.1}Window}{6}{subsection.29}%
+\contentsline {subsection}{\numberline {3.2}Continuous bag-of-words}{7}{subsection.32}%
+\contentsline {subsection}{\numberline {3.3}Skip-gram}{7}{subsection.34}%
+\contentsline {subsubsection}{\numberline {3.3.1}Training}{8}{subsubsection.42}%
+\contentsline {subsubsection}{\numberline {3.3.2}Loss}{9}{subsubsection.44}%
+\contentsline {subsubsection}{\numberline {3.3.3}Using Word Embeddings}{9}{subsubsection.46}%
+\contentsline {subsubsection}{\numberline {3.3.4}Softmax problem}{10}{subsubsection.47}%
+\contentsline {subsubsection}{\numberline {3.3.5}Negative Sampling}{10}{subsubsection.48}%
+\contentsline {subsubsection}{\numberline {3.3.6}Size of k?}{10}{subsubsection.51}%
+\contentsline {subsubsection}{\numberline {3.3.7}Noise Distribution}{10}{subsubsection.52}%
+\contentsline {section}{\numberline {4}What can we do with vectors?}{11}{section.53}%
+\contentsline {section}{\numberline {5}Byte Pair Encoding}{11}{section.57}%
+\contentsline {subsection}{\numberline {5.1}How to represent end of word}{13}{subsection.70}%
+\contentsline {subsubsection}{\numberline {5.1.1}Why?}{13}{subsubsection.71}%
+\contentsline {subsection}{\numberline {5.2}Unknown words (from seen vocabulary)}{13}{subsection.72}%
+\contentsline {subsection}{\numberline {5.3}Alternatives}{14}{subsection.81}%
