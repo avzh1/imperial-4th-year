@@ -1,0 +1,14 @@
+numpy
+torch
+torch
+torch
+torchvision
+matplotlib
+matplotlib
+random_split
+transforms
+MNIST
+LightningModule
+TensorBoardLogger
+ModelCheckpoint
+accuracy
