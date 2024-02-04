@@ -2,10 +2,6 @@ numpy
 pandas
 seaborn
 matplotlib
-matplotlib
-random_split
-MNIST
-transforms
-linear_model
-StandardScaler
-make_pipeline
+torch
+scikit-learn
+torchvision
