@@ -356,6 +356,236 @@ If penalizing of either over- or undersegmentation is desired (unequal severity 
     \caption{Extended Data Fig. SN 2.10~\cite{pitfalls-in-segmentation-evaluation}}
 \end{figure}
 
+\section{Segmentation Methods}
+
+\subsection{Intensity-based segmentation | thresholding}
+
+By generating a histogram of values from a scan, you can choose which pixels to keep based on a threshold. When one threshold doesn't work initially, you can use multiple thresholds with upper and lower thresholds
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{figures/ul-thresholding.png}
+\end{figure}
+
+\subsubsection{Advantages}
+
+Simple and fast
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item regions must be homogeneous and distinct
+    \item difficulty in finding consistent thresholds across images
+    \item leakages, isolated pixels and `rough' boundaries likely
+\end{itemize}
+
+\subsection{Region-based | region growing}
+
+Start from (user selected) seed point(s) and grow a region according to an intensity threshold.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.4\linewidth]{figures/regiongrow-1.png}}
+    \subfigure{\includegraphics[width=.4\linewidth]{figures/regiongrow-2.png}}
+\end{figure}
+
+\subsubsection{Advantages}
+
+relatively fast and yields connected regions (From a seed point)
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item regions must be homogeneous
+    \item leakages and `rough' boundaries likely
+    \item requires (user) input for seed points
+\end{itemize}
+
+\subsection{Atlas-based segmentation}
+
+An atlas is some kind of prototype or examplar of the anatomy that we want to segment, or a template of the obejct we would like to segment. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.7\linewidth]{figures/atlas.png}
+\end{figure}
+
+
+Atlases usually have geometric informatino about points, curves or surfaces, or label information about voxels (Anatomical regions or function). Atlases are usually constructed from example data: single subjects or populations of subjects e.g. by averaging to produce probabilistic atlases.
+
+The image above isn't a specific patient, but it is a statistical population average with probability maps for were brain matter is. We can use these as priors to segment other patients. 
+
+\subsection{Segmentation using Registration}
+
+Uses atlases to mutate and trasnform existing segmented images (or atlases) to form the same properties as the image you're trying to segment now. By using more than one image, the target image now has multiple predictions of the segmentation, and a lable fusion must occur.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{figures/registration.png}
+\end{figure}
+
+\subsection{Multi-Atlas Label Propagation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{figures/registration-2.png}
+\end{figure}
+
+Upon fusion, it is possible to keep a probability distirbution to indicate that there was contention between different sources.
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item robust and accurate (like ensembles)
+    \item yields plausible segmentations
+    \item fully automatic
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item computationally expensive
+    \item cannot deal well with abnormalities
+    \item not suitable for tumour segmentation
+\end{itemize}
+
+\subsection{Learning-based segmentation | random forests, convolutional neural networks}
+
+\subsubsection{Random forests}
+
+Begin by taking different 3D views or obtain multiple contrasts of the same anatomy but in a different way (based on differen physical scans) of the same target. Afterwards, combine them into a 4D tensor, and predict a segmentaiton of the tumorous tissues. It is great because all pateints are different.
+
+At each branch, decide a splitting criteria that will give you the best possible split amongs the data. At training, the tree tries to cluster classes together.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/random-forests.png}}
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/random-forests-2.png}}
+\end{figure}
+
+\href{https://www.doc.ic.ac.uk/~bglocker/pdfs/zikic2012miccai.pdf}{paper1} and 
+\href{https://www.doc.ic.ac.uk/~bglocker/pdfs/zikic2012brats.pdf}{paper2}
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item ensemble classifiers are robust and accurate
+    \item computationally efficient (can run in parallel)
+    \item fully automatic
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item shallow model, no hierarchical features
+    \item no guarantees on connectedness
+\end{itemize}
+
+\section{Segmentation via Dense Classification}
+
+\subsection{LeNet}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/LeNet.png}
+\end{figure}
+
+\lstinputlisting[language=python,firstline=1,lastline=39]{code/LeNet.py}
+
+\subsubsection{Fully convolutional LeNet}
+
+Pay attention to line 19 onwards. If we wanted to translate the network into a fully convolutional LeNet:
+
+\lstinputlisting[language=python,firstline=1,lastline=34]{code/LeNet-fullyconnected.py}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/LeNet-before-after.png}
+\end{figure}
+
+We go beyond classification. If we're given a 64x64 image, at the end of the network, we get an output feature-map. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/LeNet-feature-map.png}
+\end{figure}
+
+The classication maps can be used to localise where it is, and that there is a number there (a 4). The 5, is garbage becuase there is a 5. This input is scaled up through up-sampling (Section~\ref{sect:upsample})
+
+
+\section{Encoder-Decoder Networks}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/encoder-decoder.png}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/encoder-decoder-2.png}}
+\end{figure}
+
+The idea is to take a really low level representation of an image and try to upsample it back to its original resolution. This is what the U-Net is trying to achieve.
+
+\subsection{U-Net}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/u-net.png}}
+\end{figure}
+
+\subsubsection{Upsampling}\label{sect:upsample}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/upsampling.png}
+\end{figure}
+
+\subsubsection{Convolutions}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/convolutions.png}
+\end{figure}
+
+\href{https://github.com/vdumoulin/conv_arithmetic}{link}
+
+\subsubsection{Transpose convolutions}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/transpose-convolutions.png}
+\end{figure}
+
+\href{https://github.com/vdumoulin/conv_arithmetic}{link}
+
+\subsubsection{Dilated convolutions}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/dilated-convolutions.png}
+\end{figure}
+
+\href{https://arxiv.org/abs/1511.07122v3}{link}
+
+\subsubsection{Atrous spatial pyramid pooling}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/atrous-spatial-pooling.png}
+\end{figure}
+
+\href{https://arxiv.org/abs/1606.00915}{link}
+
+\subsubsection{Padding effects}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/padding-effects.png}
+\end{figure}
+
+the padding may propogate values in the features, or if we used tiling or sliding window appraoch, we may get a repeating pattern.
+
 \printbibliography
 \addcontentsline{toc}{section}{Bibliography}
 
