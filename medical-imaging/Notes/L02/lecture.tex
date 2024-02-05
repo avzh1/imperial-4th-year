@@ -1,0 +1,362 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{example}
+\newcommand{\reportdescription}{example description}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+\bibliography{../bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{Semantic Segmentation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\linewidth]{figures/common-image-analysis-tasks.png}
+    \caption{Common image analysis tasks}
+\end{figure}
+
+\begin{definition}[Semantic Segmentation]
+    Given an input image, we want to label individaul pixels in the image accroding to which object or class they blong to. It is a dense classification where every pixel is being assigned to a specific class.
+
+    Each segmented region is assigned a semantic meaning (which contrasts the segmentation based on `pure' clustering of the image into coherent regions).
+\end{definition}
+
+\subsection{Uses}
+
+\begin{itemize}
+    \item conducting quantitative analysis, e.g. measuring the volume of a ventricular cavity
+    \item determining the precise location and extent of an organ or certain type of tissue, e.g. a tumour, for treatment such as radiation therapy
+    \item creating 3D models used for simulation, e.g. genrating a model of an abdominal aortic aneurysm for simulating stress/strain distributions
+\end{itemize}
+
+\section{Challenges}
+
+\subsection{noise}
+
+Noise in images refers to high-frequency pixel variability which is not relevant, or may obscure, the model's task.
+
+\subsection{partical volume effects}
+
+The image produced by software is a quantized version of the object. Due to the coarse sampling, the resulting image shows partial volume effects at the boundary of the image. These pixels are not aligned with real world boundaries. Therefore, the pixels contain a mixture of two different objects.
+
+An object may also be elevated, and it is therefore difficult to measure where the extent of the obejct is because it is unclear where the object starts or ends.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[Pixel mixing between boundaries]{\includegraphics[width=\linewidth]{figures/partial-volume-effect.png}}
+    \subfigure[Elevated region]{\includegraphics[width=.4\linewidth]{figures/elevated-region-volume-effect.png}}
+    \caption{Partial volume effects}
+\end{figure}
+
+\subsection{Intensity Inhomogeneities}
+
+You have the problem that ou might have varying contrast and intensity differences across the image plain. In an ultrasound, the images are acquired from a sensor that sends ultrasound waves into the body so that they may be absorbed by the tissue. This causes lower levels to appear darker on the scan. However, the further down you go, the less signal you get back. Similarly, in an MRI we also have contrasting areas accross the iamge.
+
+\subsection{Anisostropic Resolution}
+
+Often 2D stacks (x-y dimension) will have high resolution, however, in the z dimension the resolution may be larger, which causes less clarity when looking along this view.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[An MRI acquisition of short axis slices of the left ventricle may have an intraslice resolution of 1.3mm and an interslice resolution of 8mm]{\includegraphics[width=.4\linewidth]{figures/anisotropic-resolution.png}}
+    \subfigure[Anisotropic resolution with french-fry boxes]{\includegraphics[width=.4\linewidth]{figures/anisotropic-resolution-2.png}}
+\end{figure}
+
+\subsection{Imaging Artifacts}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.4\linewidth]{figures/image-artifact.png}
+    \caption{Image artifacts}
+\end{figure}
+
+\subsection{limited contrasts}
+
+Different tissues can have simlar physical properties and thus similar intesity values. Purely intensity-based algorithms are prone to fail or ``leak'' into adjacent tissues.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.4\linewidth]{figures/limited-contrast.png}
+    \caption{Limited contrast}
+\end{figure}
+
+\subsection{Morphological Variability}
+
+There is variability between structures we want to segment. It makes it hard to incorporate meaningful prior information or useful shape models.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.4\linewidth]{figures/morphological-variablity.png}
+    \caption{Morphological variablity. A collectino of abdominal aortic aneurysms acquired with PET-CT and colored by FDG-18 uptake values}
+\end{figure}
+
+\section{Segmentation Evaluation}
+
+\subsection{Ground truth}
+
+\begin{definition}
+    Reference or standard against which a method can be comapred, e.g. the otpimal transformation, or a true segmentaiton boundary.
+\end{definition}
+
+In practice, it is difficult to obtain. We can establish a ground truth with synthetically obtained data, for example, simulated phantoms or around structures we manufactured, such as gel phantoms.
+
+\subsection{Gold standard}
+
+Usually, an expert manually segments an image.
+
+The disadvantage, is that it 
+
+\begin{itemize}
+    \item requires training and is a tedious and time-consuming process. 
+    \item There is also intra-oberver variability (disagreement between same obserer on different occasions) 
+    \item and inter-observer variability (disagreement between observers)
+\end{itemize}
+
+The remedy, is that
+
+\begin{itemize}
+    \item human observers can perform segmentation repeatedly. 
+    \item Multiple experts can perform segmentations, 
+    \item agreement or disagreement can be quantified 
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+\subsubsection{Precision}
+
+\begin{figure}[H]
+    \center
+    \subfigure{\includegraphics[width=0.4\textwidth]{figures/precision-accuracy.png}}
+    \subfigure{\includegraphics[width=0.4\textwidth]{figures/Measurement_distribution_with_systematic_and_random_errors.svg.png}}
+\end{figure}
+
+
+Is a description of \href{https://en.wikipedia.org/wiki/Observational_error}{random errors}, a measure of \href{https://en.wikipedia.org/wiki/Statistical_dispersion}{statistical variability}. It is the repeatbility or reproducibility of the measurement.
+
+\subsubsection{Accuracy}
+
+More commonly, it is a description of \href{https://en.wikipedia.org/wiki/Observational_error#Random_errors_versus_systematic_errors}{systematic errors}, a measure of \href{https://en.wikipedia.org/wiki/Bias_(statistics)}{statistical bias}; as these cause a difference between a result and a ``true'' value, \href{https://en.wikipedia.org/wiki/International_Organization_for_Standardization}{ISO} calls this \textit{trueness}.
+
+Alternatively, ISO defines accuracy as describing a combination of both types of \href{https://en.wikipedia.org/wiki/Observational_error}{observational error} above (random and systematic), so high accuracy requires both high precision and high trueness.
+
+\subsubsection{Robustness}
+
+The degradation in performance with respect to varying noise levels or varying artefacts.
+
+\subsubsection{Confusion matrix}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\linewidth]{figures/confusion-matrix.png}
+    \caption{confusion matrix with $TP$ true positive, $TN$ correct rejection, $FP$ false alarm, type I error, $FN$ miss, type II error. Also, $P$ is the number of real positive cases in the dataset, $N$ is the number of real negative cases in the data.}
+\end{figure}
+
+\subsubsection{Accuracy}
+
+\begin{definition}[Accuracy]
+    \begin{equation*}
+        \frac{TP + TN}{P + N} = \frac{TP + TN}{(TP + FN) + (TN + FP)}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{Precision | positive predicttive value}
+
+\begin{definition}[Precision]
+    \begin{equation*}
+        \frac{TP}{TP + FP}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{Recall | sensitivity | hit rate | true positive rate}
+
+\begin{definition}[Recall]
+    \begin{equation*}
+        \frac{TP}{TP + FN}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{Specificity | True negative rate}
+
+\begin{definition}[Specificity]
+    \begin{equation*}
+        \frac{TN}{N} = \frac{TN}{TN + FP} 
+    \end{equation*}
+\end{definition}
+
+\subsubsection{F1 score}
+
+\begin{definition}[F1 score]
+    \begin{equation*}
+        2\frac{Precision \cdot Recall}{Precision + Recall} = \frac{2TP}{2TP + FP + FN}
+    \end{equation*}
+\end{definition}
+
+It is tough to use two metrics independently, it is the harmonic mean between the two.
+
+\subsubsection{`IoU' - Overlap based - Jaccard Index}
+
+\begin{definition}[Jaccard Index | Intersection over Union]
+    \begin{equation*}
+        \frac{|A\cap B|}{|A \cup B|}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{`DSC' - Overlap based - Dice Similarity}
+
+The most widely used measure for evaluating segmentation. Assume that $A$ is the reference, and $B$ is the prediction. Therefore, with $|A| = TP + FN$ and $|B| = TP + FP|$, DSC is equivalent to F1.
+
+\begin{definition}[DICE]
+    \begin{equation*}
+        2\frac{|A\cap B|}{|A|+|B|}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{Volume similarity}
+
+\begin{definition}[Volume similarity]
+    \begin{equation*}
+        1 - \frac{||A| - |B||}{|A| + |B|} = 1 - \frac{|FN - FP|}{2TP + FP +F FN}
+    \end{equation*}
+\end{definition}
+
+\subsubsection{`HD' - Surface Hasudorff distance}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.2\linewidth]{figures/Hausdorff.png}
+\end{figure}
+
+\begin{definition}[Hausdorff distance]
+    \begin{equation*}
+        \max(h(A,B),h(B,A)), \quad h(A,B) = \max_{a\in A} \min_{b\in B} ||a-b||
+    \end{equation*}
+\end{definition}
+
+\subsubsection{`ASSD' - Surface (symmetric) average surface distance}
+
+\begin{definition}[Average surface distance]
+    \begin{equation*}
+        ASD = \frac{d(A,B)+d(B,A)}{2}, \quad d(A,B)=\frac 1 N \sum_{a\ in A} \min_{b \in B} ||a - b||
+    \end{equation*}
+\end{definition}
+
+\subsection{Pitfalls in segmentation evlauation}
+
+``In a field such as athletics, this process is straightforward because the performance measurements (e.g., the time it takes an athlete to run a given distance) exactly reflect the underlying interest (e.g., which athlete runs a given distance the fastest?) [...] If the performance of an image analysis algorithm is not measured according to relevant validation metrics, no reliable statement can be made about the suitability of this algorithm in solving the proposed task, and the algorithm is unlikely to ever reach the stage of real-life application''~\cite{pitfalls-in-segmentation-evaluation}. 
+
+\subsubsection{Effect of structure size}
+
+``The Mask IoU (second column) is less sensitive to boundary errors for large objects. The Boundary IoU (third and fourth column) especially considers contours, (1) yields smaller metric scores, thus penalizing errors in the boundaries, and (2) is more invariant to structure sizes, leading to very similar values for large and small structures (fourth column). This pitfall is also relevant for other overlap-based metrics''~\cite{pitfalls-in-segmentation-evaluation}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/size-0.png}}
+    \caption{Extended Data Fig. SN 2.12~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+``Large structures completely dominate overlap-based metrics in semantic segmentation problems. While Prediction 1 perfectly segments all three small structures, the metric score (here: Dice Similarity Coefficient ( DSC)) is much worse compared to the score of Prediction 2, with only one perfect prediction for the large structure. This is highlighted by only computing the metric without the large structure. This pitfall is also relevant for other overlap-based metrics.''~\cite{pitfalls-in-segmentation-evaluation}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/size--1.png}}
+    \caption{Extended Data Fig. SN 2.13~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+
+% \subfigure{\includegraphics[width=.3\linewidth]{figures/size-a.png}}
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-a.png}}
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-b.png}}
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-c.png}}
+\end{figure}
+
+\subsubsection{Effect of structure shape}
+
+``Common overlap-based metrics such as the Dice Similarity Coefficient (DSC) are unaware of complex structure shapes and treat Predictions 1 and 2 equally. The centerline Dice Similarity Coefficient (clDice) uncovers that Prediction 1 misses the fine-granular branches of the reference and favors Prediction 2, which focuses on the object’s center line and better captures its fine branches. This pitfall is also relevant for other overlap-based metrics''~\cite{pitfalls-in-segmentation-evaluation}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=\linewidth]{figures/shape--1.png}}
+    \caption{Extended Data Fig. Sn 2.14~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=\linewidth]{figures/shape.png}}
+\end{figure}
+
+\subsubsection{Effect of spatial alignment}
+
+``The most common counting-based metrics are poor proxies for the center point alignment. Here, Predictions 1 and 2 yield the same Dice Similarity Coefficient (DSC) value although Prediction 1 approximates the location of the object much better''~\cite{pitfalls-in-segmentation-evaluation}. This pitfall is also reveleant for other boundary and overla-based metrics such as Boundary Intersection over Union (IoU) and Hasudorff Distance (HD).
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/alignment.png}}
+    \caption{Extended Data Fig. SN 2.7~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+\subsubsection{Effect of holes}
+
+Boundary-based metrics commonly ignore the overlap between structures and are thus insensitive to holes in structures.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/holes-1.png}}
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/holes-2.png}}
+    \caption{Extended Data Fig. SN 2.6~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+\subsubsection{Effect of Annotation noise}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/noise-a.png}}
+    \subfigure{\includegraphics[width=.45\linewidth]{figures/noise-b.png}}
+\end{figure}
+
+\subsubsection{Effect of empty labelmaps}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/empty-label-map-1.png}}
+\end{figure}
+
+\subsubsection{Effect of resolution}
+
+Differences in the grid size (resolution) of an image highly influence the image and the reference annotation (dark blue shape (reference) vs. pink outline (desired circle shape)), with a prediction of the exact same shape leading to different metric scores.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/resolution-1.png}}
+    \caption{Effect of different grid sizes. Extended Data Fig. SN 2.36~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+\subsection{Preference for oversegmentatin to undersegmentation}
+
+The outlines of the predictions of two algorithms (Prediction 1/2) differ in only a single layer of pixels (Prediction 1: undersegmentation | smaller structure compared to eference, Prediction 2: oversegmentation | larger structure compared to reference).
+
+If penalizing of either over- or undersegmentation is desired (unequal severity of class confusions), other metrics such as the $F_\beta$ Score provide specific penalties for either depending on the chosen hyperparameter $\beta$. This pitfall is also relevant for other overlap-based metrics such as centerline Dice Similarity Coefficient ( clDice)
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=.6\linewidth]{figures/oversegmentation.png}}
+    \caption{Extended Data Fig. SN 2.10~\cite{pitfalls-in-segmentation-evaluation}}
+\end{figure}
+
+\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
