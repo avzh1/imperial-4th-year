@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{example}
+\newcommand{\reportdescription}{example description}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{ReadMe}
+
+For main things mentioned about CNN go to \texttt{deep-learning/Notes/L01/lecture.pdf}
+
+\section{Quiz}
+
+\subsection{Your model performs well on the training data but the validation error is high. This might indicate:}
+
+\begin{itemize}
+    \item High bias
+    \item \textbf{High variance}
+\end{itemize}
+
+\subsection{In which case might acquiring more training data help}
+
+\begin{itemize}
+    \item High bias
+    \item \textbf{High variance}
+\end{itemize}
+
+\subsection{How can we potentially fix high bias?}
+
+\begin{itemize}
+    \item Add features
+    \item \textbf{Remove features}
+\end{itemize}
+
+\subsection{How can we potentially fix high variance}
+
+\begin{itemize}
+    \item \textbf{Increase regularization}
+    \item Decrease regularization
+\end{itemize}
+
+\subsection{Logistic regression is a}
+
+\begin{itemize}
+    \item \textbf{Linear model}
+    \item Non-linear model
+\end{itemize}
+
+\subsection{L1 regularization favours}
+
+\begin{itemize}
+    \item Small coefficients
+    \item \textbf{Few non-zero coefficients}
+\end{itemize}
+
+\subsection{How many paraeters does a logistic regression model have where raw pixel values are used as input features fro images fo size 16 $\times$ 16 pixels?}
+
+257
+
+\subsection{Convolutional filters are translation}
+
+\begin{itemize}
+    \item Invariant
+    \item \textbf{Equivariant}
+\end{itemize}
+
+
+
+
+
+\end{document}

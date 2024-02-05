@@ -1,0 +1,1 @@
+check deep-learning/Notes/L02/lecture.pdf
