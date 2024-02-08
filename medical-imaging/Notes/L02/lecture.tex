@@ -586,6 +586,50 @@ The idea is to take a really low level representation of an image and try to ups
 
 the padding may propogate values in the features, or if we used tiling or sliding window appraoch, we may get a repeating pattern.
 
+\subsubsection{Multi-scale processing}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=129, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+the idea of not using a decoder that given an input patch, we process it (without maxpooling) by applying convolutional layers and then we have the kernel of fully connected layers. Here, we have a receptive field, i.e. how much information we can see. The solution here is to take another network and process in paralell, the iamge at a lower resolution. Here we can see more spatial context.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=130, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+\subsection{Vision trasnformers}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=134, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=135, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=136, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=137, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=138, trim=0cm 0cm 0cm 0cm, clip=true, width=\linewidth]{02 - Image Segmentation.pdf}}
+\end{figure}
+
+
 \printbibliography
 \addcontentsline{toc}{section}{Bibliography}
 
