@@ -3,3 +3,7 @@ torchvision
 altair
 seaborn
 tqdm
+numpy
+torch
+torchvision
+matplotlib

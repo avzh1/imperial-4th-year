@@ -499,6 +499,26 @@ This serves as a bridge between the convolutional layers and the fully connected
 
 Flattening layers serve as a connector between convolutional layers and fully connected layers in a Convolutional Neural Network (CNN). The flattening layer doesn't learn any parameters; it only reformats the data.
 
+\subsection{Dimensions}
+
+After padding and stride, the dimension of the image goes to:
+
+\begin{equation}
+    o= \lfloor \frac{i + 2p - k - (k-1)(d-1)}s \rfloor + 1
+\end{equation}
+
+Where
+
+\begin{itemize}
+    \item $i$ is the input size
+    \item $p$ is the padding
+    \item $k$ is the convolutional layer size
+    \item $d$ is the dilation
+    \item $s$ is the stride
+\end{itemize}
+
+
+
 \section{Conclusion}
 
 \begin{enumerate}
