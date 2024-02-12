@@ -4,3 +4,5 @@ torchvision
 matplotlib
 pytorch_lightning
 torchmetrics
+tensorboard
+tensorboardX
