@@ -369,27 +369,30 @@ To generate sequential data dsuch as video, text and audio, one needs to build a
     \fbox{\includegraphics[page=8, trim=3cm 12.5cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
 \end{figure}
 
-\clearpage
+\section{Attention \& Transformers}
 
-\appendix
-
-\section{RNN notes}
-
-\subsection{Tricks to fix the gradient vanishing/explosion issue}\label{app:tricks-gradient-v/e}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=3, trim=3cm 5.8cm 3cm 13.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
-\end{figure}
-
-\section{Attention Notes}
+\subsection{Motivation}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=1, trim=3cm 19.5cm 3cm 3.3cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
+    \caption*{
+        People have found that as the sentence length has increased, the quality of the sentence decreases. This is a problem, since a lot of sequenced data is very long naturally.
+    }
 \end{figure}
 
-\subsection{\color{red}{*Attention in Bahdanau et al.}}
+\subsection{NMT model}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=50, trim=1cm 1.3cm 2cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{enumerate}
+    \item The first attempt is to improve the sequnce to sequnce model with attention. In SeS the global representation vector v is used to represent the entire input seqeunce for all y. This means it need to capture as much informatino as possible, yet, it comes from the last state in the LSTM | this means that there may be problems of learning long-term dependencies.
+    \item Bahdanau proposed to use different feature vectors at different decoding steps to represent the input sequence. The idae: decoding words at different states, the context can be different. Therefore, don't use only the last state - we ask the encoder to produce a feature output $f$ at each time step, and compute a weighted sum of those features to obtain a feature represnetiaton of the input sequence.
+    \item $\alpha$ is different at each decoding step. This depends on the alignment/similarity between the feature $f_t$ and the representatino of the current decoding step.
+\end{enumerate}
 
 \begin{figure}[H]
     \centering
@@ -401,42 +404,234 @@ To generate sequential data dsuch as video, text and audio, one needs to build a
     \fbox{\includegraphics[page=2, trim=3cm 23.2cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsection{Attention in transformers}
+\subsection{Attention in Transformers | Single-head attention}
 
-\subsubsection{Single-head attention}
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=51, trim=2cm 2.7cm 1cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=2, trim=3cm 5.5cm 3cm 6.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsubsection{Complexity figures}
+\subsubsection{Hard-attention}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=2, trim=3cm 3cm 3cm 23.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
+    \fbox{\includegraphics[page=52, trim=2cm 2cm 4cm 5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsubsection{Soft-attention}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=53, trim=2cm 2.6cm 4cm 5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsubsection{Msked-attention}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=54, trim=2cm 3cm 4cm 5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsubsection{Complexity analysis}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=55, trim=2cm 4cm 4cm 5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=3, trim=3cm 23.2cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
+    \subfigure{
+        \fbox{\includegraphics[page=2, trim=3cm 3cm 3cm 23.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}    
+    }
+    \subfigure{
+        \fbox{\includegraphics[page=3, trim=3cm 23.2cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}   
+    }
 \end{figure}
 
-\subsubsection{Multi-head attnetion}
+\subsection{Attention in Transformers | Multi-head attention}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=56, trim=2cm 3cm 1cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=57, trim=2cm 2.7cm 1cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=3, trim=3cm 10.5cm 3cm 5.8cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsection{Ingredients in transformers}
+\subsection{Transformer Architecture}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=3, trim=3cm 8.5cm 3cm 18.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsubsection{Position encoding}
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=4, trim=5.5cm 17cm 5.5cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
+\end{figure}
+
+We first want to use the Attention based encoder to extract features for input sequences $x_{1:T}$. Then we will follow the autoregressive decoding process again to produce the output sequence, but different from the Sequence to sequnce model; now the decoder is also an attention based network,rather than LSTM. 
+
+\begin{equation}
+    p_\theta(y_{1:L}|x_{1:T}) = \prod^L_{l=1}p_\theta(y_l|y_{<l},z_{1:T})
+\end{equation}
+
+The first step in the encoding process is to gether input embeddings for the input sequence. In an NLP setting, this is the word embeddings. BEfore we feed in the input representationso, we append the input embedding with a position encoding. {\color{red}TODO}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=59, trim=3cm 4cm 3cm 6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=60, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=61, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=62, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=63, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=64, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=65, trim=1.7cm 1.3cm 1.7cm 3.4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{\color{red}TODO}
+\end{figure}
+
+\section{Advances and Applications}
+
+\subsection{Attention Applications}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=67, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption*{pen position and pen position wasn't aligned | author developed an RNN}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=68, trim=1.7cm 4cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=69, trim=1.7cm 1.3cm 1.7cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsection{Transformer in NLP}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=70, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=71, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsection{Multi-head Attention in other applications}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=72, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=73, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=74, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsection{Efficient Transformers}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=75, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=76, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=77, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=78, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=79, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\subsection{Memorisation in Transformers}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=80, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+\end{figure}
+
+\clearpage
+
+\appendix
+
+\section{RNN Notes}
+
+\subsection{Tricks to fix the gradient vanishing/explosion issue}\label{app:tricks-gradient-v/e}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=3, trim=3cm 5.8cm 3cm 13.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+\section{Transformer Notes}
+
+\subsection{Position encoding}
 
 \begin{figure}[H]
     \centering
@@ -445,10 +640,10 @@ To generate sequential data dsuch as video, text and audio, one needs to build a
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=4, trim=3cm 5.7cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
+    \fbox{\includegraphics[page=4, trim=3cm 5.7cm 3cm 11.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsubsection{Layer normalization}
+\subsection{Layer normalization}
 
 \begin{figure}[H]
     \centering
@@ -460,7 +655,7 @@ To generate sequential data dsuch as video, text and audio, one needs to build a
     \fbox{\includegraphics[page=5, trim=3cm 22cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N13_attention.pdf}}
 \end{figure}
 
-\subsubsection{Point-wise feed-forward network}
+\subsection{Point-wise feed-forward network}
 
 \begin{figure}[H]
     \centering
