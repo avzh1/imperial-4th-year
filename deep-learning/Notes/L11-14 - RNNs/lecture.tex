@@ -239,11 +239,134 @@ In this case, the recurrent state we care about is the cell state $c_t$. Back-pr
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=5, trim=3cm 3cm 3cm 18.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+    \caption*{Here, the auto-regression model means that the output $y$ sequence is generated in a sequential way, and the current location $y_l$ depends on the y values at all the previous steps.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=6, trim=3cm 3.8cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+    \fbox{\includegraphics[page=32, trim=3.2cm 2.5cm 11.5cm 4.5cm, clip=true, width=.7\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{The ingredients in the sequence to sequence model.}
+\end{figure}
+
+First, we need a sequnce encoder to summarise the information presented in the X sequence. We know that X sequence can have different lenghts, but RNNs can handle this situation. Firstly, we map words ino word embeddings before we feed them into neural networks. Here, one-hot encoding is inefficient (sparse and many demensions). Then, use an LSTM or Stacked LSTM to process each of the word embedding vectors. We don't generate outputs at each time-step $t$ here, instead at the end we use the hidden state $h_t$ to fully describe the input seqeunce $X$. Note, we also need to have an end of sentence token so it may terminates (good cuz not fixed length).
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=34, trim=3.2cm 2.5cm 3.2cm 4.5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    % \caption*{The ingredients in the sequence to sequence model.}
+\end{figure}
+
+Now, given the vector representation $v$, how do we generate the output sequences? Since $v$ is related closely to the last LSTM state $h_t$ in a sequence to sequnce model, it can be used to produce the probability of the first word $y_1$ in the $y$ output sequence. Then the first word will be sampled from this probability vector.
+
+Given $y_1$ the seqeunce decoder proceeds to predict the next word in the $y$ sequence. The sequence decoder is also an LSTM. At each time step for prediction, the decoder LSTM takes in the word embeddings of the predicted word in the last step then runs the LSTM equation to update the internal state. Now, the decoder LSTM will predict the probabilitiy vector for the output word $y_l$ at each time step. The representation vector $v$ of the input sentence is used to initialise the hidden and cell states of the decoder LSTM. It will run until the end-of-sentence token.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=6, trim=3cm 15.6cm 3cm 10.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+\subsection{Sequence decoder inputs during training/testing}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=6, trim=3cm 18.5cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+In training, since maximum likelihood estimation of the network parameters require calculating the conditional probability distribution from the $x,y$ data piars. This means that the decoder needs to use the input labels $y$ rather than using the predicted $y$ predicted in the previous steps. The probability vectors produced by the decoders in training are only used to compute the training objective (cross-entropy loss) to train the network during back-prob. But during the test, we should use the previous predicted words as the inputs at the current steps.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=6, trim=3cm 3.8cm 3cm 12.3cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+This sort of encoding decoding idea cna be extended to other applications, such as image captioning. 
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=36, trim=3.2cm 2.5cm 1.8cm 4.5cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption*{The goal is to decribe an image with a sentence. A popular approach is to ENCODE a feature representation of image $x$ and use this to intialise the LSTM and run the decoder LSTM to produce a sentence.}
+\end{figure}
+
+\subsection{\color{red}{*Generative models for sequences} | Sequence VAE}
+
+To generate sequential data dsuch as video, text and audio, one needs to build a generativemodel $p_\theta(x_{1:T})$ and train it with e.g. (approximate) maximum likelihood. In the following we discuss tow types of latent variable models that are often used in sequence generation tasks.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=7, trim=3cm 18.1cm 3cm 5.6cm, clip=true, width=.9\linewidth]{N11_RNN.pdf}}
+    \caption*{Contains the training objective function. Here, $\log p_\theta(x_{1:T}|z) = \sum^T_{t=1}\log p_\theta(x_t | x_{<t}, z)$
+    
+    We may also use a $\beta$ coefficient infront of the $KL$ term, to control the deregularisation effect. It has shown to be a quite important to achieve a good fit to data, and high quality generation results.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=38, trim=3.2cm 2.3cm 1.8cm 6.2cm, clip=true, width=.9\linewidth]{L11-14_rnns.pdf}}
+    \caption*{The solution is similar to the image captioning task. We can build an auto-regressive model for the conditional distribution of $x$ 1 to t given $z$. This auto regressive model is parameterised by an LSTM, which takes in the previous $x$ words to produce the current output $x_t$. The latent varibale $z$ can be used to initialise the decoder.
+    
+    We can use a VAE appraoch to train these sequence gerneation models. We need to build an encoder (use LSTM) but here, at the end, the encoder needs to produce distirbutional parmaeters of the q distribution like mean and variance. This is similar to the image in VEA case, except now the input and output are sequences from a static image.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=7, trim=3cm 13.6cm 3cm 10.3cm, clip=true, width=.9\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+\subsection{State-space models}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=40, trim=3cm 1.8cm 3cm 7.9cm, clip=true, width=.9\linewidth]{L11-14_rnns.pdf}}
+    \caption*{In a state-space model, it has a stochastic dynamic model for the latent state. In other words, the latent varibale $z$ is split, with each $z_t$ associated with each state time step, depending on previous latent states.
+    
+    It also contains an emission model, where the assumption is that the generation of the current $x_t$ depends on the $z_t$ only.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=7, trim=3cm 3cm 3cm 15.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
+\end{figure}
+
+\subsubsection{Hidden Markov Model}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=41, trim=3cm 6cm 3cm 7cm, clip=true, width=.9\linewidth]{L11-14_rnns.pdf}}
+    \caption*{This model assume a stochastic linear dynamic model fro the latent space, meaning that the current latent state $x_t$ is computed by a linear transition of the previous state $z_{t-1}$ plus some gaussian noise. 
+    
+    Also, it has a linear Guasisnan emission model. So that the observation at time T is also a linear transfomration of the correlated state $z_t$ plus gaussian noise.
+    
+    This is linear and stochastic; add a non-linearity model to the transition model of $z$ and make the dynamic model a simple and stochastic RNN. Yet, this is difficult to train (see seciton regarding RNNs)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=43, trim=3cm 2.5cm 1.5cm 6.7cm, clip=true, width=.9\linewidth]{L11-14_rnns.pdf}}
+    \caption*{
+        A typical solution for a paramaeterising the stochastic dyanmic model with LSTMs. The idea is to treat the previous latent space $z_{t-1}$ as input to the LSTM at time $t$ and ask the LSTM to produce the distirbution parmaeters (mean and variance) for the current latent state $z_t$. 
+        
+        Now the dynamic model is a combination of deterministic and stochastic models. We can make it non-linear. See slide.
+
+        The joint distribution contains the conditional distributions of the latent dynamic model and the emission model. For the emission model it is similar to writing the conditional distribution int eh iamge generative model case.
+
+        \color{red}{TODO WTF IS GOING ON??}
+    }
+\end{figure}
+
+\subsubsection{Training}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=44, trim=3cm 2cm .8cm 6.2cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption*{
+        \color{red} TODO WTF IS GOING ON!!!!
+    }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=8, trim=3cm 12.5cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
 \end{figure}
 
 \clearpage
@@ -257,34 +380,6 @@ In this case, the recurrent state we care about is the cell state $c_t$. Back-pr
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=3, trim=3cm 5.8cm 3cm 13.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
-\end{figure}
-
-\subsection{Long Short-Term Memory (LSTM)}
-
-\subsection{\color{red}{*Generative models for sequences}}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=7, trim=3cm 23.5cm 3cm 3.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
-\end{figure}
-
-\subsubsection{Sequence VAE with global latent variables}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=7, trim=3cm 13.6cm 3cm 5.6cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
-\end{figure}
-
-\subsubsection{State-space models}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=7, trim=3cm 3cm 3cm 15.2cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=8, trim=3cm 12.5cm 3cm 2.5cm, clip=true, width=.95\linewidth]{N11_RNN.pdf}}
 \end{figure}
 
 \section{Attention Notes}
