@@ -1,8 +1,8 @@
 \documentclass[11pt]{article}
 
 % some definitions for the title page
-\newcommand{\reporttitle}{Nueral Machine Translation}
-\newcommand{\reportdescription}{example}
+\newcommand{\reporttitle}{Neural Machine Translation}
+\newcommand{\reportdescription}{Attention and stuff}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
@@ -19,11 +19,11 @@
 
 \section{Machine Translation}
 
-At the highest level, given a document in source language, produce a translation in a target language.
+At the highest level, given a document in source language, produce a translation in a target language. This motivates the encoder decoder models that we've seen.
 
-\subsection{Statistical Machine Translation}
+\section{Statistical Machine Translation}
 
-It is a pipeline of the models: Alognment model, Translation model, and Lanugage model.
+It is a pipeline of the models: Alignment model, Translation model, and Lanugage model.
 
 Uses parallel corpa as its training set. A prallel corpa is that we have aligned sentences: i.e. an english sentence and its corresponding french sentence.
 
@@ -33,18 +33,18 @@ Uses parallel corpa as its training set. A prallel corpa is that we have aligned
 \end{figure}
 
 \begin{itemize}
-    \item Parallel dataset - paired sentences between two different languages (we wnat to construct correlations betwene the two sets)
-    \item Alignment model - responsible for extracting the phrase pairs    
-    \item Translation model - lookup table, what is the porbability of the word `go' appearing in the contex of this target. statistics over large pairs of parallel texts can
+    \item \textbf{Parallel dataset} - paired sentences between two different languages (we want to construct correlations between the phrase that happens in one language and translation into another.)
+    \item \textbf{Alignment model} - responsible for extracting the phrase pairs    
+    \item \textbf{Translation model} - lookup table, what is the porbability of the word `go' appearing in the contex of this target. statistics over large pairs of parallel texts can
     help identify parallel phrases
-    \item Corpus of target monolongual corpus - this is used to get n-grams from the data
-    \item Language model - contains the probability of target language phrases 
+    \item \textbf{Corpus} of target monolongual corpus - this is used to get n-grams from the data (what is the probability of this n-gram given this data?)
+    \item \textbf{Language model} - contains the probability of target language phrases 
 \end{itemize}
 
-\subsubsection{How to perform translations}
+\subsection{How to perform translations}
 
 \begin{itemize}
-    \item The objective is to find $p(t|s)$; given a source sentence, s, we want target sentence, t. Language models can be trained on monolingual data\footnote{todo} that gives us probability of a phrase occurring in that language.
+    \item The objective is to find $p(t|s)$; given a source sentence, s, we want target sentence, t. Language models can be trained on monolingual data\footnote{``It contains texts in one language only'' \href{https://www.sketchengine.eu/corpora-and-languages/corpus-types/}{here}} that gives us probability of a phrase occurring in that language.
     \item The translation model is the ``objective'' flipped. How likely is the source phrase going to occur given a cnadidate translation t. We will have multiple candidate translations. 
     \item These probabilities/likelihoods are built from statistics of our bilingual parallel corpus.
     \item With this information we can apply Bayes rule to obtain $p(t|s)$.
@@ -52,26 +52,26 @@ Uses parallel corpa as its training set. A prallel corpa is that we have aligned
         p(t|s) = \frac{p(t)p(s|t)}{p(s)}
     \end{equation*}
     \item p(s) is just a normalising factor. It doesn't contain t so is irrelevant to     obtaining what we're interested in: the actual model
-    \item The actual model is the argmaxs. Here - pick the phrase that has the highest
+    \item The actual model is the argmax. Here - pick the phrase that has the highest
     probability of the product of the 2 terms $p(t)$ (language model) and $p(s|t)$
     (translation model)
 \end{itemize}
 
-\subsubsection{Example}
+\subsection{Example}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=.6\linewidth]{figures/example-translation-1.png}
+    \includegraphics*[width=.9\linewidth]{figures/example-translation-1.png}
 \end{figure}
 
-The first part is to use the trsnlation model, so given these target phrases which have been built by the alignment model and the probabilities which are in the translation modle, what is the most likely candidate, the most likely translation candidate for this given sole sentence. 
+The first part is to use the translation model, so given these target phrases which have been built by the alignment model and the probabilities which are in the translation modle, what is the most likely candidate, the most likely translation candidate for this given source sentence. 
 
 The second part is the lnaguage model itself, which will take each one of these candidates and compute how likley they are to actually appear in target data.
 
-\subsubsection{Downsides}
+\subsection{Downsides}
 
 \begin{itemize}
-    \item Sentence Alignment
+    \item \textbf{Sentence Alignment}
     
     In parallel corpora single sentences in one language can be translated into
     several sentences in the other and vice versa. Long sentences may be
@@ -79,7 +79,7 @@ The second part is the lnaguage model itself, which will take each one of these 
     languages that use writing systems without clear indication of a sentence
     end (for example, Thai).
 
-    \item Word Alignment
+    \item \textbf{Word Alignment}
     
     Is about finding out which words align in a source-target sentence pair
 
@@ -89,24 +89,24 @@ The second part is the lnaguage model itself, which will take each one of these 
     "does" doesn't have a clear alignment in the translated sentence "John
     wohnt hier nicht."
 
-    \item Statistical anomalies
+    \item \textbf{Statistical anomalies}
     
     Real-world training sets may override translations of, say, proper nouns.
     An example would be that "I took the train to Berlin" gets mis-translated as
     "I took the train to Paris" due to an abundance of "train to Paris" in the
     training set.
 
-    \item Idioms
+    \item \textbf{Idioms}
     
     Only in specific contexts do we want idioms to be translated. For example,
     using in some bilingual corpus (in the domain of Parliment), "hear" may
     almost invariably be translated to "Bravo!" since in Parliament "Hear,
     Hear!" becomes "Bravo!”
 
-    \item Out of vocabulary words
+    \item \textbf{Out of vocabulary words}
 \end{itemize}
 
-\subsection{Neural Machine Translation}
+\section{Neural Machine Translation}
 
 \begin{figure}[H]
     \centering
@@ -125,7 +125,7 @@ The second part is the lnaguage model itself, which will take each one of these 
 
 \begin{figure}[H]
     \centering
-    \subfigure[vanilla RNN]{\includegraphics*[trim={3px 0 0 0}, clip, width=.8\linewidth]{figures/RNN.png}}
+    \subfigure[vanilla RNN. The hidden state represents the whole sequence]{\includegraphics*[trim={3px 0 0 0}, clip, width=.8\linewidth]{figures/RNN.png}}
     \subfigure[bidirectional RNN]{\includegraphics*[width=.8\linewidth]{figures/RNN-bidirectional.png}}
 \end{figure}
 
@@ -136,7 +136,7 @@ information dense representation of our sequence
 
 We can get a hint of representation for each word and hit a representation for each word. The inner representation of each word consists of the forward direction concatentated witht he backwards direction for that particular word or particular token concatenated together.
 
-\subsubsection{Naiive implementataion of machine translation}
+\subsection{Naiive implementataion of machine translation}
 
 \begin{figure}[H]
     \centering
@@ -154,7 +154,7 @@ In the bidirectional RNN case, there are two ways that we can compute the contex
 
 The dimension of $C$ if dimensionality of the model is $d$, then we either have to set s in $R^{2d}$ or project $c$ down to $R^d$.
 
-\subsubsection{Teacher Forcing}
+\subsection{Teacher Forcing}
 
 \begin{figure}[H]
     \centering
@@ -169,13 +169,284 @@ We use teacher forcing with a \textbf{ratio}. I.e. we well teacher force
 ratio\% of time. The ratio can be 100\% (i.e. full teacher forcing), 50\%, or you
 can even anneal it during training
 
-If at timestamp $t$ the model makes a wrong prediction $\hat y_t$ with standard autoregressive modelling, if we fed this back inot decoder at call $t+1$ our model has (potentially) incorrect context. It will use this incorrect context to decode $\hat y_{t+1}$; we will likley produce another incorrect owrd. This leads to an accumulation of errors, which is difficult to optimze over.
+If at timestamp $t$ the model makes a wrong prediction $\hat y_t$ with standard autoregressive modelling, if we fed this back inot decoder at call $t+1$ our model has (potentially) incorrect context. It will use this incorrect context to decode $\hat y_{t+1}$; we will likley produce another incorrect word. This leads to an accumulation of errors, which is difficult to optimze over.
 
-Teacher forcing creates a phenomenon called Exposure Bias.
+Teacher forcing creates a phenomenon called \textbf{Exposure Bias}.
+
 Exposure Bias is when the data distributions the model is conditioned on vary between training and inference. In this case, if we set teacher forcing to 100\%, then the model is never conditioned on its own predictions. So during inference, when the model uses the previously generated words as context, it is different than what it has seen in training.
 
-\subsection{Attention}
+\subsection{Implementation}
 
-\subsection{Transformers}
+\begin{enumerate}
+    \item Minimse negative log likelihood loss: \begin{equation}
+        -\sum^T_{t=1}\log p(\hat y_t | y_{<t}, c)
+    \end{equation}
+    Here, we assume that we have a teacher forcing ratio of 100\%.
+    Also, $y_{<t}$ means all the tokens up to the $t$'th time step. With teacher ratio of less than 100\%, this would be written as a joint of the previosuly decoded tokens (whether they're sampled or the ground truth).
+    \item c is the context vector output by the encoder \begin{equation}
+        c = E(X)
+    \end{equation}
+    \item $\hat y_t$ is the decoder output: \begin{equation}
+        \hat y_t = \sigma(W_o \cdot D(y_{<t}; c)), \quad W_o \in \mathbb R^{d\times o}
+    \end{equation}
+    Here, $o$ is the output covabulary size. Sigma, is an activation funciton SOFTMAX becuase we're classifying over multiple things.
+    \item Encoder and decoder are connected... so perform BPTT as normal.
+\end{enumerate}
+
+\subsubsection{Why is this suboptimal}
+
+\begin{itemize}
+    \item We're tying to encode a long sequence in a fixed dimensional representation. For longer sequence lengths, the ability to retain all the source information in this vector diminishes.
+    \item From the decoder side of things, as more words get decoded and the hidden state gets updated to incorporate the previously generated words, information from the context vector may start to diminish.. This is related to:
+    \item vanishing gradients and the lack of ability to `remember' things from earlier parts of the sequence
+\end{itemize}
+
+\subsubsection{Fixes}
+
+\begin{itemize}
+    \item $c$ is the entire context for the decoder, wheras the encoder can give us access ot more infromatino that just $c$ (since we're using bidirectional encodings for each word, we know the context from both ends of the sentence) Thus if we could utilise these more fine-grained encodings, we wouldn't suffer from the loss of information that we get from a context vector.
+    \item We may find out which source words are most important to look at for our current timestep of decoding.
+    \item What if, during decoding, the current decoding timestep could look at all the source words, and fin dout which source words are most improtant to its current stage of decoding? Then we could `pay attention' to those words more than the other words?
+\end{itemize}
+
+\section{Attention}
+
+Attention enables weighting individual tokens in the input w.r.t something else. It allows us to look at individual tokens in the input and decide how much weighting a token should have with respect to the current timestep of decoding. The weighting does ont necessarily need ot be in respect to decoding.
+
+\subsection{Process}
+
+\begin{enumerate}
+    \item For every decoding timestamp we have, we now have a context vector for that decoding time step.
+    \item We have $i$ hidden states, which are all the encoder's hidden states. We loop over them and multiply it by some $\alpha$ value which is a scalar between 0 and 1.
+    
+    \begin{equation}
+        c_t = \sum^I_{i=1}\alpha_ih_i
+    \end{equation}
+
+    \item We try to decode the $y_t$'th word and we have access all bi-directional states at every decoding timestep.
+    \item Before we decode $y_t$ we're going to feed all our encoder hidden states AND the decoder hidden state $s_{t-1}$ to our attention module. 
+    \item The module will output a context vector, $c_t$.
+    \item $c_t$ is a dynamic and contextualised representation. It uses the decoder hidden state information to try and figure out which source words are most important when for decododing $y_t$. 
+    \item We send $c_t$ to the $t$'th RNN step, alongside the previously generated token $y_{t-1}$. 
+    \item One final change that the methodology introduced (not strictly related to attention itself), is that the output projection layer now laso takes in $c_t$ and the word embeddings for $y_{t-1}$ alongside $s_t$ to predict the $t$'th word.
+    \item Within $c_t$ the $\alpha_i h_i$ multiplication is a key point of attention. It applies a ``mask'' to each of our hidden states. Low energy values tend to 0 which measn that we do not need that words infromatino to decode the next word
+    \item Here, the alignment funciton is essentially a 2 layered MLP. The first layer combines the decoder hidden state with all our encoder hidden states, the second layer (v) uses this contextulaised representaiton to predict an energy score: i.e. unnormalised ``importance'' of each of teh source words.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=29, trim=5.2cm 14cm 4.5cm 2.1cm, clip, width=.89\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{figure}
+
+\subsubsection{Example}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[These are our bidirectionally encoded encoder hidden states where for each word we have some $d$ dimensional representation of the word]{
+        \fbox{\includegraphics[page=30, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[We have $I$ words, and each word is encoded in $2D$ dimensions. Where $D$ is the model dimensionality. It is 2D because we have forward and backwards representations.   We project the last hidden state to obtain a $D$ dimensional vector]{
+        \fbox{\includegraphics[page=31, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[To feed $C$ into our decoder, we double the dimensionality that is in our encoder o or have a projection layer to reduce the dimensionality into $d$ dimensions. Then the decoding process can begin. The decoder RNN has inputs INIT vector (the projected version of the output of the encoder), and the SOS token (start of sequence).]{
+        \fbox{\includegraphics[page=32, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[Before we generate the next prediced word, we run the attention mechanis. The attention mechanism takes ALL the encoder hidden states as input, and teh decoder hidden state being inputted to the RNN to decode the current word. The attention is performed over these inputs, and the module outputs a context vector specific to this decoding time step. ]{
+        \fbox{\includegraphics[page=35, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[It gives us 2 outputs: our decoder hidden state vector ($s_0$), and the prediction first word]{
+        \fbox{\includegraphics[page=36, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[We then start decoding the next word, if using teacher forcing, we feed the ground truth word as input]{
+        \fbox{\includegraphics[page=37, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[Again, we run the attention process. We take in ALL encoder hidden states as
+    input, and the previously outputted decoder hidden state]{
+        \fbox{\includegraphics[page=38, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[Attention is going to give us $\alpha$ values for EACH encoded word. These will be between 0 and 1. We're going to scale each encoded word by $\alpha$ and sum them all together to obtain a context vector.]{
+        \fbox{\includegraphics[page=39, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+\end{figure}
+
+\subsection{How to obtain energy scores?}
+
+\emph{For every source word}, $i$, we're going to obtain a value:
+
+\begin{equation}
+    \underbrace{e_i}_{\ref{eq:ei}} = \underbrace{a}_{\ref{eq:a}}(\underbrace{s_{t-1}}_{\ref{eq:st-1}}, \underbrace{h_i}_{\ref{eq:hi}}) = \underbrace{v^T}_{\ref{eq:vT}} \overbrace{\tanh}^{\ref{eq:tanh}}(\underbrace{W}_{\ref{eq:W}}s_{t-1} \overbrace{+}^{\ref{eq:+}} \underbrace{U}_{\ref{eq:U}} h_i)
+\end{equation}
+
+\begin{enumerate}
+    \item \label{eq:ei} $e_i \in \mathbb R ^1$. The unnormalized energy source for each source word $i$. ``How important is this word to the current decoding step?''
+    \item \label{eq:a} A learnt neural network 
+    \item \label{eq:st-1} $s_{t-1} \in \mathbb R ^{D\times 1}$  Previous decoder hidden state 
+    \item \label{eq:hi} $h_i \in \mathbb{R}^{2D\times 1}$ Encoder hidden state for the $i$'th word.
+    \item \label{eq:vT} $v^T \in \mathbb R^{D\times 1} \wedge v \in \mathbb R^{1\times D}$. $v$ is responsible for creating the energy score.
+    \item \label{eq:W} $W \in \mathbb R^{D\times D}$. similarly to $U$, we project $s_{t-1}$ via $W$ which also results in a $D$-dimensional vector
+    \item \label{eq:U} $U \in \mathbb R^{D\times 2D}$. We project/transform $h_i$ to a D-dimensional vector via a learned weights matrix $U$.
+    \item \label{eq:+} The plus is important here because it mixes the infromation from the decoder and the hidden states together
+    \item  \label{eq:tanh} Here, $\tanh$ is just a non-linearity we're applying to it. We could have used another activation function if we wanted to.
+\end{enumerate}
+
+The energy scores then get normalised.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=55, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    \caption*{We now have all our energy scores, but they are currently unnormalised. We normalize them by sending all the enrgy scores to a softmax function. This gives us $\alpha$ values between 0 and 1. Therefore, they all sum to 1.}
+\end{figure}
+
+\subsubsection{Example continued}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[Add all together to obtain $c_t$ - our context vector]{
+        \fbox{\includegraphics[page=59, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[Continuing from where we were in our diagram, we then output the context vector for the $t=1$ word (c1). This forms our 3rd input to the current RNN step (alongside $s_0$ and an input word)]{
+        \fbox{\includegraphics[page=60, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[The RNN uses these 3 inputs to output decoder hidden state $s_t$ and a prediction (am)]{
+        \fbox{\includegraphics[page=61, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[Repeat the process until we hit our max length]{
+        \fbox{\includegraphics[page=62, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+\end{figure}
+
+\subsection{Visualising the attention}
+
+\begin{minipage}[l]{.6\linewidth}
+    \centering
+    \fbox{\includegraphics[page=64, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[r]{.35\linewidth}
+    We can visualise our attention values to see which source words were looked at most when decoding a target word - I.e. when we're decoding the word person, in German, we're looking strongly at ``person'' in English, and also ``the''.
+\end{minipage}
+
+\subsection{Conclusion}
+
+\begin{minipage}[l]{.6\linewidth}
+    \centering
+    \fbox{\includegraphics[page=65, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[r]{.35\linewidth}
+    We see that longer sentences are better handled with attention. We have dynamic represetntaion for each time tsep that we're decoding.
+\end{minipage}
+
+\section{Evlauation metrics of MT/NLG systems}
+
+\begin{itemize}
+    \item Human evaluation (best but expensive)
+    \item Automatic evaluation: proxies to gaugae how effective the machine generated output is \begin{itemize}
+        \item Fast/proxy mesaures for evaluation
+        \item Often based on count statistics of n-grams
+    \end{itemize}
+\end{itemize}
+
+\subsection{BLEU}
+
+BLEU reports a modified precision metric for each level of n-gram. Credit is assigned as the maximum aamount of tiems eqhc unique n-gram appears over all the references. Multiple references are recommended (not a strict requirement).
+
+\begin{minipage}[l]{0.5\linewidth}
+    \centering
+    \fbox{\includegraphics[page=69, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.9\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[l]{0.5\linewidth}
+    First calculate the number of unique n-grams in our Hypothesis. ModifiedPrecision-1 means uni-grams. Then we look at the n-gram overlap bewteen the unique ngrams in our Hypothesis and all n-grams in our References. We work out the number of unique overlaps beteween the unique ngrams and all the Refs (there are two instances of the in the first reference, and 1 in the second). Then we obtain our modified-precision scores: the total unique overlap divided by the number of n-grams in our Hyp.
+\end{minipage}
+
+\subsubsection{Modified Precision Score}
+
+\begin{equation}
+    \text{Modified Precision score } p_n = \frac{\text{Total Unique Overlap}_n}{\text{Total n-grams}}
+\end{equation}
+
+Here, we have an example sentence in french ``Le chat est sur le tapis'' with references (shown on the example) and two outputs, \texttt{MT\_Bad} and \texttt{MT\_Ok}.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[MP-1: Question, answer below:]{
+        \fbox{\includegraphics[page=70, trim=3.2cm 16.5cm 3.2cm 3.5cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[MP-2: Question, answer below:]{
+        \fbox{\includegraphics[page=71, trim=3.2cm 16.5cm 3.2cm 3.5cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[``What are the unique n-grams that exist (in the \texttt{MT\_OK})? We have `the', `cat', `on', `mat'. Then we work out the maximum number of times that there is an overlap betwen each one of our unique n-grams and we see: `the', `cat', `on', `the' (we see `the' twice in our references) and `mat'. Then, the total number of machine translated n-grams is 7 so the modified precision socre is 5'']{
+        \fbox{\includegraphics[page=72, trim=3.2cm 16cm 3.2cm 3.5cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[\texttt{total\_unique\_overlap} measures the \textbf{UNIQUE} occurrences, not only the intersection between the two reference sentences. Here, underlined in bold black are the unique occurrences from the unique\_ngrams list. We do not include the end of sentence reference here because we are testing the produced output. EOS is somethind done within the model representation. \texttt{total\_ngrams} is not unique, there are 6 in the \texttt{MT\_OK}.]{
+        \fbox{\includegraphics[page=73, trim=3.2cm 16cm 3.2cm 3.5cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+\end{figure}
+
+\subsubsection{BLEU score}
+
+Measures precision of n-gram matches (typically up to 4-grams). Scaled by a Brevity Penalty (BP), it is used to mostly encourage the hypothesis to be of a simlar length to the reference.
+
+\begin{equation}
+    \texttt{BLEU-4} = \texttt{BP}(\prod^4_n p_n)^\frac{1}{4}, \quad \texttt{BP} = \min(1, \frac{\text{MT Output Length}}{\text{Reference Length}})
+\end{equation}
+
+\subsubsection{Downside}
+
+A shortcoming of BLEU is that it focuses a lot on the precision between Hyp and Ref, but not the recall.
+
+\subsection{Chr-F \& TER}
+
+\subsubsection{Chr-F}
+
+Chr-F is a character n-gram $F_\beta$ score. 
+
+\begin{itemize}
+    \item Balances \textbf{character precision} \begin{itemize}
+        \item percentage of n-grams in the hypothesis which have a acounterpart in the reference
+    \end{itemize}
+    \item and \textbf{character recall} \begin{itemize}
+        \item percentage of character n-grams in the reference which are also present in the hypothesis.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{TER: Translation Error Rate}
+
+Minimum \# of edits required to change a hypothesis into one of the references. TER is performed at the word level, and the ``edits'' can be a: Shift, Insertion, Substitution and Deletion. TER balances these edits to build a metric
+
+\subsection{ROUGE}
+
+\begin{minipage}[l]{.5\linewidth}
+    \centering
+    \fbox{\includegraphics[page=79, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.9\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[r]{.5\linewidth}
+    \begin{itemize}
+        \item ROUGE balances both precision and recall via the F-Score.
+        \item Though originally a translation metric, ROUGE is more common in captioning/summarization literature than translation. Obviously it can be used for translation though.
+        \item ROUGE-n measures the F-score of n-gram split references and system outputs  
+        \item ROUGE-L is the F-score of the LCS between the references and system outputs. The subsequence does not have to be consecutive
+        \item For example… given this Ref and Hyp: 
+        \item Other variants of ROUGE such as ROUGE-S, ROUGE-W which incorporate skip grams and/or weighting
+    \end{itemize}
+\end{minipage}
+
+\subsection{METEOR}
+
+\begin{minipage}[l]{.5\linewidth}
+    \centering
+    \fbox{\includegraphics[page=82, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.9\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[r]{.5\linewidth}
+    \begin{itemize}
+        \item METEOR is more modern and a better metric than BLEU, though for some reason the NMT community still adopts BLEU a lot more frequently. You will find METEOR in other generation tasks such as summarization and captioning
+    \end{itemize}
+\end{minipage}
+
+\subsection{BertScore}
+
+not count based.
 
 \end{document}
