@@ -4,5 +4,4 @@ torchvision
 matplotlib
 pytorch_lightning
 torchmetrics
-PIL
 medmnist
