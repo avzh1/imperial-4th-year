@@ -99,7 +99,7 @@ This is the main idea of contrastive-based learning: create multiple versions of
 
 \subsection{Augmentation Pipeline}
 
-The augmentation you choose has very bix consequences on what your model will actually learn. For example, an augmentation that removes colour will implicity teach the network that you should not care about the colour, only about the concept (shapes and textures).
+The augmentation you choose has very big consequences on what your model will actually learn. For example, an augmentation that removes colour will implicity teach the network that you should not care about the colour, only about the concept (shapes and textures).
 
 We require the augmentation pipeline to:
 \begin{itemize}
@@ -139,6 +139,8 @@ For each positive pair $(i,j)$ we have the following loss:
     \item \textbf{numerator}: We want to maximise the similarity (attract the embeddings we want together). I.e. maximise the nominator.
     \item \textbf{denominator}: Measure similairty between the first image and all other images in the batch. I.e. minimise the denominator.
     \item $\tau$ is the temperature, which controls how much to penalise hard negatives (negative pairs wrongly mapped close to each other). A low temperature penalises them more.
+    \item here, $\textbf{1}_{[k\neq i]}$ is an indicator function evaluating to
+    1 iff $k \neq i$ 
 \end{enumerate}
 
 The final loss is computed across all positive pairs, both $(i,j)$ and $(j,i)$, in amini-batch, by averaging all $l_{i,j}$.
