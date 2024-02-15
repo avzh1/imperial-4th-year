@@ -142,8 +142,17 @@ squeue | grep az620
 
 \subsubsection{In Terminal 2}
 If you have defined a config entry for \texttt{shell*} then replace accordingly with \texttt{az620@shell3.doc.ic.ac.uk} $\mapsto$ \texttt{shell3}.
+
+\textbf{Don't forget leading / in command below}
+
+Unmodified:
 \begin{lstlisting}
 ssh -t -L 10001:localhost:10001 az620@shell3.doc.ic.ac.uk "/vol/linux/bin/slurm_sshtojob.sh -g -w ~/ -p 10001 -e /vol/bitbucket/{USER}/dlenv"
+\end{lstlisting}
+
+For me:
+\begin{lstlisting}
+    ssh -t -L 10001:localhost:10001 shell3 "/vol/linux/bin/slurm_sshtojob.sh -g -w ~/ -p 10001 -e /vol/bitbucket/az620/dlenv"
 \end{lstlisting}
 
 http://localhost:10001/lab?token=\{from terminal\}
