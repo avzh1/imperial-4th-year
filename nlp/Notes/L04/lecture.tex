@@ -445,8 +445,108 @@ Minimum \# of edits required to change a hypothesis into one of the references. 
     \end{itemize}
 \end{minipage}
 
+\subsection{N-gram methods have shortcomings}
+
+\begin{minipage}[l]{.5\linewidth}
+    \centering
+    \fbox{\includegraphics[page=83, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.9\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{minipage}\hfill
+\begin{minipage}[r]{.5\linewidth}
+    \begin{itemize}
+        \item To humans, system A makes more sense, as it catches more meaning behind the meaning of the reference
+        \item This n-gram based method cannot capture the context behind sentences.
+        \item Other metrics might be slightly more robust than this, but fundamentally n-gram methods cannot take into account valid candidates/machine outputs which may use synonyms instead of a word in the reference.
+    \end{itemize}
+\end{minipage}
+
 \subsection{BertScore}
 
-not count based.
+Not count based. Bert is a trained language model that can give oyu contextual representations of tokens/words. It's not used so much for translation, but still a good metric for most sequence-to-sequence tasks. The biggest drawback is now not the n-gram matching, rather, the scores can vary if evaluated against different BERT models.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=84, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.9\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    \caption*{Performs a pairwise cosine similarity between each word in the reference and each word in the candidate.}
+\end{figure}
+
+If you have a sequence to sequence task then bert score is the metric you should be using. So if you have summarization, audio transcription, generative question answering then BERT score is a good score to use.
+
+\section{Inference}
+
+During training, we used teacher forcing. How we don't have access to the ground truth. During inference we can either perform:
+
+\subsection{Greedy decoding}
+
+Outputs the most likely word at each time step (i.e. an argmax). It is fast, but doesn't look into the future. But as we decode the rest of the sentence, it might be worse than we thought. If we were able to see what the future candidates might be, we might be able to predict a better word for the current time step.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=87, trim=6cm 14.5cm 6cm 5.8cm, clip, width=.6\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+\end{figure}
+
+\subsection{Beam search}
+
+Instead of choosing the best token to generate at each time-step we keep $k$ possible tokens at each step. In practice, $k$ is normally between 5-10. Note that we will end up with $k$ hypothesis at the end of decoding. Decoding finishes when we hit an EOS token. For example, here is $k=2$.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[$t=0$ `arrived' and `the' are the 2 most likley words]{
+        \fbox{\includegraphics[page=88, trim=6cm 14.3cm 6cm 4.9cm, clip, width=.3\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[$t=1$ for each word, decode the next k. We end up with the green nodes. Then, prune all but the top-k]{
+        \fbox{\includegraphics[page=89, trim=6cm 14.3cm 6cm 4.9cm, clip, width=.3\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+    \subfigure[$t=2$ repeat. Now we have the next green, and lets predict 2 times steps into the future and keep track of the 2 tokens that give the highest likelihood for those time steps.]{
+        \fbox{\includegraphics[page=90, trim=6cm 14.3cm 6cm 4.9cm, clip, width=.3\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+    }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=91, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.95\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+        }
+\end{figure}
+
+\subsection{Temperature sampling}
+
+Introduces stochasticity into the decoder step. This is a problem with the two above; they are deterministic. 
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=92, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.95\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
+        }
+\end{figure}
+
+\section{Tricks | how to improve performance of models}
+
+\subsection{Data Augmentation}
+
+\subsubsection{Backtranslation}
+
+Lets translate the source into one language and translate it back. The hope is, that once translated back the semantics is the same but syntactically it may be different.
+
+\begin{itemize}
+    \item Train/use a separate target $\rightarrow$ source model
+    \item Translate target monolingual corpora to source using the model
+    \item Train the actual source $\rightarrow$ target model with the additional data
+    \item Ideally changes the syntax of source while keeping the same semantics. Downsides: adds noise to the source
+\end{itemize}
+
+
+\subsubsection{Synonym replacement}
+
+\begin{itemize}
+    \item Use dictionary \& syntax trees to find appropriate synonyms
+    \item Use word embeddings \& nearest neighbors to find synonyms.
+\end{itemize}
+
+\subsubsection{Batching, PAdding and Sequence Length}
+
+\begin{itemize}
+    \item Group similar length sentences together in the batch
+    \item train your model on simpler/smaller sequence lengths first.
+\end{itemize}
 
 \end{document}
