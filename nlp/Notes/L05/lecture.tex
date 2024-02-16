@@ -72,7 +72,7 @@
     \caption*{Like with other translation, the Transformer takes in a source sentence and generates a target. Inside, the trasnformer, we have a stack of encoder layers and a stack of decoder layers. At some point, we use the encoded output to help us generate the target. Note that the output of one encoder layer is sent as input to the next encoder layer. Similarly, the output of one decoder layer is sent to the next decoder layer as input}
 \end{figure}
 
-\subsection{Encoder}
+\section{Transformer | Encoder}
 
 \begin{figure}[H]
     \centering
@@ -97,7 +97,7 @@
     \end{itemize}
 \end{minipage}
 
-\subsubsection{Self-attention}
+\subsection{Self-attention}
 
 The self-attention mechanism allows each input in a sequence to look at the whole sequnce to compute a representation of the sequence. Each word therefore gets a representation based on all the other words in the input sequence. Each $S$ in an $S\times D$ input has looked at every other word to compute its $D$-dimensional representation.
 
@@ -124,6 +124,8 @@ The attention function consists of 3 variables
 \begin{equation}
     \text{Attention}(Q,K,V)=\sigma(\frac{QK^T}{\sqrt{d_h}})V,\quad \textbf{Q}\text{eries},\textbf{K}\text{eys}, \textbf{V}\text{alues}, \quad \sigma: \text{softmax}
 \end{equation}
+
+\subsubsection{Vector form}
 
 \begin{minipage}[l]{.6\linewidth}
     \begin{figure}[H]
@@ -169,7 +171,7 @@ The attention function consists of 3 variables
     \caption*{First, we take our word embeddings and project them through a learnt weight matrix, to a representation $D\times d_h$. Firstly, we set $d_h$ equal to $D$. We do the same for our keys and values.}
 \end{figure}
 
-We can simplify the above to do everything in one-sho in matrix form:
+We can simplify the above to do everything in matrix form:
 
 \begin{gather}
     Q = W \cdot W^Q \in \mathbb R^{S \times d_h} \\
@@ -179,7 +181,7 @@ We can simplify the above to do everything in one-sho in matrix form:
 
 \begin{figure}[H]
     \centering
-    \subfigure[Looking at attention in vector form first, we’re going to work out our attention-ized representation for each word. Let’s start with $w_1$
+    \subfigure[Looking at attention in vector form first, we're going to work out our attention-ized representation for each word. Let's start with $w_1$
     ]{
         \vstretch{.8}{
             \fbox{\includegraphics[page=31, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
@@ -195,7 +197,7 @@ We can simplify the above to do everything in one-sho in matrix form:
             \fbox{\includegraphics[page=33, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
         }
     }
-    \subfigure[Now we’re going to work out the similarity between the query vector we have, and ALL the key vectors. We then obtained a weighting for how similar each of the key vectors were to the query vector. The score here is NOT the weighting, whoeve,r we need it in our calculation of the weighting]{
+    \subfigure[Now we're going to work out the similarity between the query vector we have, and ALL the key vectors. We then obtained a weighting for how similar each of the key vectors were to the query vector. The score here is NOT the weighting, whoeve,r we need it in our calculation of the weighting]{
         \vstretch{.8}{
             \fbox{\includegraphics[page=34, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
         }
@@ -219,7 +221,7 @@ We can simplify the above to do everything in one-sho in matrix form:
             \fbox{\includegraphics[page=37, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
         }
     }
-    \subfigure[The first step is simply retrieving the value vectors we obtained previously. The second step is actually performing the weighting on each of our value vectors. So our value vectors retain more information if the softmax value for that index is high, and retain less information if the softmax value for that index is low]{
+    \subfigure[The first step is simply retrieving the value vectors we obtained previously. The second step is actually performing the weighting on each of our value vectors. So our value vectors retain more information if the softmax value for that index is high, and retain less information if the softmax value for that index is low. The softmax here is the way we normalize similarity scores]{
         \vstretch{.8}{
             \fbox{\includegraphics[page=39, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
         }
@@ -236,7 +238,216 @@ We can simplify the above to do everything in one-sho in matrix form:
     }
 \end{figure}
 
+\subsubsection{Matrix Form}
 
+\begin{equation*}
+    \text{Attention}(Q,K,V)=Z=\underbrace{\sigma(\frac{\overbrace{Q}^{\in \mathbb R^{S\times d_h}}\overbrace{K^T}^{\in \mathbb R^{d_h \times S}}}{\sqrt{d_h}})}_{\text{attention matrix} \in \mathbb R^{S \times S}}V,\quad S = \text{source sequence length}
+\end{equation*}
+
+\subsection{Multi-head attention}
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=60, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.85\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    \caption*{We perform self-attention $head$ amount of times. Each head may refer to different parts of the sequence. The number of heads needs to be equally divisible by the model dimensionality}
+\end{figure}
+
+$d_h$ therefore represents the model dimensionality divided by the number of heads.
+
+\subsection{Normalization}
+
+\subsubsection{Layer normalization}
+
+Data fed into a neural network should be normalized e.g. $\hat x = \frac{x-\mu}{\sigma}$. There are also normalization techniques within the activations or layers of a network
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=66, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    \caption*{It normalizes the feature of one sample in one batch. The first step is that we normalize each one of the items in our batch respective to that item itself. Then transform the variable with learnable parameters ($\gamma, \beta$)}
+\end{figure}
+
+\subsubsection{Residual Connections}
+
+You would assume that if you want to stack layers, we should get a lower training error. In practice this doesn't happen; as you increase the number of layers, what you see is an increase in the training error that you will see.
+
+Residual connections help mitigate the vanishing gradient problem, where Vanishing gradients = tiny weight changes. Residual connections provide a shortcut for information to flow to layer layers of the network, where the output of an earlier layer is added directly to the output of a layer layer. (see ResNet in Deep Learning lectures).
+
+The reason this works so well: it lets each weight matrix to focus on only learning the difference between the previous layer and the current layer instead of learning an entire transformation as what happens in the traditional case.
+
+\subsection{Position-wise Feed forward Network}
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=76, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    \caption*{\textbf{network is an NLP $\rightarrow$ network is an MLP}. Transformation is applied to all weights in a sequence. In the above example, there are 2 layers, with a ReLU activation function. We project $x$ from $d_{ff}$ into $D$. Then $W_2$ projects it down again.}
+\end{figure}
+
+\subsection{Positional Encoding}
+
+\begin{figure}[H]
+    \centering
+    \vstretch{.8}{
+            \fbox{\includegraphics[page=82, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    \caption*{This is inherently different to RNN which processes things in the order the arrive in.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{
+        \vstretch{1}{
+            \fbox{\includegraphics[page=83, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.3\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \subfigure{
+        \vstretch{1}{
+            \fbox{\includegraphics[page=84, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.3\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \subfigure{
+        \vstretch{1}{
+            \fbox{\includegraphics[page=85, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.3\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \caption*{The positional encoding vector is independent of the word, but only to the position in the sequence. The addition, permute the vector by small amounts. In vector space, the offset remains the same for any embedding given the same position. }
+\end{figure}
+
+There are multiple ways of incorporating positional embeddings, such as sinusoids or learning the positional embeddings. Applying positional encoding depends ONLY on the index the word appears in.
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{gather*}
+        PE_{pos,2i}=\sin\Bigg(\frac{pos}{10000^{\frac{2i}{d}}}\Bigg) \\ 
+        PE_{pos,2i+1}=\cos\Bigg(\frac{pos}{10000^{\frac{2i}{d}}}\Bigg) \\ 
+        pos: \text{position of the word}, \quad i: \text{index of d}
+    \end{gather*}
+\end{minipage}\hfill
+\begin{minipage}[r]{.5\linewidth}
+    The $2i$ and $2i+1$ impl that we're going to be looping over the indexes in range of $d$. E.g. consider we had a vector of 512 dimension. We would be looping over it. At an even index (e..g 0) we'd apply the $\sin$ variant of PE. At an odd index (e.g. 1), we would apply the $\cos$ variant. 
+\end{minipage}
+
+The only difference between the functions is whether we use a sin or cosine. Note that when we're early on in looping over d, i will be small. The
+resulting exponent would be therefore be small. This makes the denominator small. Thus the overall value of $\frac{pos}{10000^{(2i/d)}}$ would be larger than when we're later in our loop over d
+
+\subsubsection{Pseudo-code}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{
+        \vstretch{.8}{
+            \fbox{\includegraphics[page=89, trim=3.2cm 15.5cm 3.2cm 2.1cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \subfigure{
+        \vstretch{.8}{
+            \fbox{\includegraphics[page=90, trim=4cm 14.7cm 3.7cm 3.7cm, clip, width=.45\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \caption*{Consider position 0, i.e. the first word in the sequence, positional encoding function means no manipulation is done to the vector. At position 1, the positional encoding function shows that indexes up to 10 have values close to 1 added to them. At position 22 the encoding function shows that the first few indexes are affected heavily by positional encoding. some indexes have values close to -1 added to them, followed shortly by a value +1 added to them.}
+\end{figure}
+
+We don't just add another dimension to indicate the position because that draws the samples away form the 0 mean. Also, there is less generability because if during training, the model hasn't seen that word in that position then during testing it won't be very good.
+
+\section{Transformer | Decoder}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{
+        \vstretch{.8}{
+            \fbox{\includegraphics[page=97, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.95\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \caption*{}
+\end{figure}
+
+\subsection{Pipeline}
+
+\subsubsection{Testing}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{
+        \vstretch{.8}{
+            \fbox{\includegraphics[page=98, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \caption*{Our source sentence get encoded via our encoder. We feed an SOS token to our decoder, which then predicts the first word. We append the prediction to our SOS token, and then use this to predict the next word. At some point our decoder will predict na EOS token and we'll know that this is the end of the generation}
+\end{figure}
+
+\subsubsection{Training}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{
+        \vstretch{.8}{
+            \fbox{\includegraphics[page=99, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.7\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+        }
+    }
+    \caption*{However, during training, we won't get the model to generate auto-regressively. We're going to feed the whole target sequence as input to the decoder and decode the sentence in one go. This means we cna run the decoder stack once. As opposed to running it for as many tokens as we have in the target sequence (Which is what we do when performing inference). If we feed in the whole sequence ot the decoder, we need a way to tell the decoder not to look at future tokens when computing attention for one of the tokens. E.g. when trying to compute teh attention-based representation for ``am'' we should not be allowed to look at ``a'' or ``student'', since these tokens are in the future. We enforce this uni-directionality with masking.}
+\end{figure}
+
+\subsection{Masked Multi-head Self attention}
+
+When we looked at attention in the encoder, the bidirectionality meant that each word looked at every other word, including future tokens for the word which we are trying to calculate the attention for. Masked multi-head means that we're not looking at future tokens. 
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \vstretch{.8}{
+                \fbox{\includegraphics[page=103, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+            }
+    \end{figure}
+\end{minipage}\hfill
+\begin{minipage}[r]{.47\linewidth}
+    We enforce uni-directionality with a mask. We set the values in the upper triangle to negative infinity. The mask is a $T\times T$ matrix.
+\end{minipage}
+
+\subsection{Cross Attention}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \vstretch{.8}{
+                \fbox{\includegraphics[page=108, trim=3.2cm 14cm 3.2cm 2.1cm, clip, width=.95\linewidth]{Lecture 5 - Transformers (with notes).pdf}}
+            }
+    \end{figure}
+\end{minipage}\hfill
+\begin{minipage}[r]{.47\linewidth}
+    Thinking back to the dictionary analogy, we have a query vector (in target-language embedding space). We're then looking to find the similar key vectors from the encoder. In other words, which encoded words are most similar to this current decoding word. Then, using the softmax weighted similarities, we obtain some aggregated value indicating which words are most important.
+
+    $T\times S$ is the similarity between target words and source words.
+\end{minipage}
+
+\subsection{Conclusion}
+
+Our overall decoder is similar to the encoder layer in construction. We create a decoder and decoder layer class, the decoder layer class contains one decoder layer, and the decoder class contains embeddings + PE and a for loop over the desired number of decoder layers.
+
+\section{Tricks}
+
+\subsection{Decaying learning rate}
+
+\begin{equation}
+    lr = \sqrt{\frac 1 d } \times \min\Bigg(\sqrt{\frac 1 d}, i \times warmup^{-1.5}\Bigg), \quad \begin{cases}
+        i: & \text{current global step} \\ 
+        warmup: & \text{hyperparameter (default: 4000)} \\
+        d: & \text{model dimensionality}
+    \end{cases}
+\end{equation}
+
+\section{Code}
+
+\subsection{Self Attention}
+
+\lstinputlisting[language=python]{code/self_attention.py}
+
+\subsection{MHA}
+
+\lstinputlisting[language=python]{code/mha.py}
 
 % \printbibliography
 % \addcontentsline{toc}{section}{Bibliography}
