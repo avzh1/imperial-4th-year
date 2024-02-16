@@ -1,2 +1,4 @@
 data
 lightning_logs
+*.zip*
+wget-log
