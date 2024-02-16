@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{example}
+\newcommand{\reportdescription}{example description}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{TF-IDF}
+
+\subsection{Motivating Problem}
+
+If we have a search in Google for ``low carb breakfast'' they get shown generic results for breakfast. Some of these terms shouldn't have equal weighting to each-other.
+
+The problem is that the search is using basic string/keyword matching. It treats all words as equally important. Less relevant results are ranked as highly as more relevant ones.
+
+\subsection{Solution}
+
+Rank more important words as more important.
+
+\subsection{Introduction}
+
+This is pre-neural networks.
+
+\begin{itemize}
+    \item \textbf{Term Freqeuency (TF)}: Mesaures how often a term occurs in a document. The more often a term appears in a document, the more important it is for that document.
+    \item \textbf{Inverse Document Frequency (IDF)}: Measures how common or rare a term is across all documents in the corpus. Terms that appear in amny different documents are less significant that those that appear in a smaller number of documents.
+\end{itemize}
+
+This means that a search for ``low-carb breakfast'' willl prioritize recipes where ``low-carb'' is a significant term, rather than returning recipes with the more common ``breakfast'' term.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[page=7, width=\linewidth]{TF-IDF.pdf}
+    \caption*{}
+\end{figure}
+
+% \printbibliography
+% \addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
