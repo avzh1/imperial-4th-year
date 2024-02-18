@@ -170,7 +170,7 @@ There are three classes of methods
     }
 \end{figure}    
 
-Assume that the paried data ($x,y$) which are easy to generate. Then take a neural network to solve the inverse problem. The issue here, is that you don't use any information about what happened in the forward operation. The model can be made more intelligent by being partly model agnostic; we can upsample using a classsical algorithm, like linear interpolation, which aren't perfect but produce something useful. Then, after this approximation, you can train a network to remove the difference between the upsampled version (which may have artifacts) and the original.
+Assume that the paired data ($x,y$) which are easy to generate. Then take a neural network to solve the inverse problem. The issue here, is that you don't use any information about what happened in the forward operation. The model can be made more intelligent by being partly model agnostic; we can upsample using a classsical algorithm, like linear interpolation, which aren't perfect but produce something useful. Then, after this approximation, you can train a network to remove the difference between the upsampled version (which may have artifacts) and the original.
 
 \subsection{Decoupled Approach}
 
@@ -369,45 +369,14 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
 
 \section{Deep Learning for Image Reconstruction}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=51, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=53, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=54, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \caption*{An x-ray scan captures information by measuring the x-ray energy on the opposite side of the emitter as it passes through soft-tissue. This is rotated around the patient}
+\end{figure}
 
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=52, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=53, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=54, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\subsection{Going from Sinogram to CT image}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -416,38 +385,20 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
+    \begin{itemize}
+        \item We know how to solve the forward transform.
+        \item However, how do we solve the inverse problem? 
+        \item Typically if we have measured a lot of data then you can just compute the inverse radon trasnform but typically you can't do that becuase you dont have enough data. This may be that for example, a patient may have to hold their breath when giving an MR heart scan, so you don't want them in there for long.
+    \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=56, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
+\begin{figure}[H]
+    \centering
+    \subfigure[Can also contain artifacts]{\fbox{\includegraphics[page=56, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=58, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+\end{figure}    
 
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=57, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=58, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\subsection{Going from K-space to MR image}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -456,17 +407,12 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Similarly, we know the forward problem, but the inverse is harder.
+        \item you can't really tell what the original problem was, you can scan something random and the output looks
+    \end{itemize}
 
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=60, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
+    The task becomes ``Recover an image $x\in \mathbb K^{N_x}$ from a set of observations $y \in \mathbb K^{N_y}$ which are corrupted by a noise $n\in \mathbb K^{N_y}$, and $A:\mathbb K^{N_x}\rightarrow \mathbb K^{N_y}$ is a linear operator $y=Ax+n$''
 \end{minipage}
 
 \begin{minipage}[l]{.5\linewidth}
@@ -476,68 +422,16 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
+    \begin{itemize}
+        \item We can similarly have an issue with undersampled data.
+    \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=62, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=63, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=64, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=65, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=66, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=67, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\begin{figure}[H]
+    \centering
+    \subfigure[How can we formulate the problem? Use as much physics knowledge as possible (we know there is a forier trasnformation), but this gives a noisy intermediate representation. Therefore, use an nn to remove artifacts.]{\fbox{\includegraphics[page=62, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \subfigure[Another approach is to apply an nn to create a new frequency space and then upsample with inverse of forier transform.]{\fbox{\includegraphics[page=63, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+\end{figure} 
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -546,48 +440,19 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
+    \begin{itemize}
+        \item generate the training data using the forward model
+        \item compare the reconstructed image to the ground truth image 
+        \item minimise the cost funciton, the losss function between these reconstructed image and ground truth images
+        \item back propagation through the neural network in the standard way (e.g. with backpropagation)
+    \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=69, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=70, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=71, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=72, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\begin{figure}[H]
+    \centering
+    \subfigure[If using the framework above, you need a loss function which is differentiable; so L2 loss between the ground truth image and reconstructed image (MSE) or you can also use the GAN loss funciton]{\fbox{\includegraphics[page=70, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \subfigure[Backpropogation]{\fbox{\includegraphics[page=71, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+\end{figure} 
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -596,17 +461,7 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=74, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
+    When you do inference, you only need to do a forward pass. Which is different to classical inverse problems because there you need to do that for every new dataset, solve the optimisation problem again.
 \end{minipage}
 
 \begin{minipage}[l]{.5\linewidth}
@@ -616,78 +471,17 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
+    \begin{itemize}
+        \item With less data, reconstruct the image with a forier transform and apply an nn to remove artifacts. 
+    \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=76, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
+\begin{figure}[H]
+    \subfigure[Have an nn which in the image space does de-noising operations]{\fbox{\includegraphics[page=77, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+    \subfigure[Then also goes with a foreir transform into the signal doimain and makes sure that the data you have reconstructed is consistent with the data you have acquired.]{\fbox{\includegraphics[page=78, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{05 - Inverse Problems.pdf}}}
+\end{figure}
 
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=77, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=78, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=79, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=80, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=81, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=82, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\section{AI-enabled Super resolution Images}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -696,58 +490,22 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
-
+    \begin{itemize}
+        \item acquire thick slices through the heart. The data doesn't look very high resolution
+    \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=84, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=84, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
+    \caption*{Formula a deep learning pipeline, and take the 3D image and 2d images from which we want to recover our 3D data and devlop a simulation for the forward process and generate pairs of high and low resolution data and train the nn to absorb all the iamges again to a high resolution.}
+\end{figure}   
 
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=85, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=86, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=87, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \fbox{\includegraphics[page=88, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-
-\end{minipage}
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=85, trim=1cm 2cm 1cm 3cm, clip, width=.95\linewidth]{05 - Inverse Problems.pdf}}
+    \caption*{This is something you can use a residual network for}
+\end{figure}  
 
 % \printbibliography
 % \addcontentsline{toc}{section}{Bibliography}
