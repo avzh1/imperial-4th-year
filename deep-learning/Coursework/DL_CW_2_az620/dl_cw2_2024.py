@@ -31,7 +31,7 @@
 # ## Setting up working environment
 # You will need to install pytorch and import some utilities by running the following cell:
 
-# In[9]:
+# In[15]:
 
 
 # !pip install -q torch torchvision altair seaborn tqdm numpy matplotlib torchsummary
@@ -55,7 +55,7 @@ import matplotlib.pyplot as plt
 from torchsummary import summary
 
 
-# In[24]:
+# In[16]:
 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
@@ -63,7 +63,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 # Here we have some default pathing options which vary depending on the environment you are using. You can of course change these as you please.
 
-# In[11]:
+# In[17]:
 
 
 # Initialization Cell
@@ -108,7 +108,7 @@ else:
 content_path = Path(content_path)
 
 
-# In[12]:
+# In[18]:
 
 
 def show(img):
@@ -160,23 +160,24 @@ print(f'Using {device}')
 
 # #### Hyper-parameter selection
 
-# In[13]:
+# In[19]:
 
 
 # Necessary Hyperparameters 
-num_epochs = 10
+num_epochs = 32
 learning_rate = 0.001
-batch_size = 64
-latent_dim = 1024 # Choose a value for the size of the latent space
+batch_size = 128
+latent_dim = 2 # Choose a value for the size of the latent space
 
 # Additional Hyperparameters 
-beta = 3
+beta = 2
+hidden_dimensions = 16
 
 
 # #### Data loading
 # 
 
-# In[32]:
+# In[20]:
 
 
 # Transformed data is first padded and randomly cropped to encourage the encoder to memorize patterns, not just
@@ -194,7 +195,7 @@ def denorm(x):
     return x
 
 
-# In[15]:
+# In[21]:
 
 
 train_dat = datasets.MNIST(data_path, train=True, download=True, transform=transform)
@@ -209,7 +210,7 @@ fixed_input = sample_inputs[:32, :, :, :]
 save_image(fixed_input, content_path/'CW_VAE/image_original.png')
 
 
-# In[16]:
+# In[22]:
 
 
 # Get a batch of data
@@ -242,10 +243,10 @@ plt.show()
 
 # For the encoder, I chose to implement the ResNet architecture due to its repeated success in classification tasks. My hope, is that for similar reasons, this architecture will prove to be most effective in an encoder context.
 
-# In[17]:
+# In[23]:
 
 
-class EncoderBlock(nn.Module):
+class EncoderBlock_DEPRECATED(nn.Module):
     def __init__(self, in_channels: int,
                        out_channels: int,
                        kernel_size=3,
@@ -265,7 +266,7 @@ class EncoderBlock(nn.Module):
         """
         
         
-        super(EncoderBlock, self).__init__()
+        super(EncoderBlock_DEPRECATED, self).__init__()
         
         # input is (_, in, height, width)
 
@@ -335,10 +336,10 @@ class EncoderBlock(nn.Module):
         return self.relu2(out)
 
 
-# In[18]:
+# In[24]:
 
 
-class DecoderBlock(nn.Module):
+class DecoderBlock_DEPRECATED(nn.Module):
     def __init__(self, in_channels: int,
                        out_channels: int,
                        kernel_size=3,
@@ -354,7 +355,7 @@ class DecoderBlock(nn.Module):
         """
         
         
-        super(DecoderBlock, self).__init__()
+        super(DecoderBlock_DEPRECATED, self).__init__()
 
         self.deconv1 = nn.ConvTranspose2d(in_channels=in_channels,
                                           out_channels=out_channels, 
@@ -396,30 +397,12 @@ class DecoderBlock(nn.Module):
         return x
 
 
-# In[19]:
+# In[25]:
 
 
-input = torch.rand((1, latent_dim, 16, 16))
-
-deconv = DecoderBlock(latent_dim, 1)
-
-deconv(input).shape
-
-# norm1 = nn.BatchNorm2d(out_channels)
-# relu1 = nn.LeakyReLU(negative_slope=0.2, inplace=True)
-# deconv2 = nn.ConvTranspose2d(out_channels, out_channels, kernel_size=(4, 4), stride=(1, 1), padding=(1, 1), output_padding=(0, 0))
-# norm2 = nn.BatchNorm2d(out_channels)
-# relu2 = nn.LeakyReLU(negative_slope=0.2, inplace=True)
-
-
-# In[20]:
-
-
-# *CODE FOR PART 1.1a IN THIS CELL*
-
-class VAE(nn.Module):
+class VAE_DEPRECATED(nn.Module):
     def __init__(self, latent_dim):
-        super(VAE, self).__init__()
+        super(VAE_DEPRECATED, self).__init__()
         #######################################################################
         #                       ** START OF YOUR CODE **
         #######################################################################
@@ -427,27 +410,27 @@ class VAE(nn.Module):
         # Encoder Modules
 
         # (_, 1, 28, 28) -> (_, 16, 28, 28)
-        self.encode1 = EncoderBlock(in_channels=1,
-                                    out_channels=(latent_dim//4),
+        self.encode1 = EncoderBlock_DEPRECATED(in_channels=1,
+                                    out_channels=(hidden_dimensions//8),
                                     kernel_size=3,
                                     stride=1
         )
 
         # (_, 16, 28, 28) -> (_, 32, 14, 14)
-        self.encode2 = EncoderBlock(in_channels=(latent_dim//4),
-                                    out_channels=(latent_dim//4)*2,
+        self.encode2 = EncoderBlock_DEPRECATED(in_channels=(hidden_dimensions//8),
+                                    out_channels=(hidden_dimensions//8)*2,
                                     kernel_size=3,
                                     stride=2)
 
         # (_, 32, 14, 14) -> (_, 64, 7, 7)
-        self.encode3 = EncoderBlock(in_channels=(latent_dim//4)*2,
-                                    out_channels=(latent_dim//4)*3,
+        self.encode3 = EncoderBlock_DEPRECATED(in_channels=(hidden_dimensions//8)*2,
+                                    out_channels=(hidden_dimensions//8)*5,
                                     kernel_size=3,
                                     stride=2)
         
         # (_, 64, 7, 7) -> (_, 128, 4, 4)
-        self.encode4 = EncoderBlock(in_channels=(latent_dim//4)*3,
-                                    out_channels=latent_dim,
+        self.encode4 = EncoderBlock_DEPRECATED(in_channels=(hidden_dimensions//8)*5,
+                                    out_channels=hidden_dimensions,
                                     kernel_size=3,
                                     stride=2)
 
@@ -455,28 +438,28 @@ class VAE(nn.Module):
         self.latent  = nn.Flatten()
 
         # Latent Mean and Variance 
-        self.mean_layer   = nn.Linear(latent_dim * 4 * 4, latent_dim)
-        self.logvar_layer = nn.Linear(latent_dim * 4 * 4, latent_dim)
+        self.mean_layer   = nn.Linear(hidden_dimensions * 4 * 4, latent_dim)
+        self.logvar_layer = nn.Linear(hidden_dimensions * 4 * 4, latent_dim)
 
         # Decoder Modules
 
         # From linear latent space back into image form
-        self.up_sample1 = nn.Linear(latent_dim, latent_dim * 4 * 4) # don't forget to input.reshape(input.shape[0], -1, 4, 4)
+        self.up_sample1 = nn.Linear(latent_dim, hidden_dimensions * 4 * 4) # don't forget to input.reshape(input.shape[0], -1, 4, 4)
        
         # (_, 1024, 4, 4) -> (_, 768, 7, 7)
-        self.decode1 = DecoderBlock(in_channels=latent_dim,
-                                    out_channels=(latent_dim//4)*3,
+        self.decode1 = DecoderBlock_DEPRECATED(in_channels=hidden_dimensions,
+                                    out_channels=(hidden_dimensions//8)*5,
                                     kernel_size=2,
                                     stride=2)
         
         # (_, 768, 7, 7) -> (_, 512, 13, 13)
-        self.decode2 = DecoderBlock(in_channels=(latent_dim//4)*3,
-                                    out_channels=(latent_dim//4)*2, 
+        self.decode2 = DecoderBlock_DEPRECATED(in_channels=(hidden_dimensions//8)*5,
+                                    out_channels=(hidden_dimensions//8)*2, 
                                     kernel_size=2,
                                     stride=2)
 
         # (_, 512, 13, 13) -> (_, 256, 25, 25)
-        self.decode3 = DecoderBlock(in_channels=(latent_dim//4)*2, 
+        self.decode3 = DecoderBlock_DEPRECATED(in_channels=(hidden_dimensions//8)*2, 
                                     out_channels=1, 
                                     kernel_size=2,
                                     stride=2)
@@ -552,6 +535,142 @@ class VAE(nn.Module):
         #                       ** END OF YOUR CODE **
         ####################################################################### 
 
+model = VAE_DEPRECATED(latent_dim).to(device)
+
+summary(model, (1, 32, 32))
+
+params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print("Total number of parameters is: {}".format(params))
+
+
+# In[26]:
+
+
+# *CODE FOR PART 1.1a IN THIS CELL*
+
+class VAE(nn.Module):
+    """VAE module for MNIST dataset"""
+    def __init__(self, latent_dim):
+        super(VAE, self).__init__()
+        #######################################################################
+        #                       ** START OF YOUR CODE **
+        #######################################################################
+        
+        # Encoder Modules
+        self.encoder = nn.Sequential(
+            # (_, 1, 32, 32) -> (_, 16, 32, 32)
+            nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1),
+            # (_, 16, 32, 32) -> (_, 16, 16, 16)
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=16),
+            nn.ReLU(),
+
+            # (_, 16, 16, 16) -> (_, 64, 16, 16)
+            nn.Conv2d(in_channels=16, out_channels=64, kernel_size=3, stride=1, padding=1),
+            # (_, 64, 16, 16) -> (_, 64, 8, 8)
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(),
+
+            # (_, 64, 8, 8,) -> (_, 4096)
+            nn.Flatten(),
+
+            # (_, 4096) -> (_, 1024)
+            nn.Linear(in_features=4096, out_features=1024),
+            nn.ReLU(),
+            
+            # (_, 1024) -> (_, 1024)
+            nn.Linear(in_features=1024, out_features=1024),
+            nn.ReLU()
+        )
+
+        # Latent space mean and variance layers
+        self.mean_layer   = nn.Linear(1024, latent_dim)
+        self.logvar_layer = nn.Linear(1024, latent_dim)
+
+        self.decoder = nn.Sequential(
+            # (_, latent_dim) -> (_, 1024)
+            nn.Linear(in_features=latent_dim, out_features=1024),
+            nn.ReLU(),
+
+
+            # (_, 1024) -> (_, 1024)
+            nn.Linear(in_features=1024, out_features=1024),
+            nn.ReLU(),
+
+            # (_, 1024) -> (_, 4096)
+            nn.Linear(in_features=1024, out_features=4096),
+            nn.ReLU(),
+
+            # (_, 4096) -> (_, 64, 8, 8)
+            nn.Unflatten(dim=1, unflattened_size=(64, 8, 8)),
+
+            # (_, 64, 8, 8) -> (_, 16, 16, 16)
+            nn.ConvTranspose2d(in_channels=64, out_channels=16, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ReLU(),
+
+            # (_, 16, 16, 16) -> (_, 1, 32, 32)
+            nn.ConvTranspose2d(in_channels=16, out_channels=1, kernel_size=3, stride=2, padding=1, output_padding=1),
+
+            nn.Sigmoid()
+        )
+        
+        #######################################################################
+        #                       ** END OF YOUR CODE **
+        ####################################################################### 
+        
+    def encode(self, x):
+        #######################################################################
+        #                       ** START OF YOUR CODE **
+        #######################################################################
+        
+        x = self.encoder(x)
+
+        return self.mean_layer(x), self.logvar_layer(x)
+
+        #######################################################################
+        #                       ** END OF YOUR CODE **
+        ####################################################################### 
+    
+    def reparametrize(self, mu, logvar):
+        #######################################################################
+        #                       ** START OF YOUR CODE **
+        #######################################################################
+        
+        epsilon = torch.randn_like(logvar)#.to(device)
+        sampled_latent = mu + logvar*epsilon
+        return sampled_latent
+
+        #######################################################################
+        #                       ** END OF YOUR CODE **
+        ####################################################################### 
+
+    def decode(self, z):
+        #######################################################################
+        #                       ** START OF YOUR CODE **
+        #######################################################################
+        
+        return self.decoder(z)
+
+        #######################################################################
+        #                       ** END OF YOUR CODE **
+        ####################################################################### 
+    
+    def forward(self, x):
+        #######################################################################
+        #                       ** START OF YOUR CODE **
+        #######################################################################
+        
+        mu, logvar = self.encode(x)
+        z = self.reparametrize(mu, logvar)
+        decoded = self.decode(z)
+
+        return decoded, mu, logvar
+
+        #######################################################################
+        #                       ** END OF YOUR CODE **
+        ####################################################################### 
+
 model = VAE(latent_dim).to(device)
 
 summary(model, (1, 32, 32))
@@ -578,10 +697,8 @@ print("Total number of parameters is: {}".format(params))
 # 
 # * You are encouraged to experiment with the weighting coefficient $\beta$ and observe how it affects your training
 
-# In[31]:
+# In[27]:
 
-
-# *CODE FOR PART 1.1b IN THIS CELL*
 
 def loss_function_VAE(recon_x, x, mu, logvar, beta):
         #######################################################################
@@ -589,9 +706,9 @@ def loss_function_VAE(recon_x, x, mu, logvar, beta):
         #######################################################################
 
         reconstruction_loss = F.binary_cross_entropy(recon_x, x, reduction="sum")
-        kl_loss = 0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        kl_loss = - 0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
-        loss = reconstruction_loss - beta * kl_loss
+        loss = reconstruction_loss + beta * kl_loss
 
         return loss, reconstruction_loss, kl_loss
 
@@ -599,39 +716,120 @@ def loss_function_VAE(recon_x, x, mu, logvar, beta):
         #                       ** END OF YOUR CODE **
         ####################################################################### 
 
-print(device)
 
-model = VAE(latent_dim).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# In[28]:
 
-model.train()
-# <- You may wish to add logging info here
-for epoch in range(num_epochs):  
-    # <- You may wish to add logging info here
-    with tqdm.tqdm(loader_train, unit="batch") as tepoch:
+
+import logging
+
+def train_model(b = 0, ld=2, lr=0.001):
+    
+    def train_model():
+        """Main training function"""
+        # Setup model
+        # my_logger.info('======================================================')
+        # my_logger.info('Beginning training for model')
+        # my_logger.info('======================================================')
         
-        for batch_idx, (data, _) in enumerate(tepoch):   
+        global beta
+        beta = b
+        global latent_dim
+        latent_dim = ld
 
-            #######################################################################
-            #                       ** START OF YOUR CODE **
-            #######################################################################
-            data = data.to(device)  # Assuming you have a device variable defined
-            optimizer.zero_grad()
-            recon_batch, mu, logvar = model(data)
+        model = VAE(latent_dim).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-            loss, reconstruction_loss, kl_loss = loss_function_VAE(recon_batch, data, mu, logvar, beta)
-            loss.backward()
-            optimizer.step()
-            #######################################################################
-            #                       ** END OF YOUR CODE **
-            ####################################################################### 
+        # Training mode
+        model.train()
 
-            if batch_idx % 20 == 0:
-                tepoch.set_description(f"Epoch {epoch}")
-                tepoch.set_postfix(loss=loss.item()/len(data))
+        per_epoch_loss = []
+        per_epoch_reconstruction_loss = []
+        per_epoch_kl_loss = []
 
-    # save the model
-    if epoch == num_epochs - 1:
-        with torch.no_grad():
-            torch.jit.save(torch.jit.trace(model, (data), check_trace=False),
-                content_path/'CW_VAE/VAE_model.pth')
+        per_epoch_loss_test = []
+        per_epoch_reconstruction_loss_test = []
+        per_epoch_kl_loss_test = []
+
+        for epoch in range(num_epochs):
+
+            # my_logger.info(f"Training - Epoch {epoch + 1}/{num_epochs}")
+            
+            loss, reconstruction_loss, kl_loss = 0.0, 0.0, 0.0
+
+            # Training
+            with tqdm.tqdm(loader_train, unit="batch") as tepoch:
+                for batch_idx, (data, _) in enumerate(tepoch):
+                    
+                    data = data.to(device)
+                    optimizer.zero_grad()
+                    recon_batch, mu, logvar = model(data)
+
+                    loss, reconstruction_loss, kl_loss = loss_function_VAE(recon_batch, data, mu, logvar, beta)
+
+                    loss.backward()
+                    optimizer.step()
+
+                    tepoch.set_description(f"Epoch {epoch + 1}")
+                    tepoch.set_postfix(loss=loss.item() / len(data))
+                        
+                    # Log the information
+                    # my_logger.info(f"Epoch {epoch+1} - Iteration {batch_idx + 1}/{len(loader_train)} - Loss: {loss.item() / len(data)}, Reconstruction Loss: {reconstruction_loss.item() / len(data)}, KL Loss: {kl_loss.item() / len(data)}")
+
+                    loss = loss.item() / len(data)
+                    reconstruction_loss = reconstruction_loss.item() / len(data)
+                    kl_loss = kl_loss.item() / len(data)
+                
+            per_epoch_loss.append(loss)
+            per_epoch_reconstruction_loss.append(reconstruction_loss)
+            per_epoch_kl_loss.append(kl_loss)
+
+            # Testing
+            model.eval()  # Switch to evaluation mode
+            test_loss = 0.0
+            test_reconstruction_loss = 0.0
+            test_kl_loss = 0.0
+            with torch.no_grad():
+                for data_test, _ in loader_test:
+                    data_test = data_test.to(device)
+                    recon_batch_test, mu_test, logvar_test = model(data_test)
+
+                    loss_test, reconstruction_loss_test, kl_loss_test = loss_function_VAE(recon_batch_test, data_test, mu_test, logvar_test, beta)
+                    
+                    test_loss += loss_test.item()
+                    test_reconstruction_loss += reconstruction_loss_test.item()
+                    test_kl_loss += kl_loss_test.item()
+
+            test_loss /= len(loader_test.dataset)
+            test_reconstruction_loss /= len(loader_test.dataset)
+            test_kl_loss /= len(loader_test.dataset)
+            
+            # Log the information
+            # my_logger.info(f"Epoch {epoch+1} - Test Loss: {test_loss}, Test Reconstruction Loss: {test_reconstruction_loss}, Test KL Loss: {test_kl_loss}")
+
+            per_epoch_loss_test.append(test_loss)
+            per_epoch_reconstruction_loss_test.append(test_reconstruction_loss)
+            per_epoch_kl_loss_test.append(test_kl_loss)
+            
+            model.train()  # Switch back to training mode
+
+            # # Save the model at the end of each epoch
+            # if epoch == num_epochs - 1:
+            #     with torch.no_grad():
+            #         torch.jit.save(torch.jit.trace(model, (data), check_trace=False), f'{logger_path}/VAE_model.pth')
+    train_model()  
+
+    # Clear logger
+    # my_logger.removeHandler(my_log_handler)
+
+
+# In[30]:
+
+
+betas = [2] # [0, 0.1, 1, 2, 3]
+lds = [5] # [2, 5, 10]
+lrs = [0.01] # [0.1, 0.01, 0.001]
+
+for bs_ in betas:
+    for lds_ in lds:
+        for lrs_ in lrs:
+            train_model(b=bs_, ld=lds_, lr=lrs_)
