@@ -31,7 +31,7 @@
 # ## Setting up working environment
 # You will need to install pytorch and import some utilities by running the following cell:
 
-# In[15]:
+# In[14]:
 
 
 # !pip install -q torch torchvision altair seaborn tqdm numpy matplotlib torchsummary
@@ -55,7 +55,7 @@ import matplotlib.pyplot as plt
 from torchsummary import summary
 
 
-# In[16]:
+# In[15]:
 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
@@ -63,7 +63,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 # Here we have some default pathing options which vary depending on the environment you are using. You can of course change these as you please.
 
-# In[17]:
+# In[16]:
 
 
 # Initialization Cell
@@ -108,7 +108,7 @@ else:
 content_path = Path(content_path)
 
 
-# In[18]:
+# In[17]:
 
 
 def show(img):
@@ -160,7 +160,7 @@ print(f'Using {device}')
 
 # #### Hyper-parameter selection
 
-# In[19]:
+# In[18]:
 
 
 # Necessary Hyperparameters 
@@ -171,13 +171,13 @@ latent_dim = 2 # Choose a value for the size of the latent space
 
 # Additional Hyperparameters 
 beta = 2
-hidden_dimensions = 16
+hidden_dimensions = 5
 
 
 # #### Data loading
 # 
 
-# In[20]:
+# In[19]:
 
 
 # Transformed data is first padded and randomly cropped to encourage the encoder to memorize patterns, not just
@@ -185,7 +185,7 @@ hidden_dimensions = 16
 
 transform = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Resize(size=(32,32))
+    # transforms.Resize(size=(32,32))
     # transforms.RandomResizedCrop(size=(32,32)),
     # transforms.Normalize(mean=0, std=1)
 ])
@@ -195,7 +195,7 @@ def denorm(x):
     return x
 
 
-# In[21]:
+# In[20]:
 
 
 train_dat = datasets.MNIST(data_path, train=True, download=True, transform=transform)
@@ -210,7 +210,7 @@ fixed_input = sample_inputs[:32, :, :, :]
 save_image(fixed_input, content_path/'CW_VAE/image_original.png')
 
 
-# In[22]:
+# In[21]:
 
 
 # Get a batch of data
@@ -220,11 +220,11 @@ fixed_input = sample_inputs[:64, :, :, :]
 # Create a grid of images
 grid_img = make_grid(fixed_input, nrow=8, padding=2, normalize=True)
 
-# Display the grid using matplotlib
-plt.figure(figsize=(8, 8))
-plt.imshow(grid_img.permute(1, 2, 0))
-plt.axis('off')
-plt.show()
+# # Display the grid using matplotlib
+# plt.figure(figsize=(8, 8))
+# plt.imshow(grid_img.permute(1, 2, 0))
+# plt.axis('off')
+# # plt.show()
 
 
 # #### Model Definition
@@ -243,7 +243,7 @@ plt.show()
 
 # For the encoder, I chose to implement the ResNet architecture due to its repeated success in classification tasks. My hope, is that for similar reasons, this architecture will prove to be most effective in an encoder context.
 
-# In[23]:
+# In[22]:
 
 
 class EncoderBlock_DEPRECATED(nn.Module):
@@ -336,7 +336,7 @@ class EncoderBlock_DEPRECATED(nn.Module):
         return self.relu2(out)
 
 
-# In[24]:
+# In[23]:
 
 
 class DecoderBlock_DEPRECATED(nn.Module):
@@ -397,7 +397,7 @@ class DecoderBlock_DEPRECATED(nn.Module):
         return x
 
 
-# In[25]:
+# In[24]:
 
 
 class VAE_DEPRECATED(nn.Module):
@@ -535,15 +535,8 @@ class VAE_DEPRECATED(nn.Module):
         #                       ** END OF YOUR CODE **
         ####################################################################### 
 
-model = VAE_DEPRECATED(latent_dim).to(device)
 
-summary(model, (1, 32, 32))
-
-params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-print("Total number of parameters is: {}".format(params))
-
-
-# In[26]:
+# In[25]:
 
 
 # *CODE FOR PART 1.1a IN THIS CELL*
@@ -558,25 +551,25 @@ class VAE(nn.Module):
         
         # Encoder Modules
         self.encoder = nn.Sequential(
-            # (_, 1, 32, 32) -> (_, 16, 32, 32)
+            # (_, 1, 28, 28) -> (_, 16, 28, 28)
             nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1),
-            # (_, 16, 32, 32) -> (_, 16, 16, 16)
+            # (_, 16, 28, 28) -> (_, 14, 14, 14)
             nn.MaxPool2d(kernel_size=2),
             nn.BatchNorm2d(num_features=16),
             nn.ReLU(),
 
-            # (_, 16, 16, 16) -> (_, 64, 16, 16)
+            # (_, 16, 14, 14) -> (_, 64, 14, 14)
             nn.Conv2d(in_channels=16, out_channels=64, kernel_size=3, stride=1, padding=1),
-            # (_, 64, 16, 16) -> (_, 64, 8, 8)
+            # (_, 64, 14, 14) -> (_, 64, 7, 7)
             nn.MaxPool2d(kernel_size=2),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(),
 
-            # (_, 64, 8, 8,) -> (_, 4096)
+            # (_, 64, 7, 7) -> (_, 3136)
             nn.Flatten(),
 
-            # (_, 4096) -> (_, 1024)
-            nn.Linear(in_features=4096, out_features=1024),
+            # (_, 3136) -> (_, 1024)
+            nn.Linear(in_features=3136, out_features=1024),
             nn.ReLU(),
             
             # (_, 1024) -> (_, 1024)
@@ -593,23 +586,22 @@ class VAE(nn.Module):
             nn.Linear(in_features=latent_dim, out_features=1024),
             nn.ReLU(),
 
-
             # (_, 1024) -> (_, 1024)
             nn.Linear(in_features=1024, out_features=1024),
             nn.ReLU(),
 
-            # (_, 1024) -> (_, 4096)
-            nn.Linear(in_features=1024, out_features=4096),
+            # (_, 1024) -> (_, 3136)
+            nn.Linear(in_features=1024, out_features=3136),
             nn.ReLU(),
 
-            # (_, 4096) -> (_, 64, 8, 8)
-            nn.Unflatten(dim=1, unflattened_size=(64, 8, 8)),
+            # (_, 3136) -> (_, 64, 7, 7)
+            nn.Unflatten(dim=1, unflattened_size=(64, 7, 7)),
 
-            # (_, 64, 8, 8) -> (_, 16, 16, 16)
+            # (_, 64, 7, 7) -> (_, 16, 14, 14)
             nn.ConvTranspose2d(in_channels=64, out_channels=16, kernel_size=3, stride=2, padding=1, output_padding=1),
             nn.ReLU(),
 
-            # (_, 16, 16, 16) -> (_, 1, 32, 32)
+            # (_, 16, 14, 14) -> (_, 1, 28, 28)
             nn.ConvTranspose2d(in_channels=16, out_channels=1, kernel_size=3, stride=2, padding=1, output_padding=1),
 
             nn.Sigmoid()
@@ -626,7 +618,16 @@ class VAE(nn.Module):
         
         x = self.encoder(x)
 
-        return self.mean_layer(x), self.logvar_layer(x)
+        mean = self.mean_layer(x)
+        logvar = self.logvar_layer(x)
+
+        # May hours of debugging RuntimeError: CUDA error: device-side assert triggered
+        # lead me to discover that any time i had logvar.exp() in the loss function where
+        # logvar was greater than ~81 the value went to infinity. Therefore, clamp the logvar
+        # here to avoid this. exponent of 80 is still very large.
+        logvar = logvar.clamp(max=80) 
+
+        return mean, logvar
 
         #######################################################################
         #                       ** END OF YOUR CODE **
@@ -636,10 +637,18 @@ class VAE(nn.Module):
         #######################################################################
         #                       ** START OF YOUR CODE **
         #######################################################################
-        
+    
         epsilon = torch.randn_like(logvar)#.to(device)
         sampled_latent = mu + logvar*epsilon
+
+        # print(sampled_latent)
+
         return sampled_latent
+    
+        # eps = torch.randn_like(mu)
+        # std = torch.exp(logvar / 2)
+        # std=std.clamp(0, 1e10)
+        # return mu + std*eps
 
         #######################################################################
         #                       ** END OF YOUR CODE **
@@ -667,13 +676,13 @@ class VAE(nn.Module):
 
         return decoded, mu, logvar
 
-        #######################################################################
+        ####################################################################### 
         #                       ** END OF YOUR CODE **
         ####################################################################### 
 
 model = VAE(latent_dim).to(device)
 
-summary(model, (1, 32, 32))
+summary(model, (1, 28, 28))
 
 params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print("Total number of parameters is: {}".format(params))
@@ -697,7 +706,7 @@ print("Total number of parameters is: {}".format(params))
 # 
 # * You are encouraged to experiment with the weighting coefficient $\beta$ and observe how it affects your training
 
-# In[27]:
+# In[26]:
 
 
 def loss_function_VAE(recon_x, x, mu, logvar, beta):
@@ -705,10 +714,28 @@ def loss_function_VAE(recon_x, x, mu, logvar, beta):
         #                       ** START OF YOUR CODE **
         #######################################################################
 
+        recon_x = recon_x.clip(0, 1)
+
         reconstruction_loss = F.binary_cross_entropy(recon_x, x, reduction="sum")
         kl_loss = - 0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-
         loss = reconstruction_loss + beta * kl_loss
+
+        # print('EXPERIMENT')
+        # for i in range(1, 200, 10):
+        #     print(i, torch.tensor(i).exp())
+
+        print('@@@@@@@@@@@@@@@@')
+        print("logvar =============================== ")
+        print(logvar)
+        print("mu =============================== ")
+        print(mu)
+        print("mu**2 =============================== ")
+        print(mu.pow(2))
+        print("logvar.exp =============================== ")
+        print(logvar.exp())
+        print("kl_loss =============================== ")
+        print(kl_loss)
+        print('@@@@@@@@@@@@@@@@')
 
         return loss, reconstruction_loss, kl_loss
 
@@ -717,112 +744,110 @@ def loss_function_VAE(recon_x, x, mu, logvar, beta):
         ####################################################################### 
 
 
-# In[28]:
+# In[27]:
+
+# logger_path, my_logger, my_log_handler = init_logging({'test':1, 'test2':2})
+
+# print(logger_path)
+# print(my_logger)
+# print(my_log_handler)
+
+# my_logger.info('hello')
+
+# del_logging(my_logger, my_log_handler)
 
 
-import logging
+# In[27]:
+
 
 def train_model(b = 0, ld=2, lr=0.001):
+    """General training loop. Trains model with params, saves and logs"""
+
+    per_epoch_loss = []
+    per_epoch_reconstruction_loss = []
+    per_epoch_kl_loss = []
+
+    per_epoch_loss_test = []
+    per_epoch_reconstruction_loss_test = []
+    per_epoch_kl_loss_test = []
     
-    def train_model():
-        """Main training function"""
-        # Setup model
-        # my_logger.info('======================================================')
-        # my_logger.info('Beginning training for model')
-        # my_logger.info('======================================================')
+    
+    global beta
+    beta = b
+    global latent_dim
+    latent_dim = ld
+
+    model = VAE(latent_dim).to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    # Training mode
+    model.train()
+
+    for epoch in range(num_epochs):
         
-        global beta
-        beta = b
-        global latent_dim
-        latent_dim = ld
+        loss, reconstruction_loss, kl_loss = 0.0, 0.0, 0.0
 
-        model = VAE(latent_dim).to(device)
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
-        # Training mode
-        model.train()
-
-        per_epoch_loss = []
-        per_epoch_reconstruction_loss = []
-        per_epoch_kl_loss = []
-
-        per_epoch_loss_test = []
-        per_epoch_reconstruction_loss_test = []
-        per_epoch_kl_loss_test = []
-
-        for epoch in range(num_epochs):
-
-            # my_logger.info(f"Training - Epoch {epoch + 1}/{num_epochs}")
-            
-            loss, reconstruction_loss, kl_loss = 0.0, 0.0, 0.0
-
-            # Training
-            with tqdm.tqdm(loader_train, unit="batch") as tepoch:
-                for batch_idx, (data, _) in enumerate(tepoch):
-                    
-                    data = data.to(device)
-                    optimizer.zero_grad()
-                    recon_batch, mu, logvar = model(data)
-
-                    loss, reconstruction_loss, kl_loss = loss_function_VAE(recon_batch, data, mu, logvar, beta)
-
-                    loss.backward()
-                    optimizer.step()
-
-                    tepoch.set_description(f"Epoch {epoch + 1}")
-                    tepoch.set_postfix(loss=loss.item() / len(data))
-                        
-                    # Log the information
-                    # my_logger.info(f"Epoch {epoch+1} - Iteration {batch_idx + 1}/{len(loader_train)} - Loss: {loss.item() / len(data)}, Reconstruction Loss: {reconstruction_loss.item() / len(data)}, KL Loss: {kl_loss.item() / len(data)}")
-
-                    loss = loss.item() / len(data)
-                    reconstruction_loss = reconstruction_loss.item() / len(data)
-                    kl_loss = kl_loss.item() / len(data)
+        # Training
+        with tqdm.tqdm(loader_train, unit="batch") as tepoch:
+            for batch_idx, (data, _) in enumerate(tepoch):
                 
-            per_epoch_loss.append(loss)
-            per_epoch_reconstruction_loss.append(reconstruction_loss)
-            per_epoch_kl_loss.append(kl_loss)
+                data = data.to(device)
+                optimizer.zero_grad()
+                recon_batch, mu, logvar = model(data)
 
-            # Testing
-            model.eval()  # Switch to evaluation mode
-            test_loss = 0.0
-            test_reconstruction_loss = 0.0
-            test_kl_loss = 0.0
-            with torch.no_grad():
-                for data_test, _ in loader_test:
-                    data_test = data_test.to(device)
-                    recon_batch_test, mu_test, logvar_test = model(data_test)
+                torch.clamp(recon_batch, min=0, max=1)
 
-                    loss_test, reconstruction_loss_test, kl_loss_test = loss_function_VAE(recon_batch_test, data_test, mu_test, logvar_test, beta)
+                loss, reconstruction_loss, kl_loss = loss_function_VAE(recon_batch, data, mu, logvar, beta)
+
+                loss.backward()
+                optimizer.step()
+
+                tepoch.set_description(f"Epoch {epoch + 1}")
+                tepoch.set_postfix(loss=loss.item() / len(data))
                     
-                    test_loss += loss_test.item()
-                    test_reconstruction_loss += reconstruction_loss_test.item()
-                    test_kl_loss += kl_loss_test.item()
+                # Log the information
 
-            test_loss /= len(loader_test.dataset)
-            test_reconstruction_loss /= len(loader_test.dataset)
-            test_kl_loss /= len(loader_test.dataset)
+                loss = loss.item() / len(data)
+                reconstruction_loss = reconstruction_loss.item() / len(data)
+                kl_loss = kl_loss.item() / len(data)
             
-            # Log the information
-            # my_logger.info(f"Epoch {epoch+1} - Test Loss: {test_loss}, Test Reconstruction Loss: {test_reconstruction_loss}, Test KL Loss: {test_kl_loss}")
+        per_epoch_loss.append(loss)
+        per_epoch_reconstruction_loss.append(reconstruction_loss)
+        per_epoch_kl_loss.append(kl_loss)
 
-            per_epoch_loss_test.append(test_loss)
-            per_epoch_reconstruction_loss_test.append(test_reconstruction_loss)
-            per_epoch_kl_loss_test.append(test_kl_loss)
-            
-            model.train()  # Switch back to training mode
+        # Testing
+        model.eval()  # Switch to evaluation mode
+        test_loss = 0.0
+        test_reconstruction_loss = 0.0
+        test_kl_loss = 0.0
+        with torch.no_grad():
+            for data_test, _ in loader_test:
+                data_test = data_test.to(device)
+                recon_batch_test, mu_test, logvar_test = model(data_test)
 
-            # # Save the model at the end of each epoch
-            # if epoch == num_epochs - 1:
-            #     with torch.no_grad():
-            #         torch.jit.save(torch.jit.trace(model, (data), check_trace=False), f'{logger_path}/VAE_model.pth')
-    train_model()  
+                loss_test, reconstruction_loss_test, kl_loss_test = loss_function_VAE(recon_batch_test, data_test, mu_test, logvar_test, beta)
+                
+                test_loss += loss_test.item()
+                test_reconstruction_loss += reconstruction_loss_test.item()
+                test_kl_loss += kl_loss_test.item()
 
-    # Clear logger
-    # my_logger.removeHandler(my_log_handler)
+        test_loss /= len(loader_test.dataset)
+        test_reconstruction_loss /= len(loader_test.dataset)
+        test_kl_loss /= len(loader_test.dataset)
+        
+
+        per_epoch_loss_test.append(test_loss)
+        per_epoch_reconstruction_loss_test.append(test_reconstruction_loss)
+        per_epoch_kl_loss_test.append(test_kl_loss)
+        
+        model.train()  # Switch back to training mode
+
+    # Save the lists
+
+  
 
 
-# In[30]:
+# In[28]:
 
 
 betas = [2] # [0, 0.1, 1, 2, 3]
