@@ -238,63 +238,37 @@ Commonly when you look online for models, you will see their parameter counts. \
     \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=1, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+\section{Finetuning problem setting}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
         \centering
-        \subfigure{\fbox{\includegraphics[page=2, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+        \subfigure[``For every downstream task'' we need to fine tune (lots of flops of updating) and store each separate model for each downstream task. This is computationally burdesome]{\fbox{\includegraphics[page=4, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item We're talking about autoregressive models; we have a pre-trained auto-regression model, and for our fine tuning datset, we select some context target pairs (the tokens before the token you're trying to predict).
+        \item We're trying to min/max this over each of the pre-trained parameters. 
+        \item This requires us to store teh gradients and optimisations for every single one of these parameteters.
+        \item We also require more leaning signal to provide enough signal to update every single one of these parmaeters (scalability issue as shown above with scalling laws).
     \end{itemize}
 \end{minipage}
+
+\subsection{Low Rank Adaptation (LoRA)}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
         \centering
-        \subfigure{\fbox{\includegraphics[page=3, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+        \subfigure[Diagram: ``The intrinsic low rank of the over-parameterised space decreases as the number of parameters of our pre-trained model increases; the larger the model, the simpler the loss parameter space is''.]{\fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
     \end{figure}    
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=4, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
-
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
+        \item During fine-tuning, researchers constrained the number of parameters that are available for fine-tuning and saw that the training performance actually didn't drop.
+        \item If we increase the number of parameters, the likelihood of getting stuck in a local minima `saddle' increases.
+        \item The authors: What happes if $\Delta \Phi$'s rank is intrinsicly low? We can instead update $\Theta$ that is significantly less than $\Phi$.
+        \item TLDR: update only a subset of parameters.
     \end{itemize}
 \end{minipage}
 
@@ -306,7 +280,10 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item If before, we learn that the pre-trained projection and also the finetuned projection $\Delta$ can we decompose $\Delta W$ into a low rank version. 
+        \item in blue: the original pre-trained model where we take the input and multiply it by the weight matrix. We freeze these, so we don't learn anything about them.
+        \item In green, in parallel we have an approximation of the weight matrix that is low rank. We only learn this.
+        \item intuitively it works because we project $L_1 \times L_2$ into a $D \times D$ matrix.
     \end{itemize}
 \end{minipage}
 
@@ -318,7 +295,8 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item they found that the low rank approximation of the weight matrix was able to capture the majority of the information in the original weight matrix even at $r=1$.
+        \item This is susseptible to initialisation bias. They set $L_2$ to be 0s; they don't add any new information in the first couple of iterations -- its only the pre-trained model that is doing the work that is itsself forzen. Then the model slowly introduces the new information.
     \end{itemize}
 \end{minipage}
 
@@ -330,9 +308,17 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item At inference time we have a lot of flops from multiplying the matrix together. What they do is they fuse the kernels togeher.
+        \item We can then swap in the very small memory footprints in easily.
+        \item We can then apply some methods from Gradient Accumulation/Checkpointing.
     \end{itemize}
 \end{minipage}
+
+Therefore the big drawback with LORA is that we still need to store the $W_0$ matrix.
+
+\subsection{QLoRA}
+
+\subsubsection{K-Bit Quantisation}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -342,7 +328,8 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item K-bit quantisation: this is going from a data type of higher precision or a higher bit rate to a lower bit rate
+        \item we accomplish this by scaling by the absolute max of the input data
     \end{itemize}
 \end{minipage}
 
@@ -354,9 +341,16 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item We have an example with datapoints in float in blue. We then qunatise it down to int8
+        \item We scale the absolute max to the lowest possible value and scale everything else equally by using the quantisation constant. 
+        \item This is a lossy process. We can't go back to the original data, but we can go back to the original data type.
+        \item This has the setback that if we have outliers, we scale things to a bin, and the represntation becomes very sparse.
+        \item To solve this issue you perform chunks, into small pieces so that the chances of ther being an outlier is very small. 
+        \item Each chunk therefore has a unique qunatisation constant. 
     \end{itemize}
 \end{minipage}
+
+\subsubsection{BrainFloat}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -366,9 +360,15 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item This type favours the exponent significantly. 
+        \item We found that the models were more robust to the actual precision of the bodies than they were to a thing called under or overflow. (where gradients are so small that they become 0)
+        \item ``models performed significantly better when we worried more about underflow than overflow''.
     \end{itemize}
 \end{minipage}
+
+\subsection{Quantising $W_0$ from bfloat16 to 4 bit}
+
+\subsubsection{4-bit NormalFloat}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -378,9 +378,16 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item A big drawback with LORA is that we still need to store the $W_0$ matrix.
+        \item We can use BrainFloat to reduce the memory footprint of the model to 4 bits!
+        \item Here, we rely on the idea that most data in deep learning is a normal distribution. 
+        \item Majority of values map to the same central point normally
+        \item Therefore, they introduce a new type where values are normally distributed in the new type also. The idea is that they are wider at the edges
+        \item The numbers are all the numbers that an Nfloat4 can represent, and in the graph we see Nfloat performs better.
     \end{itemize}
 \end{minipage}
+
+\subsubsection{Double Quantisation}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -390,9 +397,14 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item In K-bit quantisation, we store quantisation constants that is stored in 32 bit precision. 
+        \item If we quantise 65 billion parameters, then we have a lot of qunatisation constants.
+        \item Therefore, we quantise the quantisation constant. 
+        \item Quantisation and de-qunatisation is a cheap operation and fits nicely into consumer-grade hardware.
     \end{itemize}
 \end{minipage}
+
+\subsubsection{Dequnatisation}
 
 \begin{minipage}[l]{.5\linewidth}
     \begin{figure}[H]
@@ -402,201 +414,204 @@ Commonly when you look online for models, you will see their parameter counts. \
 \end{minipage}\hfill
 \begin{minipage}[r]{.48\linewidth}
     \begin{itemize}
-        \item
+        \item The noraml float is a static memory type. 
+        \item When we train the model, the vast majority of the pre-trained model is stored in 4 bit.
+        \item When we matrix multiply we de-quantise it into 16 bit brainfloat space and perform the matrix mulitplicaiton.
+        \item ($L_1$ and $L_2$ are still in 16 bit representation)
     \end{itemize}
 \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=17, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=17, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
-\begin{minipage}[l]{.5\linewidth}
-    \begin{figure}[H]
-        \centering
-        \subfigure{\fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
-    \end{figure}    
-\end{minipage}\hfill
-\begin{minipage}[r]{.48\linewidth}
-    \begin{itemize}
-        \item
-    \end{itemize}
-\end{minipage}
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \subfigure{\fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{L16_deeplearning_at_scale_part2.pdf}}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
 
 % \printbibliography
 % \addcontentsline{toc}{section}{Bibliography}
