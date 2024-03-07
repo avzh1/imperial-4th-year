@@ -381,7 +381,7 @@ The solution of this minmax optimisation task is at equilibrium of the two playe
 
 \subsubsection{Solution to inner-loop optimisation}
 
-Assuming the discriminator network $D_\phi$ has infinite capacity with fixed $\theta$, we can show that the outermost discriminator is the base classifier, whcih computes the ratio between the data distirbution between and the sum of the data and model distributions.
+Assuming the discriminator network $D_\phi$ has infinite capacity with fixed $\theta$, we can show that the outermost discriminator is the base classifier, which computes the ratio between the data distribution between and the sum of the data and model distributions.
 
 \begin{equation}
     \phi^* = \max_\phi L(\theta, \phi)\quad \text{satisfies} \quad D_{\phi^*}(x)=\frac{p_{data}(x)}{p_{data}(x)+p_\theta(x)}
@@ -449,8 +449,8 @@ Initially, the generator is random, therefore the discirminator can classify wit
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{(a)}: In the training procedure, the beining of training, the generator starts from the close-to-zero region. And in this region, the gernerator loss is almost flat, therefore it has very little gradient infromtaiton to help with training.
-    \item \textbf{(b)}: Instead, maximise hte porbability of the discriminator to make wrong decsiions on fake data that for theis alternative objective, the graident of the lss with respect to X has a very large norm, which provides a strong learningd signal for a generator to imporve the qluaity of the fake images.
+    \item \textbf{(a)}: In the training procedure, the beining of training, the generator starts from the close-to-zero region. And in this region, the gernerator loss is almost flat, therefore it has very little gradient information to help with training.
+    \item \textbf{(b)}: Instead, maximize the probability of the discriminator to make wrong decisions on fake data that for this alternative objective, the gradient of the loss with respect to X has a very large norm, which provides a strong learning signal for a generator to improve the quality of the fake images.
 \end{itemize}
 
 \subsection{Wasserstein GAN}
