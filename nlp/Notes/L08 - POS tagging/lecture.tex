@@ -1,0 +1,543 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{POS tagging}
+\newcommand{\reportdescription}{}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+
+\section{Part Of Speech Tagging}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item POS tries to find labels we're interested in (verb adjective, etc.)
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=6, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=7, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Some examples of attributes we may wish to tag}
+\end{figure}
+
+\subsection{Why do we need POS tagging?}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=8, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item it is a solved problem
+        \item There are still tasks we may need to do at scale (e.g. a language filtering problem with many messages we may not be able to run a transformed based language model on all of them)
+    \end{itemize}
+\end{minipage}
+
+\subsection{Baseline method}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=9, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item NOUN is the most common tag, so we could just tag everything as a noun
+        \item This is a baseline method, and we can do better than this
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Ambiguities}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=10, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=11, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\subsection{Probabilistic POS tagging}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=12, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Use the frequences but take the context into account.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=14, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item The probability of a word sequence given the word sequence is 1 becuase we're not drawing $P(W)$ from a word distribution. 
+        \item We take the bigram model as assumption
+        \item note above $w$ is a word and $t$ is a tag
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item as a baseline, we would a basic statistical count.
+        \item The first says, how many times i encounter a tak $t_i$ after i observe a tag $t_{i-1}$ given that the total number of times I have ever seen the tag $t_{i-1}$.
+        \item similarly for the second.
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Example}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here is the training corpus
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item from the start symbol (we have 3 sentences above) we form a table.
+        \item However, this doesn't add up to 1.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Therefore, we add a terminating tag, which then fills the rest of the probability in.
+        \item In the verb case, we have observed 6 verbs, yet 2 out of the 6 verbs have been used to finish the sentence.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item you do the same given for the word given the tag case.
+        \item this is a simple counting baseline
+    \end{itemize}
+\end{minipage}
+
+We then apply the formula to get the posterior (the tag given the word sequence), and at each column we apply the max. This runs at lightning speed and is very parallelizeable, and gives a good baseline.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\subsubsection{Example Problem}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item If we extend this sentence with `fast' we don't have a transition in the training sample. 
+        \item We have tagged this as a noun, even though it should be adverb. This is becuase it doesn't have a transition in the training data even though the only time we observed fast before, it was an adverb.
+        \item However, we have never observed an adverb after a noun so we never transitioned from this point. 
+    \end{itemize}
+\end{minipage}
+
+\begin{warning}
+    Therfore, we aren't really considering the entire sequence, we're only considering local decisions by the greedy approach.
+\end{warning}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=31, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=32, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We're ignoring more promising paths.
+        \item We are therefore interested in maximising the posterior.
+    \end{itemize}
+\end{minipage}
+
+\subsection{Hidden Markov Model Tagger}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=34, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{enumerate}
+        \item \textbf{Markov Chains}: Model probabilities of seqeunces of random variables (states)
+        \item \textbf{Hidden Markov Chains}: states are not given, but hidden. This means that words are observed, but the POS tags are hidden.
+    \end{enumerate}
+    
+    This allows us to inferr hidden states from observations.
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=35, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we're not taking into account the FULL history. We can e.g. exapnd into trigrams.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=36, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We use the same formula as before, only this time $w$ is representing the emission probability (i.e. the probability of observing a word given a tag) and a transition probability (i.e. the probability of observing a tag given a previous tag).
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=37, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=38, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Tables are unchanged}
+\end{figure}    
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=39, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here, the hidden state is the tag, and the seqeunce of observations are words. 
+        \item As before, we're not doing this greedily, we want to maximise the posterior, but instead we are now working with emission and transition probabilities. 
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Viterbi algorithm}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=41, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \caption{For a particular state, what is the porbability that the model is in state $j$, i.e. has that tag, after seeing the first $p$ observations. Here, $t$ is the time. and passing through the probable sequence.}
+\end{figure}    
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=42, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=43, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Dynamic programming algorithm: we can reuse subprobelms.}
+\end{figure}    
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=44, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \caption{Recursive definition}
+\end{figure}    
+
+\subsubsection{Example}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[computed by counting]{\fbox{\includegraphics[page=45, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure[emission probabilities, e.g. we have never observed the word `Janet' that is a verb]{\fbox{\includegraphics[page=46, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}    
+
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=48, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\begin{enumerate}
+    \item We have starting probabilities. e.g. what is the probability that we will transition into a noun phrase from the start token? It is given as $.28$ in the transition probabilities above.
+    \item Then we get to the blue box. Here, we compute the probability of the first word given the tag. e.g. the probability of the word `Janet' given that it is a noun is $0.000032$.
+    \item Then we transition from NNP to MD, and the probability of this transition is the probaility of Janet being an NNP multipled by MD following NNP which in the table above is $0.0110$.
+    \item We then for each incoming array take the max and multiply it by the proabbility of will being an MD which is $0.308$ from the emission table above.
+\end{enumerate}
+
+We should realistically use log space instead of multiplying probabilities, but this is the general idea. This is becuase the probabilities are very small and multiplying them together will result in a very small number.
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=69, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Pseudocode}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=70, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\subsubsection{Problem with HMM}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=71, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item becuase we're considering every possible path. 
+        \item This is a problem becuase we're considering every possible path, and this is not scalable.
+        \item We can use a beam search to limit the number of paths we consider.
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=72, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\subsection{MEMM -- Maximum entropy classifier}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=73, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=74, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=75, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=76, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=77, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=78, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=79, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=80, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=81, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=82, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=83, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=84, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=85, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+
+% \printbibliography
+% \addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
