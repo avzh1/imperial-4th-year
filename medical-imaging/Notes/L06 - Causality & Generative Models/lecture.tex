@@ -1,0 +1,321 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{Causality and Generative Models}
+\newcommand{\reportdescription}{}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+\section{Causality?}
+
+\subsection{What is Causlity?}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=3, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{Correlation doesn't imply casuation}
+\end{figure}
+
+\subsection{Reichenbach's Common Cuase Principle}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{there is a case that countries that eat the most chocolate have the most Nobel laureates. So there are three possible explinations for the correlations. This is the \textbf{Reichenbach's Common Cause Principle}}
+\end{figure}
+
+\subsection{Simpson's Paradox}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=8, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{Another paradox includes two treatments for different sizes of kidneys. Treatment A has better recovery rates, but Treatment B has an average better recovery rate. This is the \textbf{Simpson's Paradox}. The reason is that the stone size is a confounding variable. What happened was that the doctors were prescribing the `better' treatments for the pateitns with the worst conditions, which caused a bias.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=10, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{depending on the way you aggregate on your populations, the correlations may reverse (e.g. a downward slope vs many upwards sloping lines)}
+\end{figure}
+
+\subsection{Predictive Modelling}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=11, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{The goal is to estimate $P(Y|X)$ given some assumptions.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=12, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{Firstly we are predicting the effeect from the cause, and secondly we are predicting the cause from the effect.}
+\end{figure}
+
+\subsubsection{Example}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[the disease makes the image look a certain way, however, the thing we are predicting comes from a biopsy, not the image.]{\fbox{\includegraphics[page=14, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{causality-and-generative-models.pdf}}}
+    \subfigure[the segmentation is fully determined by the iamge. Therefore, the image causes the segmentation map]{\fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{causality-and-generative-models.pdf}}}
+    \subfigure[sometimes you need more information to determine]{\fbox{\includegraphics[page=17, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{causality-and-generative-models.pdf}}}
+\end{figure}   
+
+\begin{figure}[H]
+    \centering
+    \subfigure[we need to be careful about our data generating process]{\fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{causality-and-generative-models.pdf}}}
+    \subfigure[complications may arise when you annotate the data, becuase we get annotation shifts. When we acquire the data there can be acquisition shifts and so on. E.g. an annotator might annotate inconsistently to the annotations.]{\fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{causality-and-generative-models.pdf}}}
+\end{figure}
+
+\subsection{Ladder of Causation}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{``the first rung deals with association, so how would seeing X change my belief in Y? E.g. in deep learning models excel at this task if we have enough data and a big enough neural network. The second rung deals with intervention. So this is about asking questions like what will Y be if i do X? The final does counterfactuals, these are hypothetical questions like what would happen if X had not occurred.}
+\end{figure}
+
+\subsection{Structural Causal Models}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{$X$ is the set of observations, and $U$ are unobvserved conditions (e.g. background, unaware or things you have no control over.) Lastly, the idea is that each $X$ variable is a function of its direct causes via these causal mechanisms.}
+\end{figure}
+
+For example:
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{\textbf{endogenous}: caused by any variable in the model, \textbf{exogenous}: caused by factors external to the model or independent of the model.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{We can represent Acyclic SCMs as a DAGs}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{a) both the kidney and chocolate example, b) when you consider on $x_3$ you would also experience correlation between $x_1$ and $x_2$. c) $x_3$ mediates the causal effect of $x_1$ on $x_2$.}
+\end{figure}
+
+\subsection{Distribution Math}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{1) distribution of the noise terms factorize accross every node in the graph. 2) these also factorize over every node in the graph.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{we intervene with the $do$ operator. This produces a submodel. This is generall ydifferent to the observational distribution we start out with before interveneing on anything.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{a way to solve this is counterfactual inference.}
+\end{figure}
+
+\subsubsection{Computing Counterfactuals Example}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+\end{figure}
+
+\subsection{Deep Structural Causal Models}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{Can we use DGMs to learn structural clausal mechanisms? Abducition is challenging in medicine.}
+\end{figure}
+
+\subsubsection{Normalizing Flows}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=31, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{Here the dataset is transforming into a spiral after multiple transformations. We attempt to maximilse the likelihood of observing the data. The benefit is that they allow us to learn invertible mechanisms and deterministic abduction then we can invert it (since we constrained it to be invertible) and find the exogenous noise term $u_x$ given the $x$}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=32, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{``Lets say that we have two random variables which are related by a deterministic mapping. Lets say this function is $f(u)=2u+1=x$. The change in variables says that we can evaluate the density of $X$ as the density of $u$ times the volume correction term which tries to preseve density when we apply this function. Therefore, we invert the function and differentiate it. After this we can see that for any value of $u$ the density of $x$ is just one half because we have $1 \times \frac 1 2$.''}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=33, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{This concept is what we use to train the noramlizing cluase. We take the log of it and use that as the training objective.}
+\end{figure}
+
+\subsubsection{VAEs}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=.6\linewidth]{figures/vaes.png}}
+    \caption{``conditional vae and the conditional flow look the same. The catch here, is that the attention step is now non-deterministic because the ecnoder produces a distribution of all these encodings and the decoder also produces a distirbution over pixel values.''}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=34, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{``We can define the causal mechanism for an image X. The parents of X here are meta infromation like age etc.'' We have g that is decoder model that predicts the per pixel mean and variances. and the H mechanism is how we smaple from this distribution. The encoder is approximately invertible. Therefore, we have a factorizeed exogenous noise decomposition. To calucalte the posterior it is apprxoimated by the encoder mapping and the inversion of the dterministic sampling procedure}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=35, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{1) encoding: pass it through encoder and receive z. Then decode. after you invert the sampling in the observation space so given its an image $X$ we subtract the predicted mean and divide by the predicted variabce per pixel. 2) next step is to perform some intervention upsteam. e.g. if we have a causal graph with various dependencies between the parents, if we intervene on one of them and compute the value of the new parents, (the $\tilde{\cdot}$ values) and set these to 0 values. 3) in the final step we pass the new values through the decoder and plug values of epsilon and z  that we abducted in the abduction step as well as the new values of the parents to condition with the decoder. \emph{This applies to, if we want to see what the image would look like if we had a different age.}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=36, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{This is not scalable to high resolutions, so we need a more powerful generative model that is still amenable to principal deduction ut can also scale up to higher resolutions. A natural solution is the heirarchical vae; here we have $L$ latent variables instead of just one.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=37, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{The goal is simliar; optimize model to be close to a given data distribution. The only difference from the VAE objective is that we now have a multitude of latent variables and factorize across the $L$ layers.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=38, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=39, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{boxed term is MSE loss. point being here is that it is a hierarchcal VAE with a different inference model.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=40, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{``We had to figure out a couple of ways to condition these VAEs. The first, is to retrain the role of the latent variable as being part of the exogenous noise for $X$. in this case, the latent varibales are independent o fhte values of the parents. So when inferring these lantent vairbales they on't get acecso the vlaues of the parents.'}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=41, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{The second option is to include a conditional prior, so the latent varibles do see the values of the parents.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=42, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{The way you construct this is by stacking residula blueing blocks into a u-net style architecture. These should then be trained to predict the mean and variabce of the latent variables.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=43, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{using this conditional prior as an implication induces a latent mediateor. These latent varibales are no longer part of the exogenous noise, this is becuase they are caused by things within the model (there is a directed arrow from the parents to the latent variables now). This is still Markovian because the way you give rise to these latent vairblaes still depends on some external independent noise when you sample them.}
+\end{figure}
+
+In these diagrams, the grey nodes are observed variables, the middle are exogenous noise u terms and on the right we have unobserved counterfactual values. The key thing is that the exogenous noise is shared between the factual observed and counterfactual branches.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=44, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{this allows you to apply causal mediation analysis defintion above. the main takeaway, is how the parents affect the image vs how the latent variables affect the image. We can visualise this and understand what our interventions are doing when we're chanign things and confusing counterfactuals.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=45, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=46, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=47, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=48, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=49, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=50, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=51, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=52, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=53, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=54, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=55, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
+    \caption{caption}
+\end{figure}
+
+\end{document}
