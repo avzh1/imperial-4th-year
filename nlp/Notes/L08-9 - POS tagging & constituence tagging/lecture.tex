@@ -1,0 +1,1300 @@
+\documentclass[11pt]{article}
+
+% some definitions for the title page
+\newcommand{\reporttitle}{POS tagging}
+\newcommand{\reportdescription}{}
+
+% load some definitions and default packages
+\input{../../../.latex-templates/includes}
+\input{../../../.latex-templates/notation}
+
+%\bibliography{bibliography}
+
+\begin{document}
+
+% Include the title page
+\input{../../../.latex-templates/titlepage}
+
+\tableofcontents
+
+\clearpage
+
+
+\section{Part Of Speech Tagging}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item POS tries to find labels we're interested in (verb adjective, etc.)
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=6, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=7, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Some examples of attributes we may wish to tag}
+\end{figure}
+
+\subsection{Why do we need POS tagging?}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=8, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item it is a solved problem
+        \item There are still tasks we may need to do at scale (e.g. a language filtering problem with many messages we may not be able to run a transformed based language model on all of them)
+    \end{itemize}
+\end{minipage}
+
+\subsection{Baseline method}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=9, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item NOUN is the most common tag, so we could just tag everything as a noun
+        \item This is a baseline method, and we can do better than this
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Ambiguities}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=10, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=11, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\subsection{Probabilistic POS tagging}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=12, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Use the frequences but take the context into account.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=14, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item The probability of a word sequence given the word sequence is 1 becuase we're not drawing $P(W)$ from a word distribution. 
+        \item We take the bigram model as assumption
+        \item note above $w$ is a word and $t$ is a tag
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item as a baseline, we would a basic statistical count.
+        \item The first says, how many times i encounter a tak $t_i$ after i observe a tag $t_{i-1}$ given that the total number of times I have ever seen the tag $t_{i-1}$.
+        \item similarly for the second.
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Example}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here is the training corpus
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item from the start symbol (we have 3 sentences above) we form a table.
+        \item However, this doesn't add up to 1.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Therefore, we add a terminating tag, which then fills the rest of the probability in.
+        \item In the verb case, we have observed 6 verbs, yet 2 out of the 6 verbs have been used to finish the sentence.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item you do the same given for the word given the tag case.
+        \item this is a simple counting baseline
+    \end{itemize}
+\end{minipage}
+
+We then apply the formula to get the posterior (the tag given the word sequence), and at each column we apply the max. This runs at lightning speed and is very parallelizeable, and gives a good baseline.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\subsubsection{Example Problem}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item If we extend this sentence with `fast' we don't have a transition in the training sample. 
+        \item We have tagged this as a noun, even though it should be adverb. This is becuase it doesn't have a transition in the training data even though the only time we observed fast before, it was an adverb.
+        \item However, we have never observed an adverb after a noun so we never transitioned from this point. 
+    \end{itemize}
+\end{minipage}
+
+\begin{warning}
+    Therfore, we aren't really considering the entire sequence, we're only considering local decisions by the greedy approach.
+\end{warning}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=31, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=32, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We're ignoring more promising paths.
+        \item We are therefore interested in maximising the posterior.
+    \end{itemize}
+\end{minipage}
+
+\subsection{Hidden Markov Model Tagger}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=34, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{enumerate}
+        \item \textbf{Markov Chains}: Model probabilities of seqeunces of random variables (states)
+        \item \textbf{Hidden Markov Chains}: states are not given, but hidden. This means that words are observed, but the POS tags are hidden.
+    \end{enumerate}
+    
+    This allows us to inferr hidden states from observations.
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=35, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we're not taking into account the FULL history. We can e.g. exapnd into trigrams.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=36, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We use the same formula as before, only this time $w$ is representing the emission probability (i.e. the probability of observing a word given a tag) and a transition probability (i.e. the probability of observing a tag given a previous tag).
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=37, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=38, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Tables are unchanged}
+\end{figure}    
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=39, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here, the hidden state is the tag, and the seqeunce of observations are words. 
+        \item As before, we're not doing this greedily, we want to maximise the posterior, but instead we are now working with emission and transition probabilities. 
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Viterbi algorithm}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=41, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \caption{For a particular state, what is the porbability that the model is in state $j$, i.e. has that tag, after seeing the first $p$ observations. Here, $t$ is the time. and passing through the probable sequence.}
+\end{figure}    
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=42, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=43, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \caption{Dynamic programming algorithm: we can reuse subprobelms.}
+\end{figure}    
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=44, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \caption{Recursive definition}
+\end{figure}    
+
+\subsubsection{Example}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[computed by counting]{\fbox{\includegraphics[page=45, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure[emission probabilities, e.g. we have never observed the word `Janet' that is a verb]{\fbox{\includegraphics[page=46, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}    
+
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=48, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\begin{enumerate}
+    \item We have starting probabilities. e.g. what is the probability that we will transition into a noun phrase from the start token? It is given as $.28$ in the transition probabilities above.
+    \item Then we get to the blue box. Here, we compute the probability of the first word given the tag. e.g. the probability of the word `Janet' given that it is a noun is $0.000032$.
+    \item Then we transition from NNP to MD, and the probability of this transition is the probaility of Janet being an NNP multipled by MD following NNP which in the table above is $0.0110$.
+    \item We then for each incoming array take the max and multiply it by the proabbility of will being an MD which is $0.308$ from the emission table above.
+\end{enumerate}
+
+We should realistically use log space instead of multiplying probabilities, but this is the general idea. This is becuase the probabilities are very small and multiplying them together will result in a very small number.
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=69, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Pseudocode}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=70, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\subsubsection{Problem with HMM}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=71, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item becuase we're considering every possible path. 
+        \item This is a problem becuase we're considering every possible path, and this is not scalable.
+        \item We can use a beam search to limit the number of paths we consider.
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=72, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\subsection{MEMM -- Maximum entropy classifier}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=73, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=75, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item instead of just using the immediate previous tag, we can use a window of words and previous n tags.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=76, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we can use all sorts of features using this method
+        \item if it contains an uppercase letter, e.g. in german, all nouns are capitalised, so this is a good feature to use.
+    \end{itemize}
+\end{minipage}
+
+\subsection{HMM vs MEMM}
+
+
+    \begin{figure}[H]
+        \centering
+        \subfigure{\fbox{\includegraphics[page=77, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+        \subfigure{\fbox{\includegraphics[page=78, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+        \subfigure{\fbox{\includegraphics[page=79, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \end{figure}    
+
+\subsection{Other approaches}
+
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=80, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}
+\end{figure}    
+
+\subsubsection{RNN for POS tagging}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=81, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=82, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}
+
+\subsubsection{SOTA}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=83, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=84, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=85, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 9 - PoS Tagging.pdf}}}
+\end{figure}    
+
+\section{Constituence Parsing}
+
+\subsection{Introduction}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=3, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \caption*{Constituency parsing is more so interested in the syntactic startucture of a sentence.}
+\end{figure}    
+
+\subsubsection{Applications}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=4, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\subsubsection{Challenges}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=6, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=7, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\subsubsection{Classical Parsing}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=8, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we can parse language like we do a programming language
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=11, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item A constituent is a sqeunce of words that behaves as a unit, generally a phrase.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=12, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we have a universe of grammar rules, and we can use these to parse the sentence. 
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=13, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Automatically, we can serach all possible parse trees.
+        \item We can do bottom up or top down.
+    \end{itemize}
+\end{minipage}
+
+\subsection{The CKY Algorithm}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=14, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item it tires to split the input into two parts, and then recursively parse the two parts.
+        \item It has to be in Chomsky Normal Form; it means rules are only binary (two non binaries) or a non terminal that evaluates to a non-terminal.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We can use dynamic porgramming!
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we start with a matrix, and use the uipper traingular portion of the matrix (since left-to-right parsing).
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Intuition}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[we want to parse this short sentence]{\fbox{\includegraphics[page=17, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[we consider each individual word and see if it is a constituent or not.]{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[Since constituents can be any length, we then ask ourselves if there is a rule that allows us to put these two words into a sqeunce]{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We then do the same for people fish, and fish tanks]{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We then consider constituents of level 3]{\fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[likewise here]{\fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[you then consider is there a rule that allows you to combine the whole sequence from the start symbol]{\fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[Then, once flipped sideways this is the upper triangular of the matrix. then, the top right gives you the parse tree.]{\fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \caption{Intuition}
+\end{figure}    
+
+\subsubsection{Example}
+
+\begin{figure}[H]
+    \centering
+    \ContinuedFloat
+    \subfigure[we want to find the constituents of the sentence ``she eats a fish with a fork'']{\fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[consider each word on its own, does it form a constituent? E.g. `she' attaches itself to a non-terminal NP. Furthermore, if more than two are applicable e.g. eats then we save both.]{\fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[consider the next level of length 2]{\fbox{\includegraphics[page=31, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[this matches!]{\fbox{\includegraphics[page=32, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[same here, no rules apply]{\fbox{\includegraphics[page=34, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[we can apply one level of constituency here]{\fbox{\includegraphics[page=36, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We apply this to all similarly]{\fbox{\includegraphics[page=37, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[now ask the qeustion, for the third level. However, we have applied Chmsky normal form which is binary. Therefore, look at all possible ways that we can form a binary constituent rule. therefore we consider the possible splits above]{\fbox{\includegraphics[page=38, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \ContinuedFloat
+    \subfigure[For the first split, there is nothing that we can match to this]{\fbox{\includegraphics[page=39, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[fpr the second split, there is nothing also]{\fbox{\includegraphics[page=40, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[therefore in total, we have a blank rule here also]{\fbox{\includegraphics[page=41, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[we then move on to the next substring]{\fbox{\includegraphics[page=42, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[for the first chunk, we have a match]{\fbox{\includegraphics[page=44, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[for the second we do not. Therefore, in total, we only have one possible match]{\fbox{\includegraphics[page=45, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We continue this for all 3 length substrings]{\fbox{\includegraphics[page=46, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We do the same for substring of 4, with all possible splits]{\fbox{\includegraphics[page=47, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \ContinuedFloat    
+    \subfigure[we find that for one of these, we have a match!]{\fbox{\includegraphics[page=49, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=50, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=51, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=52, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[We have created a constituency]{\fbox{\includegraphics[page=54, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \caption{Example part 3}
+\end{figure}
+
+\subsubsection{Example 2}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=56, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=58, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\subsection{CKY for parsing}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=59, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item so far, this covers recognition
+        \item however, for parsing (what is the actual structure?) we include pointers for backpointers.
+        \item This gives you the actual tree-structure
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=60, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+\end{figure}    
+
+\subsection{Statistical Parsing}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=61, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item this doesn't scale for comprehensive grammar
+        \item Therefore, use statistical parsing finding the most probabble path as oppose to looking at all the possible passages that we have
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=62, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We get rules and probabilities from a treebank or corpus.
+        \item Here the sentence is ``The move followed a round of similar increases by other leders against Arizona real estate loans''
+        \item this gives an insight into what the structure of english language is like.
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=63, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \caption{}
+\end{figure}    
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=64, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item We then take annotated grammars and list all the rules used.
+        \item Here, there are way more non-terminals being used
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=65, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we then caluclate the proabbility of each rule being used.
+        \item we find this probability by counting (how many times have i seen this rule, vs how many times i have seen this non-terminal in general?)
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=66, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item From there create a probabilistic context free grammar.
+        \item it gives a probability for each rule.
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Intuition}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=67, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[This probabilities leads to different possible parse trees where both are valid, but less/more likely]{\fbox{\includegraphics[page=68, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[probability of a given tree is just the multiplication of each rule being used]{\fbox{\includegraphics[page=69, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure[for the two parse trees, we conclude the first parse tree is more likely.]{\fbox{\includegraphics[page=70, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=72, trim=0cm 0cm 0cm 9.5cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \caption{Intuition}
+\end{figure}
+
+\subsubsection{More Formally}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=66, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item As above
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=74, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we are now looking at a parse tree, and we want to find the most likely parse-tree.
+        \item each parse tree will have a probability
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=75, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we expand this joint probability
+        \item ``we can do the marginal and say that it depends on the proability of the parse tree and then the proabbility of the sentence given the parse tree. This is equal to 1 because we are considering all possible pass trees; we don't consider parse trees that don't yield the sentence s.''
+    \end{itemize}
+\end{minipage}
+
+\subsection{The CKY algorithm for PCFG}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=76, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item all done in polynomial time.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=77, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item this is the same algorith, but this time its for the probabilisitc context free grammar.
+        \item We have to be careful that the probabilities don't change when introducing subrules
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=78, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+\end{figure}  
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=80, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item now we're looking at the dynamic table with three elements.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=81, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item ``if i have this dynamic table what is the highest probability for the span 2-5 whose head is NP''
+        \item This is the same dynamic algorithm where we use previous probabilities to calculate the tree
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=83, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \caption*{For the base case, this is simply a match on a rule on a single tag. In the recursive case: ``it has non terminals Y and Z, for the span i and j what is the maximum probaility i can get for this tag, i have to consider every posisble rule that has the tag. here, s is the split''}
+\end{figure}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=84, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here, for the span 3-8 we apply the recursive case.
+    \end{itemize}
+\end{minipage}
+
+\begin{gather*}
+    \pi[3,7,VP] = \max_{s\in \{3\dots8\}}(q(X\rightarrow YZ) \times \pi[3,s,Y] \times \pi[s+1,8,Z]) \\
+    \text{We then expand s and find the maximum probability for the span 3-7 with the head VP} \\
+    q(X\rightarrow YZ) \times \pi[3,3,Y] \times \pi[4,8,Z] \\
+    q(X\rightarrow YZ) \times \pi[3,4,Y] \times \pi[5,8,Z] \\
+    q(X\rightarrow YZ) \times \pi[3,5,Y] \times \pi[6,8,Z] \\
+    q(X\rightarrow YZ) \times \pi[3,6,Y] \times \pi[7,8,Z] \\
+    q(X\rightarrow YZ) \times \pi[3,7,Y] \times \pi[8,8,Z] \\
+    \text{Here, $\pi$ is the probability of the parse tree that we calculated in the previous steps} \\
+    \text{And $(q\rightarrow YZ)$ is the probability of the rule that we have seen in the treebank that matches the given substring} \\ 
+\end{gather*}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=85, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \caption*{We always keep the most probably parse tree. We also record the backpointer to maintain the actual tree used to parse that substring.}
+\end{figure}    
+
+% \begin{minipage}[l]{.5\linewidth}
+%     \begin{figure}[H]
+%         \centering
+%         \fbox{\includegraphics[page=86, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+%     \end{figure}    
+% \end{minipage}\hfill
+% \begin{minipage}[r]{.48\linewidth}
+%     \begin{itemize}
+%         \item
+%     \end{itemize}
+% \end{minipage}
+
+\subsection{Evaluating Parsers}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=87, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=88, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}    
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=89, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here our output is 100\% correct, however, we didn't predict one of the keys: V.
+    \end{itemize}
+\end{minipage}
+    
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=90, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=91, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}    
+
+\subsection{Issues with PCFG}
+
+\subsubsection{Poor independence assumption}
+
+CFG rules impose an independence assumption on probabilities that leads to poor modelling of structural dependencies across the parse tree. Word is only dependent on its POS tag!
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=94, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item e.g. ``the boy jumped'' the noun-phrase is ``the boy'' but in english it is more likley to be defined as pronominal (pronoun).
+        \item with these rules, we cannot include this information
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=95, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we want to condition probabilities based on the context
+        \item we can annotate each node with its parent.
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=96, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+\end{figure}    
+
+\subsubsection{Lack of lexical considitioning}
+
+CFG rules don't model syntactic facts about speciﬁc words, leading to problems with subcategorization ambiguities, preposition attachment, and coordinate structure ambiguities
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=97, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=98, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}  
+
+\subsection{Probabilistic Lexicalised CFG}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=99, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item create a head to the rule
+        \item such that it is going to be the rule that identifies one of its children to the head.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=100, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Formally, everything else is the same, but each rule has a head of the following form:
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=101, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item This is a lexicalised CFG, instead of saying that a dog is a noun phrase, then we say the Noun phrase of the dog is dog.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=102, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item that creates this transfomration, which brings the information in.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=103, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 10 - Constituency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=104, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=105, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}  
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=106, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 10 - Constituency Parsing.pdf}}}
+\end{figure}
+
+\section{Dependency Parsing}
+
+\subsection{Dependency Parsing}
+
+In constituency parsing we group things, wheras now we try to see how the words modify or link together.
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=4, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item the head is the arguemnt and depndent is the modifier
+        \item Here, the `morning' is modifying `flight', and so is `the'.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=5, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item There are versions without typed dependencies. Here, we see `what is connected to what?'
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=6, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item Here, `prefer' is the root action that we're interested in and `I' modifies that. 
+        \item The size is much smaller becuase the nodes are the words and we're tying to find the edges instead of inventing a new set of non-teriminals.
+    \end{itemize}
+\end{minipage}
+
+\subsection{Differences when compared to Constituency Parsing}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=7, trim=0cm 0cm 0cm 0cm, clip, width=.48\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=8, trim=0cm 0cm 0cm 0cm, clip, width=.48\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=9, trim=0cm 0cm 0cm 0cm, clip, width=.48\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+\end{figure}    
+
+\subsection{Dependency Relations}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=10, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=11, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \caption{what it may look like}
+\end{figure}    
+
+\subsection{Formally}
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\fbox{\includegraphics[page=12, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure{\fbox{\includegraphics[page=13, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+\end{figure}
+
+\subsection{Sources of information for Dependency Parsing}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=14, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=15, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item
+    \end{itemize}
+\end{minipage}
+
+\subsection{Transition Based | Shift-reduce Parsing}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[greedy $\rightarrow$ linear time]{\fbox{\includegraphics[page=16, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[three structures and actions create a depedency tree]{\fbox{\includegraphics[page=17, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+\end{figure}    
+
+\subsubsection{Dependency MALT Parser}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[we parse the sentence `I ate fish']{\fbox{\includegraphics[page=18, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[an ML classifier might say `shift']{\fbox{\includegraphics[page=19, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[again]{\fbox{\includegraphics[page=20, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[create a left arc]{\fbox{\includegraphics[page=21, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[shift fish]{\fbox{\includegraphics[page=22, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[right arc and say fish is modifying ate with the object modifier label]{\fbox{\includegraphics[page=23, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \subfigure[right arc and finish]{\fbox{\includegraphics[page=24, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}}
+    \caption{Example}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=25, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+\end{figure}    
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=26, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we just have an ML classifier with 3 classes.
+        \item we can use as many features as we like
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=27, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item take the current state of the parser, stack and buffer and one-hot encoded everything and encoded it.
+        \item then pass the featuer vector onto a classifier
+        \item it will say shift, left arc or right arc
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Dependency neural parser}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=28, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item we can improve on this, instead of using binary features and use embeddings.
+        \item for ecah word you create an embedding, you concatenate it and you train an FNN
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=29, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item example
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Dependency Parsing TreeBank}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=30, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item valuable resource
+    \end{itemize}
+\end{minipage}
+
+\subsubsection{Dependency Parsing Evaluation}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=31, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item count the identical dependencies
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=32, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item compare the reference and hypothesis.
+    \end{itemize}
+\end{minipage}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=33, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item only 2/5 match
+    \end{itemize}
+\end{minipage}
+
+\subsection{Neural Parsing}
+
+\subsubsection{simple approach}
+
+\begin{minipage}[l]{.5\linewidth}
+    \begin{figure}[H]
+        \centering
+        \fbox{\includegraphics[page=35, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \end{figure}    
+\end{minipage}\hfill
+\begin{minipage}[r]{.48\linewidth}
+    \begin{itemize}
+        \item fianlly, people tried to flatten the dependency tree by passing it into the rnn and output something that is separated by brackets which is the flattened tree
+    \end{itemize}
+\end{minipage}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=36, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+    \fbox{\includegraphics[page=37, trim=0cm 0cm 0cm 0cm, clip, width=.45\linewidth]{Lecture 11 - Dependency Parsing.pdf}}    
+\end{figure}
+
+\subsubsection{advanced approach}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=38, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+\end{figure}    
+
+\section{Conclusion}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=39, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{Lecture 11 - Dependency Parsing.pdf}}
+\end{figure}    
+
+% \printbibliography
+% \addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
