@@ -19,7 +19,7 @@
 
 \clearpage
 
-\section{Causality?}
+\section{Causality}
 
 \subsection{What is Causlity?}
 
@@ -255,49 +255,58 @@ In these diagrams, the grey nodes are observed variables, the middle are exogeno
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=45, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{Here we have 4 observed variables and a predefined causal graph. Each column is a different intervention; so we can change the digits, the thickness and the intensity. We can see that when we change the thickness, it obeys the causal graph (thickness causes intensity but the same is not true the other way around).}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=46, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{Similar example, we start with a medically assumed causal graph with 6 observed variables. $X$ is one of the variables being the image, we also have ventricle volume, age, brain volume, MRI sqeuencing $M$, sex of patient $S$. Each column here is an intervention on a different attribute. If we change nothing we get a reconstruction back out. Idea here is we're not generating different brains, we generating this particular brain with different attributes.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=47, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{Here we have a different assumed causal graph, but once again it was medically informed.}
 \end{figure}
+
+\subsection{Evaluating Counterfactual}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=48, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{How do we evaluate these counterfactuals? There are a couple theorems above.}
 \end{figure}
+
+\subsubsection{Composition Axiom}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=49, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{Definition above, we can see an example above with high composition; a de-biased model. If we continuously apply the null intervention iteratively and try to reconstruct the image, if the identities are well preserved across tehse iterated applications mechanisms, then we known that the model has high composition. \\
+    Conversely, if it has low composition the identity is lost.}
 \end{figure}
+
+\subsubsection{Effectiveness Axiom}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=50, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{Definition above. An example with high effectiveness, if we want to change digit identitiy it will preserve colour, if we want to change colour then it should preserve digit identity. So a model with low effectiveness will be biased.}
 \end{figure}
+
+\subsubsection{Reversibility Axiom}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=51, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{It has to do with cyclic consistency. A model with good reversibility will be able to do this, otherwise it color information will be lost. The reversibility follows from the composition axiom if you use a directed acyclic graph.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=52, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
+    \caption{We identified an inherent trade-off between composition and effectiveness -- when you train counterfactual inference models you want to be good at all of these things, but there seems to be a trade off between composition and effectiveness specifically.}
 \end{figure}
 
 \begin{figure}[H]
@@ -309,12 +318,6 @@ In these diagrams, the grey nodes are observed variables, the middle are exogeno
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=54, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=55, trim=0cm 0cm 0cm 0cm, clip, width=.95\linewidth]{causality-and-generative-models.pdf}}
     \caption{caption}
 \end{figure}
 
