@@ -24,7 +24,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=2, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Some of these concepts don't relate to technical aspects, but general. This is the definition of the EU of what makes AI trustworthy and Reliable.}
 \end{figure}
 
 \subsection{The need for data}
@@ -32,7 +32,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=3, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{In order to build systems which wordk well we would like to use as much data as possible to train these models. However, the quality of the data also needs to be good (requires diversity, representative of problem and applies to the annotations).} 
 \end{figure}
 
 \subsection{What are the hurdles to getting more data?}
@@ -40,7 +40,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=4, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{For different quality of data and annotation, we can weight these differently in the loss function.}
 \end{figure}
 
 \subsection{Secure and Privacy-aware ML}
@@ -48,7 +48,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=5, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{The concepts here apply to all imaging problems. Federated learning controls the flow of data. All of these techniques attempt to protect the computation.}
 \end{figure}
 
 \subsection{Secure and Privacy-preserving ML}
@@ -56,13 +56,13 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=6, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{We can't retrospectively take an approach and hope you can build techniques which make sure that you ensure privacy. You need to design it form first principles and there are two overriding principles for this privacy by design. These are above. For minimal data transfer you can use federated learning, this uses decentralized learning with a bunch of clients with their data locally. The data is never transferred to the server, but only the result. Here, federated learning doesn't really guarantee privacy, but it gives the user control of their data. The second part, is differential privacy which anonymised the data.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=7, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{There are other add-ons you can use. The techniques are listed above.}
 \end{figure}
 
 \subsection{Federated learning}
@@ -70,33 +70,34 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=8, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{I have a central server where each client sends their data to a central cite. The data is sensitive, and the data owners are not allowed by law to share their data. Federated learning makes you send your ML model to each of the cite and each cite update the model parameters and sends it back to the central cite. The central cite does some aggreagation and you repeat the process. Importantly, is that the data stays with the owners.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=9, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{This is the standard learning process. If using stochastic gradient descent you aprpoximate your gradient by just looping over all the samples in the minibatch.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=10, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{If you do federated learning, you assume that the training samples are distributed to $K$ clients. you can still compute the loss function by computing the loss function from each cite buy weighting it depending on how many or how big the training set is. The first eqution is the standard loss PER CLIENT. If you sum this, you get the standard loss function.\\
+    If you compute the loss this way, the expectation of this loss computed this way for each client is equal to the overall loss if you assume the iid setting. If you have huge amounts of data in homogeneity lets say (a hospital in US may have different population characteristics to hospitals in EU), then each individaul loss terms may not be in the expectation equivalent to the overall loss. This impacts how you train.}
 \end{figure}
 
-\subsubsection{Federated learning - SGD}
+\subsubsection{Federated SGD}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=11, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Assume that each client independently computes the loss and derivative for their dataset. What you transmit is the gradient}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=12, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Then the server updates the model after combining all gradients. }
 \end{figure}
 
 \subsubsection{Federated Averaging}
@@ -104,8 +105,14 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=13, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{There is an alternative approach; the client transfers the gradient to the server, but you can also locally update the parameters by performing on each client a gradient descent separately. Then generating a new set of parameters and iterating a few times. Then sending out to the server back an updated set of parameters. On the server side, you then update the parameters by computing a weighted average of the parameters}
 \end{figure}
+
+\subsubsection{Differences}
+
+The difference between the two approaches is that each client may not have that much compute power, and each client may typically have only one dataset. It doesn't make sense to do gradient descent on my local set becuase I have a very noisy gradient. This is becuase I'm limited to a batch size of one. In the first appraoch, you send the gradient, but you accumulate the gradient and perform much more reliable gradient descnet. However there, you require constant communication between the client and the server. In the second example, you force each client to do 10 iterationso, and only then they share updated parameters. There, you have better control over the communication between client and server.
+
+\subsubsection{Algorithm}
 
 \begin{figure}[H]
     \centering
@@ -118,141 +125,119 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=15, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{1) approximation of whole gradeints no-longer approximates the overall gradent. 2) updates might not be as reliable on some cites as others 3) this is extreme and inefficient.}
 \end{figure}
 
 \subsection{Homomorphic Encryption}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=16, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\subsubsection{ML in standard setting}
+There is still an extent of sensitive data being transferred.
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=17, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=16, trim=1cm 6cm 1cm 5cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{finds an encryption scheme, such that the encrypted data can be manipulated in the encrypted domain as though it had been decrypted.}
 \end{figure}
+
+% \subsubsection{ML in standard setting}
+
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\includegraphics[page=17, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
+%     \caption{}
+% \end{figure}
 
 \subsubsection{ML in clinet/server setting}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=18, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=18, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
+    \fbox{\includegraphics[page=19, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{If Alice is the client and Bob is the server, then sending the data to the server, performing the addition, and sending it back is insecure. With standard encryption, we protect it through encryption, then we decrypt it because we need to decrypt it.}
 \end{figure}
+
+\subsubsection{Homomorphic Encrypion}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=19, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=20, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{In homomorphic encryption, we can perform the addition in the encrypted domain. Bob (the server) never gets to decrypt the data. However, this is computationally expensive (100x slower for deep learning and also some mathematical operations are hard to find a homomorphic encryption for).}
 \end{figure}
 
-\subsection{Homomorphic Encrypion}
+% \subsection{ML and Homomorphic Encrypion}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=20, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\includegraphics[page=21, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+% \end{figure}
 
-\subsection{ML and Homomorphic Encrypion}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=21, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+\subsubsection{Advantages and Disadvantages in ML}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=22, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
 \end{figure}
 
 \subsection{Secure Multi-party Computation} 
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=23, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure[There is an alternative. If you have a secret value of 5, you can split it into two parts (you don't tell anyone how you split it)]{\fbox{\includegraphics[page=23, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[We send it to clients]{\fbox{\includegraphics[page=24, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[the clients perform some computation on their share of the data and return the answer back to you. ]{\fbox{\includegraphics[page=25, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \caption{You are then able to reconstruct the answer because you know how you split it. The client never saw the original value.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=24, trim=1cm 2cm 1cm 2.5cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure[Suppose everyone has exam grades but don't want to share them]{\fbox{\includegraphics[page=26, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[We can do a circular calculation by adding a random number to it (only the first person creates a random number). Then this process continues until we get back to the first person. There is no way to know individual exam grades because many random numbers have been added. Then, the first participant knows what the random offset was; they subtract it and find the average. ]{\fbox{\includegraphics[page=27, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \caption{}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=25, trim=1cm 2cm 1cm 2.5cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+% \subsection{Trusted Execution Environments}
 
-\subsection{Secure Multi-Party Computation}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=26, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=27, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\subsection{Trusted Execution Environments}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=28, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\includegraphics[page=28, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+%     \caption{caption}
+% \end{figure}
 
 \subsection{What is Privacy?}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=29, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=29, trim=1cm 6cm 1cm 5cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{In a medical dataset, a dataset is anonymized if it doesn't contain identifiable data. However, in reality it is not enough. Record linkage attacks are possible to reverse engineer.}
 \end{figure}
 
-\subsection{k-anonymity}
+\subsubsection{k-anonymity}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=30, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=30, trim=1cm 8cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=31, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{You can annonymize this dataset by removing the name, but the date of birth gives us a high chance of re=identifying someone.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=32, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{This doesn't work in practice as it doesn't make any assumptions about what side information you have. Here, we used additional informatino even in the public domain to re-identify.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=33, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=33, trim=1cm 10cm 1cm 5cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=34, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Here is an example; this relies on you having access to another dataset and match for example with this other dataset individual patients and to work out what their identity is.}
 \end{figure}
 
 \subsection{Privacy attacks}
@@ -262,7 +247,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=35, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{In the context of deeplearning, you worry most about 3 different pricay attacks you can do with images. The first attack is to try and invert the model to get the training samples. }
 \end{figure}
 
 \subsubsection{Membership inference}
@@ -270,7 +255,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=36, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Second type tries to work out if a particular dataset is in was used in the training set.}
 \end{figure}
 
 \subsubsection{Attribute inference}
@@ -278,84 +263,62 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=37, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Finally, don't reconstruct entire data but only some sensitive data or informatino about the data. can be common problem.}
 \end{figure}
 
 \subsection{Differential Privacy}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=38, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+These attacks are preventable
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=39, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=39, trim=1cm 10cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{You randomize certain parts of the data without randomizing it enough where you destroy the data.}
 \end{figure}
 
 \subsubsection{Randomized responses}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=40, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \fbox{\includegraphics[page=41, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{You want to find out who has coronavirus. But you don't really want to admit it. Still, you want some statistics. Therefore, each flip a coin and don't tell you the result of the coinflip. Following the flow above, you tell the answer. This produces a noisy answer for those that had tails. This plausible deniability means that you can't make any assessments on the individual level. But if you count the number of votes that are positive and negative, you can still calculate the prevelance.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=42, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{This can be applied to any machine learning model}
 \end{figure}
 
-\subsection{Differential prviacy}
+\subsubsection{Pracitcal Application of Differential prviacy}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=43, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=44, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=43, trim=1cm 7cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{even if you leave one person out you want the model to give virtually the same ansewr. This is a good thing becuase you don't know which person was left out and you cant infer anything about the person. ``This is nearly indisitinguishable. You have a paramerter $\epsilon$ which tells oyu how strict the privacy guarantees are. for strict privacy guarantess (small episilon) with small sample size this won't work, so you'll have to add so much noise that the output of the model utility will drop down to zero.''}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=45, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=44, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
+    \fbox{\includegraphics[page=45, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=46, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{If you do this with tabular data you can add randomized noise to each entry. You can do this with input data or output data. With images, you do it with the input.}
 \end{figure}
 
-\subsection{Concrete mitigation}
-
-\subsubsection{Differentially private stochastic gradient descent (DP-SGD)}
+\subsubsection{Concrete Mitigation: stochastic gradient descent (DP-SGD)}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=47, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{It performs one extra step where you compute the gradient where you clip your gradeint and add noise. Clipping limits the norm of each gradient; limiting the influence that each training example can have on your overall gradient. Since noise is noramlly distributed this should average itsself out. This completely destroyed the model's ability to reconstruct training data!}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=48, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+When you force deep learning to not force the model to memorize the data, you're instead normalizing and preventing overfitting, since often regualirsation includes adding noise.
 
 \section{Interpretability and Explainability}
 
@@ -365,150 +328,77 @@
     \caption{caption}
 \end{figure}
 
-\subsection{Why is it important?}
+\subsection{Interpretability}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=51, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=52, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=53, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=54, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=55, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+\subsubsection{Why is it important?}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=56, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Useful to gain insights into what your machine learning does. Furthermore, it is useful to use as a debugging tool}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=57, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure{\fbox{\includegraphics[page=52, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[a classifier might not work on the right, in some cases, it might not be becuase of the trianing data.]{\fbox{\includegraphics[page=54, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[Here, a model is trained to predict whether there is a horse or car in the picture. Some of the data in the dataset had text. This text tells you a lot about the image. It might not be obvious nor apparent, but an interpritable method allows you to query this model and extract which features in the image lead to the classification]{\fbox{\includegraphics[page=55, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[Data distribution amongst countries may not work in other countries]{\fbox{\includegraphics[page=57, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[This also is bad with face detection for skin colour]{\fbox{\includegraphics[page=58, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[It can be useful for detecting bias in the models]{\fbox{\includegraphics[page=59, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
 \end{figure}
+
+\subsubsection{Common misunderstandings}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=58, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=59, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\subsection{Common misunderstandings}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=60, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=60, trim=0cm 2cm 0cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{decision trees are interpritable, but these can get very complicated and no longer interpritable.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=61, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{If you want to trust a method, you need it to be interpritable. But becuase a method is trustworthqy, it doesn't mean it is interpritable.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=62, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \fbox{\includegraphics[page=62, trim=1cm 2cm 1cm 3cm, clip, width=.75\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{You also sometimes don't care about interpritability. Examples above. Gaming the system means we can trick the system if we know how it works.}
 \end{figure}
 
-\subsection{Types of methods}
+% \subsection{Types of methods}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=63, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \fbox{\includegraphics[page=63, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+%     \caption{There are three different stages of interpretability. As computer scientist, we think about it at the end.}
+% \end{figure}
 
 \subsection{How can we interpret an existing ML model?}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=64, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure[One possible way is to say which feature is really important here? The abolation test removes a feature]{\fbox{\includegraphics[page=64, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[this effectively projects it onto feature no.1 and thus is harder to classify becuase of the large overlap.]{\fbox{\includegraphics[page=64, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \caption{This doesn't scale well}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=65, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure[Since we work with iamges, we can do sensitivity analysis or saliency maps. We take a particular sample and look at the gradient of the sample w.r.t feature1 and feature 2. This tells you how drastically if you cahnge the feature value how the classficiation will change.]{\fbox{\includegraphics[page=66, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[If you do this on another value nearby you mgiht get a completely different answer which may give very contracting interpretations which are derrived based on similar samples]{\fbox{\includegraphics[page=67, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=66, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=67, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=68, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=69, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=70, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=71, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=72, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=73, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \subfigure[A classifier predicts how much it looks like a dog. We want it to give an explination as to why its a dog.]{\fbox{\includegraphics[page=68, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[In this example, sensitivity analysis gets an output like this. We compute the gradient on the output function w.r.t the input pixels (because these are teh features).]{\fbox{\includegraphics[page=69, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[With the stereotypical doctor image, i want it to reconzie reasons. Here, the top image is better. For example, the model may take a shortcut and predict that a man is more likley to be a doctor.]{ \fbox{\includegraphics[page=70, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[How do we get to this? We can differentiate w.r.t the input pixels. Instead, we can visaulise the convolutional features. However, this is not interpretable]{ \fbox{\includegraphics[page=71, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure[A more practical approach is to focus on occlusion maps. We can give it a sample input and see what it outputs.]{ \fbox{\includegraphics[page=72, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
+    \subfigure{ \fbox{\includegraphics[page=73, trim=1cm 2cm 1cm 3cm, clip, width=.45\linewidth]{07 - Trustworthy ML.pdf}}}
 \end{figure}
 
 \subsubsection{Occlusions}
@@ -516,7 +406,12 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=74, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Here, slide an occlusion filter among the MNIST data. Here the model reacts more sensitively to some locations than others. To visalise this, we use a Salicency Map}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[page=78, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
 \end{figure}
 
 \subsubsection{Saliency maps}
@@ -524,87 +419,74 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=75, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{What this approach map did was try to invert the process of the forward pass. What you do now, is you take an image as input, you put it through the network up until a layer, then try to reverse it.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=76, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{for each operation you need an inverse information (difficult since CNNs contract information). You do something similar as backpropogations, but in the forward pass you record infomration for the maximum locations. Then when you do back propogation you slap the values into where the max of the forward pass was.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=77, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Here, there are many activations where the dogs face was activated. This allows you to investigate what each layer does.}
 \end{figure}
-
-\subsubsection{Occlusions}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=78, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\subsubsection{Saliency maps}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=79, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{backpropogate with respect to input pixels (not the weights). But this isn't much more useful than just localising where the point of interest is.}
 \end{figure}
+
+\subsubsection{Salicency maps - Gradient (backpropagation)}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=80, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Simplest way is to do backpob: do the max acitvation and pretend that only this is avtivated and do your backpropoagation}
 \end{figure}
+
+\subsubsection{Salicency maps - Guided backpropagation}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=81, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=82, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{This make a simple modification; we are not interested in nerons that give negative gradients because negative gradients don't contribute anything to the output. The positive outputs represent features the neuron is interested in. This way, you set all the negative weights to zero.\\\\
+    Below, you see the three different schemes, standard backprop, deconvnet and guided backprop. What they differ in is how they deal with negative values.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=83, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Rules for computing by hand}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=84, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=85, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\subsection{Lack of channel specificity}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\includegraphics[page=86, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Guided backprob gives most meaningful results usually}
 \end{figure}
 
 \subsection{Cam and Grad-Cam}
 
 \begin{figure}[H]
     \centering
+    \fbox{\includegraphics[page=86, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
+    \caption{The saliency map should also change depending on the output of the network\\if you have a saliency map fo rmaximally activated neruon and minimally activated neruon and they give the same map that doesn't make sense.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
     \fbox{\includegraphics[page=87, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{The Grad-Cam method allows you to query in much more detail what the differnet input channels are doing in terms of activation}
 \end{figure}
 
 \subsection{DeepDream / Inceptionism}
@@ -612,13 +494,13 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=88, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{They use ideas of inverse problems to see what the networks are learning}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=89, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{we want to find an image that has the same activation that oyu have already observed for an existing input image and you try to reverse engineer this.}
 \end{figure}
 
 \subsection{Inversion}
@@ -626,7 +508,6 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=90, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
 \end{figure}
 
 \section{Robustness: Adversarial Methods}
@@ -634,21 +515,14 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=92, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
 \end{figure}
 
 \subsection{Adversarial Attacks}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=93, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \fbox{\includegraphics[page=94, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Two images have been produced; the difference between the two image is a small scaling factor of noise. The small difference shouldn't be enough to change the classification.}
 \end{figure}
 
 \subsubsection{Pertubation}
@@ -656,31 +530,31 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=95, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{We add to x another vector and see what happens; we can't guarantee that despite the noise being small, the output will be the same.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=96, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{If you want to attack a model, you want to find a small pertubation that changes the classification drastically}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=97, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{This is trivially easy to do with a large pertubation. However, we constrain it such that the largest element in the vector is less than epsilon (L\_inf norm). Then we assume the samllest pertubation where the sign funciton produces eitehr 1 or -1.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=98, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{after some math we can find the magnitude of the vector.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=99, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{What this means is that as the dimensionality increases $n$ gets very large. So this magnitude increases drastically with the number of pixels which means it becomes easier to find noise that will attack the model.}
 \end{figure}
 
 \subsubsection{Fast Gradient Sign Method}
@@ -688,7 +562,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=100, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{Now, you find the optimal vector that attacks the model, meaning that you add the gradient of loss function and then create this vector of zeros -1s and 1s depending on which direction the gradient points, you can create an adversarial example very easily.}
 \end{figure}
 
 \subsection{Adversarial attacks}
@@ -696,7 +570,7 @@
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=101, trim=1cm 2cm 1cm 3cm, clip, width=.85\linewidth]{07 - Trustworthy ML.pdf}}
-    \caption{caption}
+    \caption{You can't defend that easily.}
 \end{figure}
 
 \appendix
