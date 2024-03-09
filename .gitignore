@@ -19,3 +19,6 @@
 # Deep Learning
 ## data files
 deep-learning/**/data
+
+# ots file
+**.odt#
