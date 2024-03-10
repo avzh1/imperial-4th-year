@@ -354,6 +354,23 @@ Assumption: the identity relationship between intensity distributions (``images 
 
 With the above dissimilarity measure, there are some scenarios where that's not quite the case. For example, if the brightness changes, then subtraction is not a good metric. We can instead compute the normalised corss correlation betwen the pixel values or the pixel intensities in one image and in the second image. We get values between 0 (no correlation) and 1 (perfect correlation).
 
+\begin{equation}
+    D_{CC}(I \circ T,J)=-\frac{
+\overbrace{
+   \frac{1}{N} \sum^N_{i=1}(I(T(x_i))-\mu_I)(J(x_i)-\mu_I)
+}^{cov(I,J)}
+}{
+\underbrace{
+\sqrt{\frac 1 N \sum^N_{i=1}(I(T(x_i))-\mu_I)^2
+}
+}_{\sigma_I}
+\underbrace{
+\sqrt{\frac 1 N \sum^N_{i=1}(J(x_i)-\mu_J)^2
+}
+}_{\sigma_I}
+}
+\end{equation}
+
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=55, trim=2.5cm 8cm 1cm 3cm, clip=true, width=\linewidth]{03 - Image Registration.pdf}}
@@ -600,7 +617,7 @@ Take the flow correlation network (not good for large displacements), build a ne
     \item A final network trying to integrate everything
 \end{enumerate}
 
-\subsection{Optimcal Flow with Semantic Segemntation and Localized Layers}
+\subsection{Optical Flow with Semantic Segemntation and Localized Layers}
 
 \href{https://arxiv.org/abs/1603.03911}{text}
 
