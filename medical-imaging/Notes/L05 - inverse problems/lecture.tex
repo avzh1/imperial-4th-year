@@ -2,13 +2,13 @@
 
 % some definitions for the title page
 \newcommand{\reporttitle}{Image Registration}
-\newcommand{\reportdescription}{}
+\newcommand{\reportdescription}{This week's paper is \cite{ongie2020deep}}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
-%\bibliography{bibliography}
+\bibliography{../bibliography}
 
 \begin{document}
 
@@ -507,7 +507,7 @@ Then, the pixels which are masked out by $m$ and optimise the function over all 
     \caption*{This is something you can use a residual network for}
 \end{figure}  
 
-% \printbibliography
-% \addcontentsline{toc}{section}{Bibliography}
+\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
 
 \end{document}

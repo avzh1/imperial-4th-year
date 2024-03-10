@@ -47,7 +47,7 @@
 
 Noise in images refers to high-frequency pixel variability which is not relevant, or may obscure, the model's task.
 
-\subsection{partical volume effects}
+\subsection{partial volume effects}
 
 The image produced by software is a quantized version of the object. Due to the coarse sampling, the resulting image shows partial volume effects at the boundary of the image. These pixels are not aligned with real world boundaries. Therefore, the pixels contain a mixture of two different objects.
 
@@ -195,6 +195,23 @@ The degradation in performance with respect to varying noise levels or varying a
     \end{equation*}
 \end{definition}
 
+\subsubsection{$F_\beta$ score}
+
+\begin{definition}[$F_\beta$ score]
+    \begin{equation*}
+        (1+\beta^2)\frac{Precision \cdot Recall}{(\beta^2 \cdot Precision) + Recall} = \frac{(1+\beta^2)TP}{(1+\beta^2)TP + \beta^2FP + FN}
+    \end{equation*}
+\end{definition}
+
+``The F-measure is calculated as the harmonic mean of precision and recall, giving each the same weighting'' \href{https://machinelearningmastery.com/fbeta-measure-for-machine-learning/}{here}
+
+
+The Fbeta-measure is a generalization of the F-measure that adds a configuration parameter called beta. A default beta value is 1.0, which is the same as the F-measure. A smaller beta value, such as 0.5, gives more weight to precision and less to recall, whereas a larger beta value, such as 2.0, gives less weight to precision and more weight to recall in the calculation of the score.
+
+Where the harmonic mean is the ``the reciprocal of the average of the reciprocals'' \href{https://www.mathsisfun.com/numbers/harmonic-mean.html}{here}
+
+The F-measure was derived so that $F_\beta$ "measures the effectiveness of retrieval with respect to a user who attaches $\beta$ times as much importance to recall as precision".[3] It is based on Van Rijsbergen's effectiveness measure \href{https://en.wikipedia.org/wiki/F-score}{here}
+
 \subsubsection{F1 score}
 
 \begin{definition}[F1 score]
@@ -258,54 +275,76 @@ The most widely used measure for evaluating segmentation. Assume that $A$ is the
 
 \subsubsection{Effect of structure size}
 
-``The Mask IoU (second column) is less sensitive to boundary errors for large objects. The Boundary IoU (third and fourth column) especially considers contours, (1) yields smaller metric scores, thus penalizing errors in the boundaries, and (2) is more invariant to structure sizes, leading to very similar values for large and small structures (fourth column). This pitfall is also relevant for other overlap-based metrics''~\cite{pitfalls-in-segmentation-evaluation}
+\begin{figure}[H]
+    \centering
+    \subfigure[P2.2]{\includegraphics[width=.45\linewidth]{figures/size-a.png}}
+    \subfigure[P2.2]{\includegraphics[width=.45\linewidth]{figures/size-b.png}}
+    \caption{For small structure sizes: The predictions of two algorithms (Prediction 1/2) differ in only a single pixel. In the case of the small
+    structure (right), this has a substantial effect on the corresponding Dice Similarity Coefficient (DSC)
+    metric value (similar for the Intersection over Union (IoU)). This pitfall is also relevant for other overlap-
+    based metrics such as the centerline Dice Similarity Coefficient (clDice), and localization criteria such as
+    Box/Approx/Mask IoU and Intersection over Reference (IoR).}
+    % \subfigure{\includegraphics[width=.45\linewidth]{figures/size-c.png}}
+\end{figure}
 
 \begin{figure}[H]
     \centering
-    \subfigure{\includegraphics[width=.7\linewidth]{figures/size-0.png}}
-    \caption{Extended Data Fig. SN 2.12~\cite{pitfalls-in-segmentation-evaluation}}
-\end{figure}
-
-``Large structures completely dominate overlap-based metrics in semantic segmentation problems. While Prediction 1 perfectly segments all three small structures, the metric score (here: Dice Similarity Coefficient ( DSC)) is much worse compared to the score of Prediction 2, with only one perfect prediction for the large structure. This is highlighted by only computing the metric without the large structure. This pitfall is also relevant for other overlap-based metrics.''~\cite{pitfalls-in-segmentation-evaluation}
-
-\begin{figure}[H]
-    \centering
-    \subfigure{\includegraphics[width=.7\linewidth]{figures/size--1.png}}
-    \caption{Extended Data Fig. SN 2.13~\cite{pitfalls-in-segmentation-evaluation}}
+    \includegraphics[width=.45\linewidth]{figures/size-c.png}
+    \caption{}
 \end{figure}
 
 
-% \subfigure{\includegraphics[width=.3\linewidth]{figures/size-a.png}}
-\begin{figure}[H]
-    \centering
-    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-a.png}}
-    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-b.png}}
-    \subfigure{\includegraphics[width=.45\linewidth]{figures/size-c.png}}
-\end{figure}
+% ``The Mask IoU (second column) is less sensitive to boundary errors for large objects. The Boundary IoU (third and fourth column) especially considers contours, (1) yields smaller metric scores, thus penalizing errors in the boundaries, and (2) is more invariant to structure sizes, leading to very similar values for large and small structures (fourth column). This pitfall is also relevant for other overlap-based metrics''~\cite{pitfalls-in-segmentation-evaluation}
+
+% \begin{figure}[H]
+%     \centering
+%     \subfigure{\includegraphics[width=.7\linewidth]{figures/size-0.png}}
+%     \caption{Extended Data Fig. SN 2.12~\cite{pitfalls-in-segmentation-evaluation}}
+% \end{figure}
+
+% ``Large structures completely dominate overlap-based metrics in semantic segmentation problems. While Prediction 1 perfectly segments all three small structures, the metric score (here: Dice Similarity Coefficient ( DSC)) is much worse compared to the score of Prediction 2, with only one perfect prediction for the large structure. This is highlighted by only computing the metric without the large structure. This pitfall is also relevant for other overlap-based metrics.''~\cite{pitfalls-in-segmentation-evaluation}
+
+% \begin{figure}[H]
+%     \centering
+%     \subfigure{\includegraphics[width=.7\linewidth]{figures/size--1.png}}
+%     \caption{Extended Data Fig. SN 2.13~\cite{pitfalls-in-segmentation-evaluation}}
+% \end{figure}
+
 
 \subsubsection{Effect of structure shape}
-
-``Common overlap-based metrics such as the Dice Similarity Coefficient (DSC) are unaware of complex structure shapes and treat Predictions 1 and 2 equally. The centerline Dice Similarity Coefficient (clDice) uncovers that Prediction 1 misses the fine-granular branches of the reference and favors Prediction 2, which focuses on the object’s center line and better captures its fine branches. This pitfall is also relevant for other overlap-based metrics''~\cite{pitfalls-in-segmentation-evaluation}
 
 \begin{figure}[H]
     \centering
     \subfigure{\includegraphics[width=\linewidth]{figures/shape--1.png}}
-    \caption{Extended Data Fig. Sn 2.14~\cite{pitfalls-in-segmentation-evaluation}}
+    \caption{Extended Data Fig. Sn 2.14~\cite{pitfalls-in-segmentation-evaluation}\\Effect of complex shapes. Common overlap-based metrics such as the
+    Dice Similarity Coefficient (DSC) are unaware of complex structure shapes and treat Predictions 1
+    and 2 equally. The centerline Dice Similarity Coefficient (clDice ) uncovers that Prediction 1 misses
+    the fine-granular branches of the reference and favors Prediction 2, which focuses on the object’s
+    center line and better captures its fine branches. This pitfall is also relevant for other overlap-based
+    metrics such as Intersection over Union ( IoU) and pixel-level $F_\beta$ Score, and localization criteria
+    such as Box/Approx/Mask IoU, Center Distance, Mask IoU > 0, Point inside Mask/Box/Approx, and
+    Intersection over Reference (IoR).}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \subfigure{\includegraphics[width=\linewidth]{figures/shape.png}}
+    \subfigure{\includegraphics[width=.7\linewidth]{figures/shape.png}}
+    \caption{}
 \end{figure}
 
 \subsubsection{Effect of spatial alignment}
 
-``The most common counting-based metrics are poor proxies for the center point alignment. Here, Predictions 1 and 2 yield the same Dice Similarity Coefficient (DSC) value although Prediction 1 approximates the location of the object much better''~\cite{pitfalls-in-segmentation-evaluation}. This pitfall is also reveleant for other boundary and overla-based metrics such as Boundary Intersection over Union (IoU) and Hasudorff Distance (HD).
-
 \begin{figure}[H]
     \centering
     \subfigure{\includegraphics[width=.6\linewidth]{figures/alignment.png}}
-    \caption{Extended Data Fig. SN 2.7~\cite{pitfalls-in-segmentation-evaluation}}
+    \caption{Extended Data Fig. SN 2.7~\cite{pitfalls-in-segmentation-evaluation}\\The most common counting-based metrics are poor proxies for the
+    center point alignment. Here, Predictions 1 and 2 yield the same Dice Similarity Coefficient ( DSC)
+    value although Prediction 1 approximates the location of the object much better. This pitfall is also
+    relevant for other boundary- and overlap-based metrics such as Average Symmetric Surface Distance
+    (ASSD), Boundary Intersection over Union (IoU), Hausdorff Distance (HD ), Hausdorff Distance
+    95th Percentile (HD95 ), IoU, pixel-level $F_\beta$ Score, and Mean Average Surface Distance ( MASD), and
+    localization criteria such as Box/Approx/Mask IoU, Mask IoU > 0, Point inside Mask/Box/Approx,
+    Boundary IoU, and Intersection over Reference (IoR).}
 \end{figure}
 
 \subsubsection{Effect of holes}
@@ -316,15 +355,25 @@ Boundary-based metrics commonly ignore the overlap between structures and are th
     \centering
     \subfigure{\includegraphics[width=.45\linewidth]{figures/holes-1.png}}
     \subfigure{\includegraphics[width=.45\linewidth]{figures/holes-2.png}}
-    \caption{Extended Data Fig. SN 2.6~\cite{pitfalls-in-segmentation-evaluation}}
+    \caption{Extended Data Fig. SN 2.6~\cite{pitfalls-in-segmentation-evaluation}\\
+    Boundary-based metrics commonly ignore the overlap between structures
+and are thus insensitive to holes in structures. In the examples, the Prediction respectively features
+a hole or spotted pattern within the object. Boundary-based metrics (here: Normalized Surface
+Distance ( NSD)) do not recognize this problem, yielding (near) perfect metric scores of 1.0 and 0.9,
+whereas the volumetric difference reflects the fact that the inner area is inadequately predicted.
+NSD was calculated for $\tau = 2$. This pitfall is also relevant for other boundary-based metrics such
+as Average Symmetric Surface Distance ( ASSD), Boundary Intersection over Union (Boundary IoU),
+Hausdorff Distance (HD ), Hausdorff Distance 95th Percentile (HD95), and Mean Average Surface
+Distance (MASD), as well as localization criteria such as Center Distance, Mask IoU > 0, Point inside
+Mask/Box/Appeox, Boundary IoU, Intersection over Reference (IoR), and Mask IoU.}
 \end{figure}
 
 \subsubsection{Effect of Annotation noise}
 
 \begin{figure}[H]
     \centering
-    \subfigure{\includegraphics[width=.45\linewidth]{figures/noise-a.png}}
-    \subfigure{\includegraphics[width=.45\linewidth]{figures/noise-b.png}}
+    \includegraphics[width=.45\linewidth]{figures/noise-a.png}
+    \caption{}
 \end{figure}
 
 \subsubsection{Effect of empty labelmaps}
@@ -336,24 +385,24 @@ Boundary-based metrics commonly ignore the overlap between structures and are th
 
 \subsubsection{Effect of resolution}
 
-Differences in the grid size (resolution) of an image highly influence the image and the reference annotation (dark blue shape (reference) vs. pink outline (desired circle shape)), with a prediction of the exact same shape leading to different metric scores.
-
 \begin{figure}[H]
     \centering
     \subfigure{\includegraphics[width=.6\linewidth]{figures/resolution-1.png}}
-    \caption{Effect of different grid sizes. Extended Data Fig. SN 2.36~\cite{pitfalls-in-segmentation-evaluation}}
+    \caption{Effect of different grid sizes. Extended Data Fig. SN 2.36~\cite{pitfalls-in-segmentation-evaluation}\\Differences in the grid size (resolution) of an
+    image highly influence the image and the reference annotation (dark blue shape (reference) vs. pink
+    outline (desired circle shape)), with a prediction of the exact same shape leading to different metric
+    scores. Abbreviations: Dice Similarity Coefficient ( DSC), Intersection over Union (IoU), Hausdorff
+    Distance (HD ), Hausdorff Distance 95th Percentile (HD95), Average Symmetric Surface Distance
+    (ASSD), Mean Average Surface Distance (MASD), Normalized Surface Distance (NSD).}
 \end{figure}
 
 \subsection{Preference for oversegmentatin to undersegmentation}
 
-The outlines of the predictions of two algorithms (Prediction 1/2) differ in only a single layer of pixels (Prediction 1: undersegmentation | smaller structure compared to eference, Prediction 2: oversegmentation | larger structure compared to reference).
-
-If penalizing of either over- or undersegmentation is desired (unequal severity of class confusions), other metrics such as the $F_\beta$ Score provide specific penalties for either depending on the chosen hyperparameter $\beta$. This pitfall is also relevant for other overlap-based metrics such as centerline Dice Similarity Coefficient ( clDice)
-
 \begin{figure}[H]
     \centering
     \subfigure{\includegraphics[width=.6\linewidth]{figures/oversegmentation.png}}
-    \caption{Extended Data Fig. SN 2.10~\cite{pitfalls-in-segmentation-evaluation}}
+    \caption{Extended Data Fig. SN 2.10~\cite{pitfalls-in-segmentation-evaluation}\\The outlines of the predictions of two algorithms (Prediction 1/2) differ in only a single layer of pixels (Prediction 1: undersegmentation | smaller structure compared to eference, Prediction 2: oversegmentation | larger structure compared to reference). \\
+    If penalizing of either over- or undersegmentation is desired (unequal severity of class confusions), other metrics such as the $F_\beta$ Score provide specific penalties for either depending on the chosen hyperparameter $\beta$. This pitfall is also relevant for other overlap-based metrics such as centerline Dice Similarity Coefficient ( clDice)}
 \end{figure}
 
 \section{Segmentation Methods}
@@ -539,6 +588,7 @@ The idea is to take a really low level representation of an image and try to ups
 \begin{figure}[H]
     \centering
     \includegraphics[width=.8\linewidth]{figures/upsampling.png}
+    \caption{}
 \end{figure}
 
 \subsubsection{Convolutions}
