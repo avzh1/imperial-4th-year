@@ -23,7 +23,7 @@
 
 \subsection{Fundamental components}
 
-The learning framework consists of 4 fundamental milestones:
+The learning framework consists of 3 fundamental components:
 
 \begin{enumerate}
     \item Feature Extractor: responsible for capturing the hierarchical patterns in the data - edges, textures, and more complex shapes. It is what allows the network to `understand' what it's looking at.
@@ -67,9 +67,7 @@ To tackle these issues, the typical solution is to break up the problem into man
 
 \section{Curse of Dimensionality}\label{sect:curse-of-dimensionality}
 
-As the number of features or dimensions grows, the amount of data we need to generalize accurately grows exponentially!
-
-\begin{definition}\label{def:sample-explosion}
+\begin{definition}[Sample Explosion]\label{def:sample-explosion}
     As the number of features or dimensions grows, the amount of data we need to generalize accurately grows exponentially.
 
     To approximate a (Lipschitz) continuous function $f: \mathbb{R}^d \rightarrow \mathbb{R}$ with $\epsilon$ accuracy one needs $O(\epsilon^{-d})$ samples.
@@ -115,7 +113,8 @@ Intuition taken from slides and~\cite{stackexchangeMathematicalDemonstration}.
               V^3_{interior} & =\alpha Width\times \alpha Height\times \alpha Length                                                \\
                              & = \alpha^3 V_{original} \Rightarrow V^n_{interior} = \alpha^n V_{original}                           \\
               V^3_{rind}     & = (1-\alpha) Width\times (1-\alpha) Height\times (1-\alpha) Length\label{equ:rind-vs-interror-alpha} \\
-                             & = (1-\alpha^3) V_{original} \Rightarrow V^n_{rind} = (1-\alpha^n) V_{original}
+                             & = (1-\alpha^3) V_{original}  \\ 
+              \Rightarrow V^n_{rind}  & = (1-\alpha^n) V_{original}
           \end{align}
     \item The volume of the rind relative to the original volume therefore is
           \begin{align}
