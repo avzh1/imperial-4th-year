@@ -132,7 +132,7 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 
 \begin{definition}[ReLU Activation]\label{eq:activation-relu}
     \begin{equation*}
-        f(x) = max(0,x)
+        f(x) = \max(0,x)
     \end{equation*}
 \end{definition}
 
@@ -158,10 +158,10 @@ Careful normalization of the inputs is also essential when using tanh to ensure 
 
 \begin{definition}[Leaky ReLU Activation]\label{eq:activation-leaky-relu}
     \begin{equation*}
-        f(x) = \begin{cases}
-            x & for \ x \geq 0 \\ 
-            0.01 \cdot x & for \ x < 0
-        \end{cases}
+            f(x) = \begin{cases}
+                x & for \ x \geq 0 \\ 
+                0.01 \cdot x & for \ x < 0
+            \end{cases}
     \end{equation*}
 \end{definition}
 
@@ -499,7 +499,7 @@ These functions measure how well your network is doing, quantifying the differen
 
 \subsection{Negative log likelihood loss}
 
-\begin{definition}[Smooth L1]\label{eq:negative-log-likelihood-loss}
+\begin{definition}[Negative log likelihood loss]\label{eq:negative-log-likelihood-loss}
     \begin{align*}
         \ell(x,y) & = \vec{\mathcal L} = \{l_1, \ldots, l_N \}^T, \quad l_n = -w_{y_n} x_{n,y_n}, \quad w_c = weight[c] \cdot 1\{c \neq ignore_{index}\} \\
         \ell(x,y) & = \begin{cases}
@@ -593,7 +593,7 @@ These functions measure how well your network is doing, quantifying the differen
 \end{definition}
 
 \begin{itemize}
-    \item useful to push classes as far away as possible and fro metric learning
+    \item useful to push classes as far away as possible and for metric learning
     \item take category that scores is closest or higher than correct one change until difference is at least in the margin
     \item It finds particular use in metric learning, a task where the objective is to learn a meaningful distance metric between data points
     \item To better understand its practical application, consider scenarios where you aim to identify if two inputs belong to the same class (similar) or different classes (dissimilar). Instead of predicting specific values or labels, you're concerned with how these inputs relate in terms of similarity.
