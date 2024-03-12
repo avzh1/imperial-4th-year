@@ -33,23 +33,23 @@ Once a feature has been detected, its exact location
 becomes less important. Only its approximate position
 relative to other features is relevant.
 
-\subsubsection{shared weights}
+% \subsubsection{shared weights}
 
-This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter maybe very large, while it can be quite small for other parameters elsewhere in the network
+% This algorithm is particularly useful for shared-weight networks because the weight sharing creates ill-conditioning of the error surface. Because of the sharing, one single parameter in the first few layers can have an enormous influence on the output. Consequently, the second derivative of the error with resp ect to this parameter maybe very large, while it can be quite small for other parameters elsewhere in the network
 
-\subsubsection{sub-sampling}
+% \subsubsection{sub-sampling}
 
-A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved with a so-called sub-sampling layers which performs a local \textbf{averaging} and a sub-sampling, reducing the resolution of the feature map, and reducing the sensitivity of the output to shifts and distortions.
+% A simple way to reduce the precision with which the position of distinctive features are encoded in a feature map is to reduce the spatial resolution of the feature map. This can be achieved with a so-called sub-sampling layers which performs a local \textbf{averaging} and a sub-sampling, reducing the resolution of the feature map, and reducing the sensitivity of the output to shifts and distortions.
 
-\subsubsection{Loss}
+% \subsubsection{Loss}
 
-Maximum Likelihood Estimation Criterion (MLE), which is equivalent to the Mean Squared Error (MSE)
+% Maximum Likelihood Estimation Criterion (MLE), which is equivalent to the Mean Squared Error (MSE)
 
-\begin{equation*}
-    E(W) = \frac 1 P \sum ^ P _{ p = 1} y_{D^P} (Z^P, W)
-\end{equation*}
+% \begin{equation*}
+%     E(W) = \frac 1 P \sum ^ P _{ p = 1} y_{D^P} (Z^P, W)
+% \end{equation*}
 
-Where $y_{D^P}$ is the output of the $D_p$-th RBF unit, i.e. the one that corresponds to the correct class of the input pattern $Z^p$. 
+% Where $y_{D^P}$ is the output of the $D_p$-th RBF unit, i.e. the one that corresponds to the correct class of the input pattern $Z^p$. 
 
 % It lacks three important properties:
 
@@ -232,7 +232,7 @@ The Inception block is designed to use a relatively low number of parameters (be
 It has less computational operations:
 
 \begin{equation*}
-    k^2 \times \stackrel{fixed}{\boxed{c_{in}}} \times c_{out} \times \stackrel{fixed}{\boxed{m_h \times m_w}}
+    \stackrel{fixed}{\boxed{k^2}} \times c_{in} \times c_{out} \times \stackrel{fixed}{\boxed{m_h \times m_w}}
 \end{equation*}
 
 Consider a convolutional kernel of size $k\times k$, $c$ relating to the channels and dimension of the image $m$. 
@@ -247,7 +247,12 @@ By carefully allocating resources - varying the number of channels and kernel si
 
 \subsubsection{Channels}
 
-The Inception blocks are designed in such a way that they need fewer parameters and less computational complexity than a single 3x3 or 5x5 convolutional layer, as shown in Table 1. If we were to have 256 channels in the output layer, Inception needs only 16,000 parameters and costs only 128 Mega FLOPS, whereas a 3x3 convolutional layer will need 44,000 parameters and cost 346 Mega FLOPS, and a 5x5 convolutional layer will need 1,22,000 parameters and cost 963 Mega FLOPS. So Inception blocks, essentially get the same job done as single convolutional layers, with much better memory and compute efficiency. \href{https://medium.com/swlh/understanding-inception-simplifying-the-network-architecture-54cd31d38949}{from here}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/table1.png}
+\end{figure}
+
+The Inception blocks are designed in such a way that they need fewer parameters and less computational complexity than a single 3x3 or 5x5 convolutional layer, as shown in Table 1. If we were to have 256 channels in the output layer, Inception needs only 16,000 parameters and costs only 128 Mega FLOPS, whereas a 3x3 convolutional layer will need 44,000 parameters and cost 346 Mega FLOPS, and a 5x5 convolutional layer will need 1,220,000 parameters and cost 963 Mega FLOPS. So Inception blocks, essentially get the same job done as single convolutional layers, with much better memory and compute efficiency. \href{https://medium.com/swlh/understanding-inception-simplifying-the-network-architecture-54cd31d38949}{from here}
 
 \subsection{ReSNet}
 
@@ -331,11 +336,11 @@ The network calculates a global descriptor for each channel. These descriptors g
 \begin{enumerate}
     \item \textbf{Squeeze} -  takes a global average pooling of each channel to get a single
     descriptor that captures the global information of that channel.
-    \item \item \textbf{Descriptor} - These descriptors are then fed into a small neural network (usually a fully-
+    \item \textbf{Descriptor} - These descriptors are then fed into a small neural network (usually a fully-
     connected layer followed by a ReLU and another fully-connected layer) to create a new
     set of descriptors. These new descriptors are designed to capture which channels are
     more important given the current global context of the image
-    \item \item \textbf{Excite} - The output descriptors are then used to scale the original channels. This scaling
+    \item \textbf{Excite} - The output descriptors are then used to scale the original channels. This scaling
     effectively "excites" or enhances the channels that are likely to be more important for a
     given task, based on the global context of the image
     \item \textbf{Re-weighting Channels} - So if the global context suggests that the image likely contains a cat, the "cat channel" would be scaled up, emphasizing features relevant to cats and making it easier for subsequent layers to detect the cat. This procedure is computationally efficient and allows the network to focus on relevant features without needing to explicitly know in advance what those features represent (like a "cat" or a "dog"). It's a way of allowing the network to dynamically allocate its attention based on the overall features in the image, resolving the paradox.
