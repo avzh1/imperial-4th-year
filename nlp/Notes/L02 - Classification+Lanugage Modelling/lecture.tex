@@ -112,7 +112,7 @@ Therefore for a test example: ``Not as \textbf{good} as the old \textbf{movie}, 
 
 Within binary naive bayes, we only consider if a feature is present, rather than considering every time it occurs. Note, this means re-calculating the conditional probabilities from the training data.
 
-E.g. ``Not as \textbf{good} as the old \textbf{movie}, rather \textbf{bad movie}'' we have $P(+)P(x|+) = \frac 3 5 \times \frac{3\times 2 \times 2}{7^3} = 0.021$ and $P(-)P(x|-) = \frac 2 5 \times \frac{2 \times 2 \times 2}{6^3} = 0.014$. If we were still operating under the same formula in Equation~\ref{eq:naiive-bayes-classifier} then we would have iterated over the label `movie' twice, and thus multiplied by $P(good|+)$ twice (in the positive case).
+E.g. ``Not as \textbf{good} as the old \textbf{movie}, rather \textbf{bad movie}'' we have $P(+)P(x|+) = \frac 3 5 \times \frac{3\times 2 \times 2}{7^3} = 0.021$ and $P(-)P(x|-) = \frac 2 5 \times \frac{2 \times 2 \times 2}{6^3} = 0.014$. If we were still operating under the same formula in Equation~\ref{eq:naiive-bayes-classifier} then we would have iterated over the label `movie' twice, and thus multiplied by $P(movie|+)$ twice (in the positive case).
 
 \subsubsection{Controlling for negation}
 
