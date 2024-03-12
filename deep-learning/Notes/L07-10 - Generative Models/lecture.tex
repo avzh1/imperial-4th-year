@@ -194,17 +194,13 @@ The equation at (5 or 6) above, requires us to write down the likelihood of $\th
 
 \subsection{Optimising a variational lower-bound}\label{sect:Optimising a variational lower-bound}
 
-Therefore we opitimize the variational lower-bound of the maximum likelihood objective function instead. We create a lower bound to the log marginal distribution for every input x, and then the expectation of this lower bound will become the lower bound of the maximum likelihood objective.
+Therefore we opitimize the variational lower-bound of the maximum likelihood objective function instead. We create a lower bound to the log marginal distribution for every input x, and then the expectation of this lower bound will become the lower bound of the maximum likelihood objective. (described below)
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=3, trim=2.7cm 3.6cm 2.7cm 18cm, clip=true, width=\linewidth]{N08_VAE.pdf}}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \fbox{\includegraphics[page=4, trim=2.7cm 19.9cm 2.7cm 2.5cm, clip=true, width=\linewidth]{N08_VAE.pdf}}
-    \caption*{Here, $\mathcal L (\vec x, q, \vec \theta)$ refers to the variational lower bound. This is the quantity that variational inference aims to maximize during the optimization process.}
+    \caption*{Here, $p(z)$ refers to $p(z|x)$. $\mathcal L (\vec x, q, \vec \theta)$ refers to the variational lower bound. This is the quantity that variational inference aims to maximize during the optimization process.}
 \end{figure}
 
 \begin{figure}[H]
@@ -646,7 +642,7 @@ GAN is often preffered for better visual quality, VAEs preffered for application
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[page=1, trim=2.7cm 3.6cm 2.7cm 11.1cm, clip=true, width=\linewidth]{N08_VAE.pdf}}
+    \fbox{\includegraphics[page=1, trim=2.7cm 3.6cm 2.7cm 11cm, clip=true, width=\linewidth]{N08_VAE.pdf}}
 \end{figure}
 
 \subsubsection{Jensen's inequality}\label{sect:Jensen's inequality}
