@@ -239,7 +239,7 @@ It creates a context list and a set of targets based upon a hyperparameter windo
     \centering
     \begin{tabular}{|c|c|}
         \hline
-        \textbf{Context} & \textbf{Target} \\
+        \textbf{Target} & \textbf{Context} \\
         \hline
         riding & is \\ 
         riding & like \\
@@ -278,7 +278,7 @@ The architecture is a 2 layered neural network without any non-linearities in be
     \item Give 1-hot vector of the target word as input x
     \item Map that to the embedding of that target word, using weight matrix W $h=xW$
     
-    \begin{figure}
+    \begin{figure}[H]
         \centering
         \includegraphics*[width=\linewidth]{figures/one-hot-word-embedding-extraction.png}
     \end{figure}
