@@ -404,8 +404,9 @@ Here $n$ is the number of words:
     & = \sqrt[n]{\frac{1}{P(w_1,w_2,\ldots,w_n)}}
 \end{align*}
 We can then use the chain rule to expand the probability of $W$
+% \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1,\ldots,w_{i-1})}} =
 \begin{align*}
-    PPL(w) & = \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1,\ldots,w_{i-1})}} = \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1^{k-1})}}
+    PPL(w) & =  \sqrt[n]{\frac{1}{\prod^n_{k=1}P(w_k|w_1^{k-1})}}
 \end{align*}
 
 Note that because of the inverse, the higher the conditional probability of the word sequence, the lower the perplexity. Thus, minimizing perplexity is equivalent to maximizing the test set probability according to the language model. It is a measure of the surprise in an LM when seeing new text.
@@ -475,7 +476,7 @@ In the given sequence of equations, the objective is transformed from maximizing
     &=& \arg\min_{\theta} \left(\mathbb{E}_{p_{data}(x,y)}\left[ -\log p_{model(\theta)}(y,x) \right] \right) \label{eq:MLE-8} 
 \end{eqnarray}
 
-In step~\ref{eq:MLE-3} we turn it into a minimisation problem. In step~\ref{eq:MLE-4} we subtracted logarithm of true and unknown probability of drawing the sample $x_i$, which does not change the argmax, as it is independent of $\theta$. In step~\ref{eq:MLE-5} we redefine $p_{model}(x^{(i)}|\theta) \equiv p_{model}(x^{(i)}|\theta)$ since our model is actually not modeling probability of the sample $x_i$
+In step~\ref{eq:MLE-2} we turn it into a minimisation problem. In step~\ref{eq:MLE-3} we subtracted logarithm of true and unknown probability of drawing the sample $x_i$, which does not change the argmax, as it is independent of $\theta$. In step~\ref{eq:MLE-4} we redefine $p_{model}(x^{(i)}|\theta) \equiv p(x^{(i)}|\theta)$ since our model is actually not modeling probability of the sample $x_i$
 
     % \begin{align}
     %     H(P,Q) & = -\sum_{x \in \mathcal{X}} P(x)\log q(x) \quad \text{Here $x$ refers to $(x,y)$} \\
@@ -504,7 +505,7 @@ if you calculate Cross Entropy to the base e (if it is in base two then it is $2
 
 \subsection{Extrinsic vs Intrinsic Evaluation}
 
-If the goal of the languag model is to support with another task, the best choice of language model is the one that improves downstream task performance the most (extrinsic evaluation). Perplexity is less useful in this case (intrinsic evaluation).
+If the goal of the language model is to support with another task, the best choice of language model is the one that improves downstream task performance the most (extrinsic evaluation). Perplexity is less useful in this case (intrinsic evaluation).
 
 \printbibliography
 \addcontentsline{toc}{section}{Bibliography}
