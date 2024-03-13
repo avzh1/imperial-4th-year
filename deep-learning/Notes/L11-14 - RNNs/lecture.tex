@@ -210,7 +210,7 @@ In this case, the recurrent state we care about is the cell state $c_t$. Back-pr
 \begin{itemize}
     \item Other gated RNN variants exists, but LSTM and GRU are the most widely-used
     \item GRU is quicker to compute and has fewer parameters
-    \item No conclusive evidence for LSTM > GRU or vice versa
+    \item No conclusive evidence for LSTM $>$ GRU or vice versa
     \item LSTM is a good default choice (especially if your data has particularly long dependencies, or you have lots of training data)
     \item Switch to GRU if you want more efficient compute \& less overfitting
 \end{itemize}
@@ -542,11 +542,13 @@ The first step in the encoding process is to gether input embeddings for the inp
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=68, trim=1.7cm 4cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=69, trim=1.7cm 1.3cm 1.7cm 4cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{before we use CNNs to extract features from images, and then use RNNs to generate captions. Now, since the CNN captures spatial location we can treat these features as an input sequence indexed by the spatial locaiton. Then apply Seq2Seq.}
 \end{figure}
 
 \subsection{Transformer in NLP}
@@ -554,11 +556,13 @@ The first step in the encoding process is to gether input embeddings for the inp
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=70, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{Attention based. We mask and pre-train.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=71, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \subsection{Multi-head Attention in other applications}
@@ -566,16 +570,19 @@ The first step in the encoding process is to gether input embeddings for the inp
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=72, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{Trnasformers can be applied to any domain where data comes in sets}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=73, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{Here, we can view an image as spatial locaitons. This has achieved state of the art results in image classification. Convolutions are still more efficient pixelwise than just using attention on images.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=74, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \subsection{Efficient Transformers}
@@ -583,26 +590,31 @@ The first step in the encoding process is to gether input embeddings for the inp
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=75, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=76, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{attention is only used in the neighbourhood of the focal pixel}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=77, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{sparseness}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=78, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{Low rank approximation, if A is linear then we can remove quadratic scaling and make it linear.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=79, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \subsection{Memorisation in Transformers}
@@ -610,6 +622,7 @@ The first step in the encoding process is to gether input embeddings for the inp
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[page=80, trim=1.7cm 1.3cm 1.7cm 3.6cm, clip=true, width=.95\linewidth]{L11-14_rnns.pdf}}
+    \caption{}
 \end{figure}
 
 \clearpage
