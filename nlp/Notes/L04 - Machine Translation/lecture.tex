@@ -35,7 +35,7 @@ Uses parallel corpa as its training set. A prallel corpa is that we have aligned
 \begin{itemize}
     \item \textbf{Parallel dataset} - paired sentences between two different languages (we want to construct correlations between the phrase that happens in one language and translation into another.)
     \item \textbf{Alignment model} - responsible for extracting the phrase pairs    
-    \item \textbf{Translation model} - lookup table, what is the porbability of the word `go' appearing in the contex of this target. statistics over large pairs of parallel texts can
+    \item \textbf{Translation model} - Contains phrases alongside their translation. A lookup table, what is the porbability of the word `go' appearing in the contex of this target. statistics over large pairs of parallel texts can
     help identify parallel phrases
     \item \textbf{Corpus} of target monolongual corpus - this is used to get n-grams from the data (what is the probability of this n-gram given this data?)
     \item \textbf{Language model} - contains the probability of target language phrases 
@@ -351,7 +351,7 @@ The energy scores then get normalised.
 
 \subsection{BLEU}
 
-BLEU reports a modified precision metric for each level of n-gram. Credit is assigned as the maximum aamount of tiems eqhc unique n-gram appears over all the references. Multiple references are recommended (not a strict requirement).
+BLEU reports a modified precision metric for each level of n-gram. Credit is assigned as the maximum amount of time each unique n-gram appears over all the references. Multiple references are recommended (not a strict requirement).
 
 \begin{minipage}[l]{0.5\linewidth}
     \centering
@@ -367,7 +367,7 @@ BLEU reports a modified precision metric for each level of n-gram. Credit is ass
     \text{Modified Precision score } p_n = \frac{\text{Total Unique Overlap}_n}{\text{Total n-grams}}
 \end{equation}
 
-Here, we have an example sentence in french ``Le chat est sur le tapis'' with references (shown on the example) and two outputs, \texttt{MT\_Bad} and \texttt{MT\_Ok}.
+Here, we have an example sentence in french ``Le chat est sur le table'' with references (shown on the example) and two outputs, \texttt{MT\_Bad} and \texttt{MT\_Ok}.
 
 \begin{figure}[H]
     \centering
@@ -473,7 +473,7 @@ If you have a sequence to sequence task then bert score is the metric you should
 
 \section{Inference}
 
-During training, we used teacher forcing. How we don't have access to the ground truth. During inference we can either perform:
+During training, we used teacher forcing. Now we don't have access to the ground truth. During inference we can either perform:
 
 \subsection{Greedy decoding}
 
@@ -539,7 +539,7 @@ Lets translate the source into one language and translate it back. The hope is, 
 
 \begin{itemize}
     \item Use dictionary \& syntax trees to find appropriate synonyms
-    \item Use word embeddings \& nearest neighbors to find synonyms.
+    \item Use word embeddings \& nearest neighbours to find synonyms.
 \end{itemize}
 
 \subsubsection{Batching, PAdding and Sequence Length}
