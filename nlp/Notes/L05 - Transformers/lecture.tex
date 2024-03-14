@@ -2,13 +2,13 @@
 
 % some definitions for the title page
 \newcommand{\reporttitle}{Transformers}
-\newcommand{\reportdescription}{}
+\newcommand{\reportdescription}{Amazing video regarding transformers with great visuals available and recommended here: \cite{transformers-yt}}
 
 % load some definitions and default packages
 \input{../../../.latex-templates/includes}
 \input{../../../.latex-templates/notation}
 
-%\bibliography{bibliography}
+\bibliography{../bibliography}
 
 \begin{document}
 
@@ -449,7 +449,7 @@ Our overall decoder is similar to the encoder layer in construction. We create a
 
 \lstinputlisting[language=python]{code/mha.py}
 
-% \printbibliography
-% \addcontentsline{toc}{section}{Bibliography}
+\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
 
 \end{document}
