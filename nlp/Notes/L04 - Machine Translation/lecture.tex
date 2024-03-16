@@ -383,6 +383,7 @@ Here, we have an example sentence in french ``Le chat est sur le table'' with re
     \subfigure[\texttt{total\_unique\_overlap} measures the \textbf{UNIQUE} occurrences, not only the intersection between the two reference sentences. Here, underlined in bold black are the unique occurrences from the unique\_ngrams list. We do not include the end of sentence reference here because we are testing the produced output. EOS is somethind done within the model representation. \texttt{total\_ngrams} is not unique, there are 6 in the \texttt{MT\_OK}.]{
         \fbox{\includegraphics[page=73, trim=3.2cm 16cm 3.2cm 3.5cm, clip, width=.45\linewidth]{Lecture 4 - Machine Translation.pptx (with notes).pdf}}
     }
+    \caption{Further discussion seems to point that the \texttt{total\_unique\_overlap} is taking the max of occurences of each of the n-grams that appear at the sentence level. So in the 1-gram model, we have 2 `the' in reference 1, and 1 `the' in reference 2. So the max is 2.}
 \end{figure}
 
 \subsubsection{BLEU score}
