@@ -169,7 +169,7 @@ If Toothpaste has is in dimension 5, then
     \left[\stackrel{1}{0} \quad \stackrel{2}{0} \quad \stackrel{3}{0} \quad \stackrel{4}{0} \quad \stackrel{5}{1} \quad \stackrel{6}{0} \quad \stackrel{7}{0} \quad \ldots \quad \stackrel{|V|}{0}  \right]
 \end{align*}
 
-The complete document can represented by horizontally concatenating these one-hot vectors~\cite{git-natural-language-processing}, so the shape of a representation of a Document would be $|Docuemnt| \times |Vocabulary|$.
+The complete document can represented by horizontally concatenating these one-hot vectors~\cite{git-natural-language-processing}, so the shape of a representation of a Document would be $|Document| \times |Vocabulary|$.
 
 \subsubsection{Issues}
 
@@ -413,7 +413,7 @@ We sample words from the vocabulary
     If we have words from many languages can we a shared embedding space for words that exist within this language?
 \end{enumerate}
 
-\section{Byte Pair Encoding}
+\section{Byte Pair Encoding}\label{sect:bpe}
 
 \begin{warning}
     Covered in Lecture 6
